@@ -1,10 +1,11 @@
 namespace Vacations.Domain.Models.Entities;
 
-public class Vacation : HistoryEntity
+public class Vacation : BaseEntity
 {
     public int EmployeeTabNumber { get; set; }
-
     public int ParentVacationId { get; set; }
+    public DateTime DateStart { get; set; }
+    public DateTime DateEnd { get; set; }
     
     // Vacation -> VacationType
     public int VacationTypeId { get; set; }
