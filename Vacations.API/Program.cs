@@ -9,6 +9,9 @@ using Vacations.API.Middlewares;
 //using Vacations.Infrastructure.Models.Mappings;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
+using Vacations.Infrastructure.Models.Mappings;
+using Vacations.Application.Models.Mappings;
+using Vacations.Infrastructure.Data.Contexts;
 
 #region EnvironmentConfiguring
 
@@ -70,13 +73,9 @@ builder.Services.AddControllers(options =>
 
 string vacationsContextConnectionString = builder.Configuration.GetConnectionString("Vacations");
 
-//builder.Services.AddDbContext<BPMFlowDbContext>(options =>
-    //options.UseSqlServer(bpmFlowContextConnectionString, b => b.MigrationsAssembly("BPMFlow.API")));
+builder.Services.AddDbContext<VacationsDbContext>(options =>
+    options.UseSqlServer(vacationsContextConnectionString, b => b.MigrationsAssembly("Vacations.API")));
 
-var perfManagement1ConnectionString = builder.Configuration.GetConnectionString("PerfManagement1");
-
-//builder.Services.AddDbContext<PerfManagement1DbContext>(options =>
-    //options.UseSqlServer(perfManagement1ConnectionString));
 
 #endregion
 
@@ -91,9 +90,9 @@ builder.Services.AddScoped<IRequestService, RequestService>();
 builder.Services.AddScoped<ApiClient>();
 
 //data
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); */
 
-builder.Services.AddAutoMapper(typeof(InfrastructureMappingProfile), typeof(ApplicationMappingProfile)); */
+//builder.Services.AddAutoMapper(typeof(InfrastructureMappingProfile), typeof(ApplicationMappingProfile));
 
 #endregion
 
@@ -137,7 +136,7 @@ app.MapControllers();
 
 #endregion
 
-/* #region RunMigrations
+#region RunMigrations
 
 //Запуск миграций при старте приложения
 using (var scope = app.Services.CreateScope())
@@ -148,6 +147,6 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
 }
 
-#endregion */
+#endregion
 
 app.Run();
