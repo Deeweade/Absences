@@ -1,0 +1,1 @@
+namespace Vacations.Infrastructure.Models.Mappings;
