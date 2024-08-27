@@ -1,4 +1,4 @@
-namespace Vacations.Domain.Models.Filters;
+namespace Vacations.Domain.Dtos.Filters;
 
 public class VacationFilterDto
 {

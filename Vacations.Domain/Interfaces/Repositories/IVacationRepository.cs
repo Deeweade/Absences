@@ -1,5 +1,5 @@
 using Vacations.Domain.Dtos.Entities;
-using Vacations.Domain.Models.Filters;
+using Vacations.Domain.Dtos.Filters;
 
 namespace Vacations.Domain.Interfaces.Repositories;
 

@@ -2,9 +2,10 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Vacations.Domain.Dtos.Entities;
+using Vacations.Domain.Dtos.Filters;
 using Vacations.Domain.Interfaces.Repositories;
 using Vacations.Domain.Models.Entities;
-using Vacations.Domain.Models.Filters;
+using Vacations.Domain.Models.Enums;
 using Vacations.Infrastructure.Data.Contexts;
 
 namespace Vacations.Infrastructure.Data.Repositories;
@@ -29,7 +30,8 @@ public class VacationRepository(VacationsDbContext vacationsDbContext, IMapper m
         ArgumentNullException.ThrowIfNull(filter);
 
         var query = _vacationDbContext.Vacations
-            .AsNoTracking();
+            .AsNoTracking()
+            .ProjectTo<VacationDto>(_mapper.ConfigurationProvider);
 
         if (filter.Years.Any() && !filter.Years.Contains(0))
         {
@@ -43,22 +45,16 @@ public class VacationRepository(VacationsDbContext vacationsDbContext, IMapper m
 
         var result = await query.ToListAsync();
 
-        return _mapper.Map<IEnumerable<VacationDto>>(result);
+        return result;
     } 
     
     public async Task<VacationDto> Create(VacationDto vacationDto)
     {
         ArgumentNullException.ThrowIfNull(vacationDto);
 
-        var vacation = new Vacation
-        {
-            EmployeeTabNumber = vacationDto.EmployeeTabNumber,
-            VacationTypeId = vacationDto.VacationTypeId,
-            DateStart = vacationDto.DateStart,
-            DateEnd = vacationDto.DateEnd,
-            EntityStatusId = vacationDto.EntityStatusId,
-            ParentVacationId = vacationDto.ParentVacationId
-        };
+        vacationDto.EntityStatusId = (int)EntityStatuses.ActiveDraft;
+
+        var vacation = _mapper.Map<Vacation>(vacationDto);
 
         _vacationDbContext.Vacations.Add(vacation);
         await _vacationDbContext.SaveChangesAsync();

@@ -14,8 +14,8 @@ public class VacationContoller(IVacationService service) : ControllerBase
 {
     private readonly IVacationService _service = service;
 
-    [HttpPost("plannedVacationFilter")]
-    public async Task<IActionResult> GetPlannedVacations(VacationFilterView filter)
+    [HttpPost("filter")]
+    public async Task<IActionResult> GetByFilter(VacationFilterView filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
 
