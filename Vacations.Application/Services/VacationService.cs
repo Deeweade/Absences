@@ -6,10 +6,17 @@ using Vacations.Domain.Interfaces.Repositories;
 
 namespace Vacations.Application.Services;
 
-public class VacationService(IUnitOfWork unitOfWork, IMapper mapper) : IVacationService
+public class VacationService : IVacationService
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IMapper _mapper = mapper;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public VacationService(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
     public async Task<VacationView> Create(VacationView vacationView)
     {
         ArgumentNullException.ThrowIfNull(vacationView);
