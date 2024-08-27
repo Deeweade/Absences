@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Vacations.Domain.Dtos.Entities;
 using Vacations.Domain.Interfaces.Repositories;
 using Vacations.Domain.Models.Entities;
+using Vacations.Domain.Models.Filters;
 using Vacations.Infrastructure.Data.Contexts;
 
 namespace Vacations.Infrastructure.Data.Repositories;
@@ -22,6 +23,28 @@ public class VacationRepository(VacationsDbContext vacationsDbContext, IMapper m
                 .ProjectTo<VacationDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(x => x.Id == id);
     }
+
+    public async Task<IEnumerable<VacationDto>> GetByFilter(VacationFilterDto filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+
+        var query = _vacationDbContext.Vacations
+            .AsNoTracking();
+
+        if (filter.Years.Any() && !filter.Years.Contains(0))
+        {
+            query = query.Where(x => filter.Years.Contains(x.DateStart.Year));
+        }
+
+        if (filter.EntityStatuses.Any() && !filter.EntityStatuses.Contains(0))
+        {
+            query = query.Where(x => filter.EntityStatuses.Contains(x.EntityStatusId));
+        }
+
+        var result = await query.ToListAsync();
+
+        return _mapper.Map<IEnumerable<VacationDto>>(result);
+    } 
     
     public async Task<VacationDto> Create(VacationDto vacationDto)
     {
