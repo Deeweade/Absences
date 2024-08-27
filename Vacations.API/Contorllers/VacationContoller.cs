@@ -10,9 +10,14 @@ namespace Vacations.API.Contorllers;
 [Route("api/[controller]")]
 [Authorize(Policy = "RequireAuthenticatedUser")]
 
-public class VacationContoller(IVacationService service) : ControllerBase
+public class VacationContoller : ControllerBase
 {
-    private readonly IVacationService _service = service;
+    private readonly IVacationService _service;
+
+    public VacationContoller(IVacationService service)
+    {
+        _service = service;
+    }
 
     [HttpPost("filter")]
     public async Task<IActionResult> GetByFilter(VacationFilterView filter)

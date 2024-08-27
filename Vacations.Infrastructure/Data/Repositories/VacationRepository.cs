@@ -10,16 +10,22 @@ using Vacations.Infrastructure.Data.Contexts;
 
 namespace Vacations.Infrastructure.Data.Repositories;
 
-public class VacationRepository(VacationsDbContext vacationsDbContext, IMapper mapper) : IVacationRepository
+public class VacationRepository : IVacationRepository
 {
-    private readonly VacationsDbContext _vacationDbContext = vacationsDbContext;
-    private readonly IMapper _mapper = mapper;
+    private readonly VacationsDbContext _vacationsDbContext;
+    private readonly IMapper _mapper;
+
+    public VacationRepository(VacationsDbContext vacationsDbContext, IMapper mapper)
+    {
+        _vacationsDbContext = vacationsDbContext;
+        _mapper = mapper;
+    }
 
     public async Task<VacationDto> GetById(int id)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
-        return await _vacationDbContext.Vacations
+        return await _vacationsDbContext.Vacations
                 .AsNoTracking()
                 .ProjectTo<VacationDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(x => x.Id == id);
