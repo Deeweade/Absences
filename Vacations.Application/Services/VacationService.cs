@@ -1,8 +1,10 @@
 using AutoMapper;
 using Vacations.Application.Interfaces.Services;
+using Vacations.Application.Models.Filters;
 using Vacations.Application.Models.Views;
 using Vacations.Domain.Dtos.Entities;
 using Vacations.Domain.Interfaces.Repositories;
+using Vacations.Domain.Models.Filters;
 
 namespace Vacations.Application.Services;
 

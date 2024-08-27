@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vacations.Application.Interfaces.Services;
+using Vacations.Application.Models.Filters;
 using Vacations.Application.Models.Views;
 
 namespace Vacations.API.Contorllers;
@@ -16,6 +17,16 @@ public class VacationContoller : ControllerBase
     public VacationContoller(IVacationService service)
     {
         _service = service;
+    }
+
+    [HttpPost("filter")]
+    public async Task<IActionResult> GetByFilter(VacationFilterView filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+
+        var vacations = await _service.GetByFilter(filter);
+
+        return Ok(vacations);
     }
 
     [HttpPost("create")]

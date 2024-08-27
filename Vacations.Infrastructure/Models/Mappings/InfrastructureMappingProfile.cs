@@ -1,6 +1,7 @@
 using AutoMapper;
 using Vacations.Domain.Dtos.Entities;
 using Vacations.Domain.Models.Entities;
+using Vacations.Domain.Models.Filters;
 
 namespace Vacations.Infrastructure.Models.Mappings;
 
@@ -52,6 +53,7 @@ public class InfrastructureMappingProfile : Profile
         CreateMap<Vacation, VacationDto>();
         CreateMap<VacationDto, Vacation>();
     }
+
     private void CreateVacationTypeMappings()
     {
         CreateMap<VacationType, VacationTypeDto>();
