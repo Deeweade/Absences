@@ -1,6 +1,8 @@
 using AutoMapper;
+using Vacations.Application.Models.Filters;
 using Vacations.Application.Models.Views;
 using Vacations.Domain.Dtos.Entities;
+using Vacations.Domain.Models.Filters;
 
 namespace Vacations.Application.Models.Mappings;
 
@@ -15,6 +17,7 @@ public class ApplicationMappingProfile : Profile
         CreateStatusMappings();
         CreateVacationMappings();
         CreateVacationTypeMappings();
+        CreateVacationFilterMappings();
     }
 
     private void CreateAvailableDaysMappings()
@@ -56,5 +59,11 @@ public class ApplicationMappingProfile : Profile
     {
         CreateMap<VacationTypeView, VacationTypeDto>();
         CreateMap<VacationTypeDto, VacationTypeView>();
+    }
+
+    private void CreateVacationFilterMappings()
+    {
+        CreateMap<VacationFilterView, VacationFilterDto>();
+        CreateMap<VacationFilterDto, VacationFilterView>();
     }
 }
