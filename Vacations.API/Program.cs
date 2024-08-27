@@ -1,17 +1,14 @@
 using System.Text.Json.Serialization;
 using Vacations.API.Middlewares;
-//using Vacations.Application.Interfaces.Services;
-//using Vacations.Application.Services;
-//using Vacations.Domain.Interfaces.Repositories;
-//using Vacations.Infrastructure.Data;
-//using Vacations.Infrastructure.Data.Contexts;
-//using Vacations.Infrastructure.Data.Repositories;
-//using Vacations.Infrastructure.Models.Mappings;
+using Vacations.Infrastructure.Models.Mappings;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
-using Vacations.Infrastructure.Models.Mappings;
 using Vacations.Application.Models.Mappings;
 using Vacations.Infrastructure.Data.Contexts;
+using Vacations.Domain.Interfaces.Repositories;
+using Vacations.Infrastructure.Data;
+using Vacations.Application.Interfaces.Services;
+using Vacations.Application.Services;
 
 #region EnvironmentConfiguring
 
@@ -82,17 +79,12 @@ builder.Services.AddDbContext<VacationsDbContext>(options =>
 #region DependenciesInjection
 
 //services
-/* builder.Services.AddScoped<IObjectRequestService, ObjectRequestService>();
-builder.Services.AddScoped<IRequestStatusTransitionService, RequestStatusTransitionService>();
-builder.Services.AddScoped<IEmployeeRoleService, EmployeeRoleService>();
-builder.Services.AddScoped<IRequestStatusService, RequestStatusService>();
-builder.Services.AddScoped<IRequestService, RequestService>();
-builder.Services.AddScoped<ApiClient>();
+builder.Services.AddScoped<IVacationService, VacationService>();
 
 //data
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); */
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-//builder.Services.AddAutoMapper(typeof(InfrastructureMappingProfile), typeof(ApplicationMappingProfile));
+builder.Services.AddAutoMapper(typeof(InfrastructureMappingProfile), typeof(ApplicationMappingProfile));
 
 #endregion
 
