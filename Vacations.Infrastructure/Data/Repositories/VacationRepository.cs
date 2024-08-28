@@ -35,16 +35,16 @@ public class VacationRepository : IVacationRepository
     {
         ArgumentNullException.ThrowIfNull(filter);
 
-        var query = _vacationDbContext.Vacations
+        var query = _vacationsDbContext.Vacations
             .AsNoTracking()
             .ProjectTo<VacationDto>(_mapper.ConfigurationProvider);
 
-        if (filter.Years.Any() && !filter.Years.Contains(0))
+        if (filter.Years.Count != 0 && !filter.Years.Contains(0))
         {
             query = query.Where(x => filter.Years.Contains(x.DateStart.Year));
         }
 
-        if (filter.EntityStatuses.Any() && !filter.EntityStatuses.Contains(0))
+        if (filter.EntityStatuses.Count != 0 && !filter.EntityStatuses.Contains(0))
         {
             query = query.Where(x => filter.EntityStatuses.Contains(x.EntityStatusId));
         }
@@ -62,8 +62,8 @@ public class VacationRepository : IVacationRepository
 
         var vacation = _mapper.Map<Vacation>(vacationDto);
 
-        _vacationDbContext.Vacations.Add(vacation);
-        await _vacationDbContext.SaveChangesAsync();
+        _vacationsDbContext.Vacations.Add(vacation);
+        await _vacationsDbContext.SaveChangesAsync();
 
         return await GetById(vacation.Id);
     }
