@@ -4,5 +4,5 @@ namespace Vacations.Application.Interfaces.Services;
 
 public interface IStatusService
 {
-    Task<StatusView> ChangeStatus(int id, StatusView status);
+    Task<StatusView> ChangeStatus(StatusView status);
 }
