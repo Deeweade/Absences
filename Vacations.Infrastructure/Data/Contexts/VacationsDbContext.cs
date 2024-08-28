@@ -8,6 +8,7 @@ public class VacationsDbContext(DbContextOptions<VacationsDbContext> options) : 
     public DbSet<AvailableDays> AvailableDays { get; set; }
     public DbSet<Comment> Comments {get; set; }
     public DbSet<EntityStatus> EntityStatuses { get; set; }
+    public DbSet<PlanningProcess> PlanningProcesses { get; set; }
     public DbSet<PlanningStatus> PlanningStatuses { get; set; }
     public DbSet<Status> Statuses { get; set; }
     public DbSet<Vacation> Vacations { get; set; }
