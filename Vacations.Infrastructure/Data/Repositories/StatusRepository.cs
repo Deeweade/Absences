@@ -29,16 +29,6 @@ public class StatusRepository : IStatusRepository
                 .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<StatusDto> GetActiveById(int id)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-
-        return await _vacationsDbContext.Statuses
-                .AsNoTracking()
-                .ProjectTo<StatusDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
-    }
-
     public async Task<StatusDto> Create(StatusDto status)
     {
         ArgumentNullException.ThrowIfNull(status);

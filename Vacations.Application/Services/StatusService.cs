@@ -23,20 +23,18 @@ public class StatusService : IStatusService
 
         var statusDto = _mapper.Map<StatusDto>(status);
 
-        var currentStatus = await _unitOfWork.StatusRepository.GetActiveById(status.Id);
+        var currentStatus = await _unitOfWork.StatusRepository.GetById(status.Id);
 
         if (currentStatus.EmployeeTabNumber != status.EmployeeTabNumber && currentStatus.Year != status.Year)
         {
-            return _mapper.Map<StatusView>(currentStatus);
-        }
-
+            throw new InvalidOperationException();
+        }   
+            
         await _unitOfWork.StatusRepository.DeactivateStatus(currentStatus);
         await _unitOfWork.SaveChangesAsync();
 
-        currentStatus.PlanningStatusId = statusDto.PlanningStatusId;
-        
         var changedStatus = await _unitOfWork.StatusRepository.Create(statusDto);
-
+    
         return _mapper.Map<StatusView>(changedStatus);
     }
 }
