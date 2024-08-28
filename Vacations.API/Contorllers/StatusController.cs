@@ -18,18 +18,18 @@ public class StatusController : ControllerBase
         _service = service;
     }
 
-    [HttpPost("changeStatus")]
-    public async Task<IActionResult> ChangeStatus([FromBody] StatusView statusView)
+    [HttpPost("changeStatus{statusId}")]
+    public async Task<IActionResult> ChangeStatus(int statusId, [FromBody] StatusView statusView)
     {
-        var id = HttpContext.Request.RouteValues["id"];
+        //statusId = (int)HttpContext.Request.RouteValues["statusId"];
 
-        if ((int)id == statusView.Id)
+        if (statusId != statusView.Id)
         {
-            var status = await _service.ChangeStatus(statusView);
-            
-            return Ok(status);
+            return BadRequest();
         }
 
-        return null;
+        var status = await _service.ChangeStatus(statusId, statusView);
+        
+        return Ok(status);
     }
 }

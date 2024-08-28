@@ -2,7 +2,7 @@ using Vacations.Application.Models.Views;
 
 namespace Vacations.Application.Interfaces.Services;
 
-public interface IStatusService
+public interface IPlanningProcessService
 {
-    Task<StatusView> ChangeStatus(int id, StatusView status);
+    Task<PlanningProcessView> GetActive();
 }

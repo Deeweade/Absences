@@ -1,8 +1,8 @@
 using AutoMapper;
-using Vacations.Application.Models.Filters;
+using Vacations.Application.Models.Queries;
 using Vacations.Application.Models.Views;
 using Vacations.Domain.Dtos.Entities;
-using Vacations.Domain.Models.Filters;
+using Vacations.Domain.Dtos.Queries;
 
 namespace Vacations.Application.Models.Mappings;
 
@@ -13,6 +13,7 @@ public class ApplicationMappingProfile : Profile
         CreateAvailableDaysMappings();
         CreateCommentMappings();
         CreateEntityStatusMappings();
+        CreatePlanningProcessMappings();
         CreatePlanningStatusMappings();
         CreateStatusMappings();
         CreateVacationMappings();
@@ -36,6 +37,12 @@ public class ApplicationMappingProfile : Profile
     {
         CreateMap<EntityStatusView, EntityStatusDto>();
         CreateMap<EntityStatusDto, EntityStatusView>();
+    }
+
+    private void CreatePlanningProcessMappings()
+    {
+        CreateMap<PlanningProcessView, PlanningProcessDto>();
+        CreateMap<PlanningProcessDto, PlanningProcessView>();
     }
 
     private void CreatePlanningStatusMappings()
@@ -63,7 +70,7 @@ public class ApplicationMappingProfile : Profile
 
     private void CreateVacationFilterMappings()
     {
-        CreateMap<VacationFilterView, VacationFilterDto>();
-        CreateMap<VacationFilterDto, VacationFilterView>();
+        CreateMap<VacationQueryView, VacationQueryDto>();
+        CreateMap<VacationQueryDto, VacationQueryView>();
     }
 }

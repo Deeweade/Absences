@@ -2,7 +2,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Vacations.Domain.Dtos.Entities;
-using Vacations.Domain.Dtos.Filters;
+using Vacations.Domain.Dtos.Queries;
 using Vacations.Domain.Interfaces.Repositories;
 using Vacations.Domain.Models.Entities;
 using Vacations.Domain.Models.Enums;
@@ -31,25 +31,25 @@ public class VacationRepository : IVacationRepository
                 .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<IEnumerable<VacationDto>> GetByFilter(VacationFilterDto filter)
+    public async Task<IEnumerable<VacationDto>> GetByQuery(VacationQueryDto query)
     {
-        ArgumentNullException.ThrowIfNull(filter);
+        ArgumentNullException.ThrowIfNull(query);
 
-        var query = _vacationDbContext.Vacations
+        var vacations = _vacationsDbContext.Vacations
             .AsNoTracking()
             .ProjectTo<VacationDto>(_mapper.ConfigurationProvider);
 
-        if (filter.Years.Any() && !filter.Years.Contains(0))
+        if (query.Years.Count != 0 && !query.Years.Contains(0))
         {
-            query = query.Where(x => filter.Years.Contains(x.DateStart.Year));
+            vacations = vacations.Where(x => query.Years.Contains(x.DateStart.Year));
         }
 
-        if (filter.EntityStatuses.Any() && !filter.EntityStatuses.Contains(0))
+        if (query.EntityStatuses.Count != 0 && !query.EntityStatuses.Contains(0))
         {
-            query = query.Where(x => filter.EntityStatuses.Contains(x.EntityStatusId));
+            vacations = vacations.Where(x => query.EntityStatuses.Contains(x.EntityStatusId));
         }
 
-        var result = await query.ToListAsync();
+        var result = await vacations.ToListAsync();
 
         return result;
     } 
@@ -62,8 +62,8 @@ public class VacationRepository : IVacationRepository
 
         var vacation = _mapper.Map<Vacation>(vacationDto);
 
-        _vacationDbContext.Vacations.Add(vacation);
-        await _vacationDbContext.SaveChangesAsync();
+        _vacationsDbContext.Vacations.Add(vacation);
+        await _vacationsDbContext.SaveChangesAsync();
 
         return await GetById(vacation.Id);
     }

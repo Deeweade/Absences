@@ -1,7 +1,6 @@
 using AutoMapper;
 using Vacations.Domain.Dtos.Entities;
 using Vacations.Domain.Models.Entities;
-using Vacations.Domain.Models.Filters;
 
 namespace Vacations.Infrastructure.Models.Mappings;
 
@@ -12,6 +11,7 @@ public class InfrastructureMappingProfile : Profile
         CreateAvailableDaysMappings();
         CreateCommentMappings();
         CreateEntityStatusMappings();
+        CreatePlanningProcessMappings();
         CreatePlanningStatusMappings();
         CreateStatusMappings();
         CreateVacationMappings();
@@ -34,6 +34,12 @@ public class InfrastructureMappingProfile : Profile
     {
         CreateMap<EntityStatus, EntityStatusDto>();
         CreateMap<EntityStatusDto, EntityStatus>();
+    }
+
+    public void CreatePlanningProcessMappings()
+    {
+        CreateMap<PlanningProcess, PlanningProcessDto>();
+        CreateMap<PlanningProcessDto, PlanningProcess>();
     }
 
     private void CreatePlanningStatusMappings()

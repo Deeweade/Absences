@@ -14,9 +14,13 @@ public class UnitOfWork : IUnitOfWork
         _vacationsDbContext = vacationsDbContext;
 
         VacationRepository = new VacationRepository(_vacationsDbContext, mapper);
+        PlanningProcessRepository = new PlanningProcessRepository(_vacationsDbContext, mapper);
+        StatusRepository = new StatusRepository(_vacationsDbContext, mapper);
     }
 
     public IVacationRepository VacationRepository { get; }
+    public IPlanningProcessRepository PlanningProcessRepository { get; }
+    public IStatusRepository StatusRepository { get; }
 
     public async Task<int> SaveChangesAsync()
     {

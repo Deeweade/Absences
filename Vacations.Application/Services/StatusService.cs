@@ -17,13 +17,26 @@ public class StatusService : IStatusService
         _mapper = mapper;
     }
 
-    public async Task<StatusView> ChangeStatus(StatusView status)
+    public async Task<StatusView> ChangeStatus(int id, StatusView status)
     {
         ArgumentNullException.ThrowIfNull(status);
 
         var statusDto = _mapper.Map<StatusDto>(status);
+
+        var currentStatus = await _unitOfWork.StatusRepository.GetActiveById(id);
+
+        await _unitOfWork.StatusRepository.DeactivateStatus(currentStatus);
+        await _unitOfWork.SaveChangesAsync();
+
+        currentStatus.PlanningStatusId = statusDto.PlanningStatusId;
         
-        var changedStatus = await _unitOfWork.StatusRepository.ChangeStatus(statusDto);
+        var changedStatus = await _unitOfWork.StatusRepository.Create(currentStatus);
+        await _unitOfWork.SaveChangesAsync();
+
+        if (currentStatus.EmployeeTabNumber != changedStatus.EmployeeTabNumber && currentStatus.Year != changedStatus.Year)
+        {
+            return _mapper.Map<StatusView>(currentStatus);
+        }
 
         return _mapper.Map<StatusView>(changedStatus);
     }
