@@ -1,9 +1,9 @@
 using AutoMapper;
 using Vacations.Application.Interfaces.Services;
-using Vacations.Application.Models.Filters;
+using Vacations.Application.Models.Queries;
 using Vacations.Application.Models.Views;
 using Vacations.Domain.Dtos.Entities;
-using Vacations.Domain.Dtos.Filters;
+using Vacations.Domain.Dtos.Queries;
 using Vacations.Domain.Interfaces.Repositories;
 
 namespace Vacations.Application.Services;
@@ -19,13 +19,13 @@ public class VacationService : IVacationService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<VacationView>> GetByFilter(VacationFilterView filter)
+    public async Task<IEnumerable<VacationView>> GetByQuery(VacationQueryView query)
     {
-        ArgumentNullException.ThrowIfNull(filter);
+        ArgumentNullException.ThrowIfNull(query);
 
-        var filterDto = _mapper.Map<VacationFilterDto>(filter);
+        var queryDto = _mapper.Map<VacationQueryDto>(query);
 
-        var vacations = await _unitOfWork.VacationRepository.GetByFilter(filterDto);
+        var vacations = await _unitOfWork.VacationRepository.GetByQuery(queryDto);
 
         return _mapper.Map<IEnumerable<VacationView>>(vacations);
     }
