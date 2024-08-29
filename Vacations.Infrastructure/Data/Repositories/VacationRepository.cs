@@ -74,17 +74,10 @@ public class VacationRepository : IVacationRepository
 
         var vacation = _mapper.Map<Vacation>(vacationDto);
 
+        vacation.EntityStatusId = (int)EntityStatuses.ActiveDraft;
+
         var newVacation = _vacationsDbContext.Vacations.Update(vacation);
 
         return _mapper.Map<VacationDto>(newVacation);
-    }
-
-    public void UpdateEntityStatus(VacationDto newVacation)
-    {
-        ArgumentNullException.ThrowIfNull(newVacation);
-
-        newVacation.EntityStatusId = (int)EntityStatuses.ActiveDraft;
-
-        _vacationsDbContext.Vacations.Update(_mapper.Map<Vacation>(newVacation));
     }
 }

@@ -58,7 +58,6 @@ public class VacationService : IVacationService
 
         if (vacationDto.EntityStatusId == vacation.EntityStatusId)
         {
-            _unitOfWork.VacationRepository.UpdateEntityStatus(newVacation);
             _unitOfWork.StatusRepository.UpdateStatus(lastStatus);
         }
 

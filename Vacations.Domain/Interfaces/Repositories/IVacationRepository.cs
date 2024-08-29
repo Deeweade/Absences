@@ -9,5 +9,4 @@ public interface IVacationRepository
     Task<IEnumerable<VacationDto>> GetByQuery(VacationQueryDto query);
     Task<VacationDto> Create(VacationDto vacationDto);
     VacationDto Update(VacationDto vacationDto);
-    void UpdateEntityStatus(VacationDto newVacation);
 }
