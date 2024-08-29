@@ -81,6 +81,7 @@ builder.Services.AddDbContext<VacationsDbContext>(options =>
 //services
 builder.Services.AddScoped<IVacationService, VacationService>();
 builder.Services.AddScoped<IPlanningProcessService, PlanningProcessService>();
+builder.Services.AddScoped<IStatusService, StatusService>();
 
 //data
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
