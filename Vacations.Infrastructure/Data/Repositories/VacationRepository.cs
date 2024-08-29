@@ -68,17 +68,30 @@ public class VacationRepository : IVacationRepository
         return await GetById(vacation.Id);
     }
 
-    public async Task<VacationDto> Update(VacationDto vacationDto)
+    public void Update(VacationDto vacationDto)
     {
         ArgumentNullException.ThrowIfNull(vacationDto);
 
-        var vacation = _mapper.Map<Vacation>(vacationDto);
+        Vacation vacation;
 
-        vacation.EntityStatusId = (int)EntityStatuses.ActiveDraft;
+        if (vacationDto.EntityStatusId == (int)EntityStatuses.CompletedAndApproved)
+        {
+            vacation = new Vacation
+            {
+                DateStart = vacationDto.DateStart,
+                DateEnd = vacationDto.DateEnd,
+                EntityStatusId = (int)EntityStatuses.ActiveDraft
+            };
+        }
+        else 
+        {
+            vacation = new Vacation
+            {
+                DateStart = vacationDto.DateStart,
+                DateEnd = vacationDto.DateEnd,
+            };
+        }
 
         _vacationsDbContext.Vacations.Update(vacation);
-        await _vacationsDbContext.SaveChangesAsync();
-
-        return await GetById(vacation.Id);
     }
 }

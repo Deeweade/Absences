@@ -5,6 +5,8 @@ using Vacations.Application.Models.Views;
 using Vacations.Domain.Dtos.Entities;
 using Vacations.Domain.Dtos.Queries;
 using Vacations.Domain.Interfaces.Repositories;
+using Vacations.Domain.Models.Entities;
+using Vacations.Domain.Models.Enums;
 
 namespace Vacations.Application.Services;
 
@@ -47,7 +49,19 @@ public class VacationService : IVacationService
 
         var vacationDto = _mapper.Map<VacationDto>(vacationView);
 
-        var vacation = await _unitOfWork.VacationRepository.Update(vacationDto);
+        var lastStatus = await _unitOfWork.StatusRepository.GetLastStatus(vacationDto.EmployeeTabNumber);
+
+        if (vacationDto.EntityStatusId == (int)EntityStatuses.CompletedAndApproved)
+        {
+            vacationDto.EntityStatusId = (int)EntityStatuses.ActiveDraft;
+
+            _unitOfWork.VacationRepository.Update(vacationDto);
+            await _unitOfWork.SaveChangesAsync();
+
+            _unitOfWork.StatusRepository.UpdateStatus(lastStatus);
+        }
+
+        var vacation = await _unitOfWork.VacationRepository.GetById(vacationDto.Id);
 
         return _mapper.Map<VacationView>(vacation);
     }
