@@ -49,19 +49,18 @@ public class VacationService : IVacationService
 
         var vacationDto = _mapper.Map<VacationDto>(vacationView);
 
+        var vacation = await _unitOfWork.VacationRepository.GetById(vacationDto.Id);
+
         var lastStatus = await _unitOfWork.StatusRepository.GetLastStatus(vacationDto.EmployeeTabNumber);
+        
+        var newVacation = _unitOfWork.VacationRepository.Update(vacationDto);
+        await _unitOfWork.SaveChangesAsync();
 
-        if (vacationDto.EntityStatusId == (int)EntityStatuses.CompletedAndApproved)
+        if (vacationDto.EntityStatusId == vacation.EntityStatusId)
         {
-            vacationDto.EntityStatusId = (int)EntityStatuses.ActiveDraft;
-
-            _unitOfWork.VacationRepository.Update(vacationDto);
-            await _unitOfWork.SaveChangesAsync();
-
+            _unitOfWork.VacationRepository.UpdateEntityStatus(newVacation);
             _unitOfWork.StatusRepository.UpdateStatus(lastStatus);
         }
-
-        var vacation = await _unitOfWork.VacationRepository.GetById(vacationDto.Id);
 
         return _mapper.Map<VacationView>(vacation);
     }
