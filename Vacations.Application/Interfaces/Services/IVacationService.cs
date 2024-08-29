@@ -5,6 +5,7 @@ namespace Vacations.Application.Interfaces.Services;
 
 public interface IVacationService
 {
-    Task<VacationView> Create(VacationView vacationView);
     Task<IEnumerable<VacationView>> GetByQuery(VacationQueryView query);
+    Task<VacationView> Create(VacationView vacationView);
+    Task<VacationView> Update(VacationView vacationView);
 }

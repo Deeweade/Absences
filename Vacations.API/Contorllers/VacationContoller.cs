@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vacations.Application.Interfaces.Services;
-using Vacations.Application.Models.Filters;
+using Vacations.Application.Models.Queries;
 using Vacations.Application.Models.Views;
 
 namespace Vacations.API.Contorllers;
@@ -20,11 +20,11 @@ public class VacationContoller : ControllerBase
     }
 
     [HttpPost("filter")]
-    public async Task<IActionResult> GetByFilter(VacationFilterView filter)
+    public async Task<IActionResult> GetByFilter(VacationQueryView query)
     {
-        ArgumentNullException.ThrowIfNull(filter);
+        ArgumentNullException.ThrowIfNull(query);
 
-        var vacations = await _service.GetByFilter(filter);
+        var vacations = await _service.GetByQuery(query);
 
         return Ok(vacations);
     }
@@ -35,6 +35,21 @@ public class VacationContoller : ControllerBase
         ArgumentNullException.ThrowIfNull(vacationView);
 
         var vacation = await _service.Create(vacationView);
+
+        return Ok(vacation);
+    }
+    
+    [HttpPost("update/{vacationId}")]
+    public async Task<IActionResult> Update(int vacationId, VacationView vacationView)
+    {
+        ArgumentNullException.ThrowIfNull(vacationView);
+        
+        if (vacationId != vacationView.Id)
+        {
+            return BadRequest();
+        }
+
+        var vacation = await _service.Update(vacationView);
 
         return Ok(vacation);
     }

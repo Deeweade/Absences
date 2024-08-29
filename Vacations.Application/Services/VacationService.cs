@@ -40,4 +40,15 @@ public class VacationService : IVacationService
 
         return _mapper.Map<VacationView>(vacation);
     }
+
+    public async Task<VacationView> Update(VacationView vacationView)
+    {
+        ArgumentNullException.ThrowIfNull(vacationView);
+
+        var vacationDto = _mapper.Map<VacationDto>(vacationView);
+
+        var vacation = await _unitOfWork.VacationRepository.Update(vacationDto);
+
+        return _mapper.Map<VacationView>(vacation);
+    }
 }

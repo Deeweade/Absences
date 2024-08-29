@@ -1,8 +1,8 @@
 using AutoMapper;
-using Vacations.Application.Models.Filters;
+using Vacations.Application.Models.Queries;
 using Vacations.Application.Models.Views;
 using Vacations.Domain.Dtos.Entities;
-using Vacations.Domain.Dtos.Filters;
+using Vacations.Domain.Dtos.Queries;
 
 namespace Vacations.Application.Models.Mappings;
 
@@ -70,7 +70,7 @@ public class ApplicationMappingProfile : Profile
 
     private void CreateVacationFilterMappings()
     {
-        CreateMap<VacationFilterView, VacationFilterDto>();
-        CreateMap<VacationFilterDto, VacationFilterView>();
+        CreateMap<VacationQueryView, VacationQueryDto>();
+        CreateMap<VacationQueryDto, VacationQueryView>();
     }
 }
