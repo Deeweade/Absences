@@ -18,17 +18,17 @@ public class StatusController : ControllerBase
         _service = service;
     }
 
-    [HttpPost("changeStatus{statusId}")]
+    [HttpPost("changeStatus/{statusId}")]
     public async Task<IActionResult> ChangeStatus(int statusId, [FromBody] StatusView statusView)
     {
-        //statusId = (int)HttpContext.Request.RouteValues["statusId"];
+        //var statusId = (int)HttpContext.Request.RouteValues[$"{statusView.Id}"];
 
         if (statusId != statusView.Id)
         {
             return BadRequest();
         }
 
-        var status = await _service.ChangeStatus(statusId, statusView);
+        var status = await _service.ChangeStatus(statusView);
         
         return Ok(status);
     }
