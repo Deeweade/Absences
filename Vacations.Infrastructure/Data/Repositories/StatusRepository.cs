@@ -63,10 +63,21 @@ public class StatusRepository : IStatusRepository
         _vacationsDbContext.Statuses.Update(newStatus);
     }
 
-    public void Update(StatusDto status)
+    public StatusDto Update(StatusDto status)
     {
         var entity = _mapper.Map<Status>(status);
 
-        _vacationsDbContext.Statuses.Update(entity);
+        var newStatus = _vacationsDbContext.Statuses.Update(entity);
+
+        return _mapper.Map<StatusDto>(newStatus);
+    }
+
+    public StatusDto CloseStatus(StatusDto status)
+    {
+        status.IsActive = false;
+
+        var newStatus = Update(status);
+
+        return newStatus;
     }
 }

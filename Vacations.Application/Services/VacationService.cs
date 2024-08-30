@@ -5,7 +5,6 @@ using Vacations.Application.Models.Views;
 using Vacations.Domain.Dtos.Entities;
 using Vacations.Domain.Dtos.Queries;
 using Vacations.Domain.Interfaces.Repositories;
-using Vacations.Domain.Models.Entities;
 using Vacations.Domain.Models.Enums;
 
 namespace Vacations.Application.Services;
@@ -43,7 +42,7 @@ public class VacationService : IVacationService
         return _mapper.Map<VacationView>(vacation);
     }
 
-    public async Task<VacationView> Update(VacationView vacationView, int planningStatusId = (int)PlanningStatuses.Planning)
+    public async Task<VacationView> Update(VacationView vacationView)
     {
         ArgumentNullException.ThrowIfNull(vacationView);
 
@@ -54,16 +53,17 @@ public class VacationService : IVacationService
         var lastStatus = await _unitOfWork.StatusRepository.GetLastStatus(vacationDto.EmployeeTabNumber);
         
         var newVacation = _unitOfWork.VacationRepository.Update(vacationDto);
+        await _unitOfWork.SaveChangesAsync();
 
         if (vacationDto.EntityStatusId == vacation.EntityStatusId)
         {
-            lastStatus.PlanningStatusId = planningStatusId;
-
-            _unitOfWork.StatusRepository.Update(lastStatus);
+            _unitOfWork.StatusRepository.CloseStatus(lastStatus);
             await _unitOfWork.SaveChangesAsync();
+            
+            lastStatus.PlanningStatusId = (int)PlanningStatuses.Planning;
+
+            await _unitOfWork.StatusRepository.Create(lastStatus);
         }
-        
-        await _unitOfWork.SaveChangesAsync();
 
         return _mapper.Map<VacationView>(newVacation);
     }
