@@ -39,8 +39,8 @@ public class VacationContoller : ControllerBase
         return Ok(vacation);
     }
     
-    [HttpPost("update/{vacationId}/{planningStatusId}")]
-    public async Task<IActionResult> Update(int vacationId, VacationView vacationView, int planningStatusId)
+    [HttpPost("update/{vacationId}")]
+    public async Task<IActionResult> Update(int vacationId, VacationView vacationView)
     {
         ArgumentNullException.ThrowIfNull(vacationView);
         
@@ -49,7 +49,7 @@ public class VacationContoller : ControllerBase
             return BadRequest();
         }
 
-        var vacation = await _service.Update(vacationView, planningStatusId);
+        var vacation = await _service.Update(vacationView);
 
         return Ok(vacation);
     }

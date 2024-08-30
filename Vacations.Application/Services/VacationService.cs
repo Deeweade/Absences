@@ -43,7 +43,7 @@ public class VacationService : IVacationService
         return _mapper.Map<VacationView>(vacation);
     }
 
-    public async Task<VacationView> Update(VacationView vacationView, int planningStatusId)
+    public async Task<VacationView> Update(VacationView vacationView, int planningStatusId = (int)PlanningStatuses.Planning)
     {
         ArgumentNullException.ThrowIfNull(vacationView);
 
@@ -57,7 +57,7 @@ public class VacationService : IVacationService
 
         if (vacationDto.EntityStatusId == vacation.EntityStatusId)
         {
-            lastStatus.PlanningStatusId = (int)PlanningStatuses.Planning;
+            lastStatus.PlanningStatusId = planningStatusId;
 
             _unitOfWork.StatusRepository.Update(lastStatus);
             await _unitOfWork.SaveChangesAsync();
