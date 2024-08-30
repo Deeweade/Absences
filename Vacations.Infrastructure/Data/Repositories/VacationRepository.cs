@@ -49,6 +49,11 @@ public class VacationRepository : IVacationRepository
             vacations = vacations.Where(x => query.EntityStatuses.Contains(x.EntityStatusId));
         }
 
+        if (query.EmployeeTabNumber.Count != 0 && !query.EmployeeTabNumber.Contains(0))
+        {
+            vacations = vacations.Where(x => query.EmployeeTabNumber.Contains(x.EmployeeTabNumber));
+        }
+
         var result = await vacations.ToListAsync();
 
         return result;
