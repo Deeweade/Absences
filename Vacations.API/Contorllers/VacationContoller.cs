@@ -10,11 +10,11 @@ namespace Vacations.API.Contorllers;
 [Route("api/[controller]")]
 [Authorize(Policy = "RequireAuthenticatedUser")]
 
-public class VacationContoller : ControllerBase
+public class VacationController : ControllerBase
 {
     private readonly IVacationService _service;
 
-    public VacationContoller(IVacationService service)
+    public VacationController(IVacationService service)
     {
         _service = service;
     }
