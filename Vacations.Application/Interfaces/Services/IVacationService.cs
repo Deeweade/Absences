@@ -7,5 +7,5 @@ public interface IVacationService
 {
     Task<IEnumerable<VacationView>> GetByQuery(VacationQueryView query);
     Task<VacationView> Create(VacationView vacationView);
-    Task<VacationView> Update(VacationView vacationView);
+    Task<VacationView> Update(VacationView vacationView, int planningStatusId);
 }

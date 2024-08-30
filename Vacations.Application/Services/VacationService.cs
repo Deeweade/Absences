@@ -43,7 +43,7 @@ public class VacationService : IVacationService
         return _mapper.Map<VacationView>(vacation);
     }
 
-    public async Task<VacationView> Update(VacationView vacationView)
+    public async Task<VacationView> Update(VacationView vacationView, int planningStatusId)
     {
         ArgumentNullException.ThrowIfNull(vacationView);
 
@@ -54,13 +54,17 @@ public class VacationService : IVacationService
         var lastStatus = await _unitOfWork.StatusRepository.GetLastStatus(vacationDto.EmployeeTabNumber);
         
         var newVacation = _unitOfWork.VacationRepository.Update(vacationDto);
-        await _unitOfWork.SaveChangesAsync();
 
         if (vacationDto.EntityStatusId == vacation.EntityStatusId)
         {
-            _unitOfWork.StatusRepository.UpdateStatus(lastStatus);
-        }
+            lastStatus.PlanningStatusId = (int)PlanningStatuses.Planning;
 
-        return _mapper.Map<VacationView>(vacation);
+            _unitOfWork.StatusRepository.Update(lastStatus);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        
+        await _unitOfWork.SaveChangesAsync();
+
+        return _mapper.Map<VacationView>(newVacation);
     }
 }

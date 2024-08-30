@@ -58,13 +58,15 @@ public class StatusRepository : IStatusRepository
     {
         status.IsActive = false;
 
-        _vacationsDbContext.Statuses.Update(_mapper.Map<Status>(status));
+        var newStatus = _mapper.Map<Status>(status);
+
+        _vacationsDbContext.Statuses.Update(newStatus);
     }
 
-    public void ChangeStatus(StatusDto status)
+    public void Update(StatusDto status)
     {
-        status.PlanningStatusId = (int)PlanningStatuses.Planning;
+        var entity = _mapper.Map<Status>(status);
 
-        _vacationsDbContext.Statuses.Update(_mapper.Map<Status>(status));
+        _vacationsDbContext.Statuses.Update(entity);
     }
 }

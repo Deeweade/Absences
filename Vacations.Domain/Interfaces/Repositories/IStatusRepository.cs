@@ -9,5 +9,5 @@ public interface IStatusRepository
     Task<StatusDto> GetLastStatus(int employeeTabNumber);
     Task<StatusDto> Create(StatusDto status);
     void DeactivateStatus(StatusDto status);
-    void UpdateStatus(StatusDto status);
+    void Update(StatusDto status);
 }
