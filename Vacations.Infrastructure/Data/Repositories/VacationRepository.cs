@@ -67,4 +67,17 @@ public class VacationRepository : IVacationRepository
 
         return await GetById(vacation.Id);
     }
+
+    public VacationDto Update(VacationDto vacationDto)
+    {
+        ArgumentNullException.ThrowIfNull(vacationDto);
+
+        var vacation = _mapper.Map<Vacation>(vacationDto);
+
+        vacation.EntityStatusId = (int)EntityStatuses.ActiveDraft;
+
+        var newVacation = _vacationsDbContext.Vacations.Update(vacation);
+
+        return _mapper.Map<VacationDto>(newVacation);
+    }
 }

@@ -30,7 +30,7 @@ public class StatusService : IStatusService
             throw new InvalidOperationException();
         }   
             
-        await _unitOfWork.StatusRepository.DeactivateStatus(currentStatus);
+        _unitOfWork.StatusRepository.DeactivateStatus(currentStatus);
         await _unitOfWork.SaveChangesAsync();
 
         var changedStatus = await _unitOfWork.StatusRepository.Create(statusDto);

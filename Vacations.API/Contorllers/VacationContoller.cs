@@ -10,11 +10,11 @@ namespace Vacations.API.Contorllers;
 [Route("api/[controller]")]
 [Authorize(Policy = "RequireAuthenticatedUser")]
 
-public class VacationContoller : ControllerBase
+public class VacationController : ControllerBase
 {
     private readonly IVacationService _service;
 
-    public VacationContoller(IVacationService service)
+    public VacationController(IVacationService service)
     {
         _service = service;
     }
@@ -35,6 +35,21 @@ public class VacationContoller : ControllerBase
         ArgumentNullException.ThrowIfNull(vacationView);
 
         var vacation = await _service.Create(vacationView);
+
+        return Ok(vacation);
+    }
+    
+    [HttpPost("update/{vacationId}")]
+    public async Task<IActionResult> Update(int vacationId, VacationView vacationView)
+    {
+        ArgumentNullException.ThrowIfNull(vacationView);
+        
+        if (vacationId != vacationView.Id)
+        {
+            return BadRequest();
+        }
+
+        var vacation = await _service.Update(vacationView);
 
         return Ok(vacation);
     }
