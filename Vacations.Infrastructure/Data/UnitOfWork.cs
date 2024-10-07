@@ -7,20 +7,20 @@ namespace Vacations.Infrastructure.Data;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly VacationsDbContext _vacationsDbContext;
+    private readonly AbsenceDbContext _vacationsDbContext;
 
-    public UnitOfWork(VacationsDbContext vacationsDbContext, IMapper mapper)
+    public UnitOfWork(AbsenceDbContext vacationsDbContext, IMapper mapper)
     {
         _vacationsDbContext = vacationsDbContext;
 
-        VacationRepository = new VacationRepository(_vacationsDbContext, mapper);
+        AbsencesRepository = new AbsenceRepository(_vacationsDbContext, mapper);
         PlanningProcessRepository = new PlanningProcessRepository(_vacationsDbContext, mapper);
-        StatusRepository = new StatusRepository(_vacationsDbContext, mapper);
+        EmployeeStatusesRepository = new EmployeeStatusesRepository(_vacationsDbContext, mapper);
     }
 
-    public IVacationRepository VacationRepository { get; }
+    public IAbsenceRepository AbsencesRepository { get; }
     public IPlanningProcessRepository PlanningProcessRepository { get; }
-    public IStatusRepository StatusRepository { get; }
+    public IEmployeeStatusesRepository EmployeeStatusesRepository { get; }
 
     public async Task<int> SaveChangesAsync()
     {

@@ -1,6 +1,6 @@
 namespace Vacations.Application.Models.Views;
 
-public class PlanningProcessView : BaseEntityView
+public class PlanningProcessView : BaseView
 {
     public string Title { get; set; }
     public int Year { get; set; }

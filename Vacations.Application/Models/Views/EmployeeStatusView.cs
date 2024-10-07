@@ -1,8 +1,9 @@
 namespace Vacations.Application.Models.Views;
 
-public class CommentView : BaseView
+public class EmployeeStatusView : BaseView
 {
-    public string Text { get; set; }
     public int PId { get; set; }
+    public int Year { get; set; }
     public int StatusId { get; set; }
+    public bool IsActive { get; set; }
 }

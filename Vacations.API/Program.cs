@@ -1,18 +1,22 @@
-using System.Text.Json.Serialization;
-using Vacations.API.Middlewares;
+using Vacations.Application.Interfaces.Services;
 using Vacations.Infrastructure.Models.Mappings;
+using Vacations.Domain.Interfaces.Repositories;
+using Vacations.Infrastructure.Data.Contexts;
+using Vacations.Application.Models.Mappings;
+using Vacations.Application.Services;
+using Vacations.Infrastructure.Data;
+using Vacations.API.Middlewares;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
-using Vacations.Application.Models.Mappings;
-using Vacations.Infrastructure.Data.Contexts;
-using Vacations.Domain.Interfaces.Repositories;
-using Vacations.Infrastructure.Data;
-using Vacations.Application.Interfaces.Services;
-using Vacations.Application.Services;
+using System.Text.Json.Serialization;
 
 #region EnvironmentConfiguring
 
 var settingsPath = Path.Combine(Directory.GetCurrentDirectory(), "Settings");
+
+var builder = WebApplication.CreateBuilder();
+
+var environmentName = builder.Environment.EnvironmentName;
 
 var config = new ConfigurationBuilder()
     .SetBasePath(settingsPath)
@@ -23,21 +27,16 @@ string machineName = Environment.MachineName.ToLower();
 
 var machineNames = config.GetSection("EnvironmentMachines").Get<Dictionary<string, string>>();
 
-string environment = machineNames.FirstOrDefault(x => x.Value.ToLower() == machineName).Key ?? "Development";
-
-#endregion
-
-var builder = WebApplication.CreateBuilder(new WebApplicationOptions
-{
-    EnvironmentName = environment,
-    ContentRootPath = settingsPath
-});
+builder.Environment.EnvironmentName = machineNames.FirstOrDefault(x => x.Key.ToLower() == machineName.ToLower()).Value ?? "Development";
 
 builder.Configuration
     .SetBasePath(settingsPath)
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{environment}.json", optional: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables();
+
+
+#endregion
 
 #region AuthenticationConfiguring
 
@@ -68,10 +67,10 @@ builder.Services.AddControllers(options =>
 
 #region ContextsConfiguring
 
-string vacationsContextConnectionString = builder.Configuration.GetConnectionString("Vacations");
+string connectionString = builder.Configuration.GetConnectionString("Absence");
 
-builder.Services.AddDbContext<VacationsDbContext>(options =>
-    options.UseSqlServer(vacationsContextConnectionString, b => b.MigrationsAssembly("Vacations.API")));
+builder.Services.AddDbContext<AbsenceDbContext>(options =>
+    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Vacations.API").UseCompatibilityLevel(120)));
 
 
 #endregion
@@ -79,9 +78,9 @@ builder.Services.AddDbContext<VacationsDbContext>(options =>
 #region DependenciesInjection
 
 //services
-builder.Services.AddScoped<IVacationService, VacationService>();
+builder.Services.AddScoped<IAbsenceService, AbsenceService>();
 builder.Services.AddScoped<IPlanningProcessService, PlanningProcessService>();
-builder.Services.AddScoped<IStatusService, StatusService>();
+builder.Services.AddScoped<IEmployeeStatusesService, EmployeeStatusesService>();
 
 //data
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -92,6 +91,20 @@ builder.Services.AddAutoMapper(typeof(InfrastructureMappingProfile), typeof(Appl
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var corsPolicyName = "AllowCors";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(corsPolicyName, policy =>
+    {
+        policy.AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()
+            .SetIsOriginAllowed(_ => true);
+    });
+});
+
 
 var app = builder.Build();
 
@@ -117,6 +130,9 @@ else
 
 app.UseStaticFiles();
 app.UseRouting();
+
+app.UseCors(corsPolicyName);
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -137,7 +153,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    var dbContext = services.GetRequiredService<VacationsDbContext>();
+    var dbContext = services.GetRequiredService<AbsenceDbContext>();
     dbContext.Database.Migrate();
 }
 

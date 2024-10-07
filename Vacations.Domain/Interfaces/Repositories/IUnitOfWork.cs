@@ -2,9 +2,9 @@ namespace Vacations.Domain.Interfaces.Repositories;
 
 public interface IUnitOfWork
 {
-    IVacationRepository VacationRepository { get; }
+    IAbsenceRepository AbsencesRepository { get; }
     IPlanningProcessRepository PlanningProcessRepository { get; }
-    IStatusRepository StatusRepository { get; }
+    IEmployeeStatusesRepository EmployeeStatusesRepository { get; }
 
     Task<int> SaveChangesAsync();
 }

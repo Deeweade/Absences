@@ -1,6 +1,6 @@
-using AutoMapper;
-using Vacations.Domain.Dtos.Entities;
 using Vacations.Domain.Models.Entities;
+using Vacations.Domain.Dtos.Entities;
+using AutoMapper;
 
 namespace Vacations.Infrastructure.Models.Mappings;
 
@@ -20,8 +20,8 @@ public class InfrastructureMappingProfile : Profile
 
     private void CreateAvailableDaysMappings()
     {
-        CreateMap<AvailableDays, AvailableDaysDto>();
-        CreateMap<AvailableDaysDto, AvailableDays>();
+        CreateMap<VacationDays, VacationDaysDto>();
+        CreateMap<VacationDaysDto, VacationDays>();
     }
 
     private void CreateCommentMappings()
@@ -44,25 +44,25 @@ public class InfrastructureMappingProfile : Profile
 
     private void CreatePlanningStatusMappings()
     {
-        CreateMap<PlanningStatus, PlanningStatusDto>();
-        CreateMap<PlanningStatusDto, PlanningStatus>();
-    }
-
-    private void CreateStatusMappings()
-    {
         CreateMap<Status, StatusDto>();
         CreateMap<StatusDto, Status>();
     }
 
+    private void CreateStatusMappings()
+    {
+        CreateMap<EmployeeStatus, EmployeeStatusDto>();
+        CreateMap<EmployeeStatusDto, EmployeeStatus>();
+    }
+
     private void CreateVacationMappings()
     {
-        CreateMap<Vacation, VacationDto>();
-        CreateMap<VacationDto, Vacation>();
+        CreateMap<Absence, AbsenceDto>();
+        CreateMap<AbsenceDto, Absence>();
     }
 
     private void CreateVacationTypeMappings()
     {
-        CreateMap<VacationType, VacationTypeDto>();
-        CreateMap<VacationTypeDto, VacationType>();
+        CreateMap<AbsenceType, AbsenceTypeDto>();
+        CreateMap<AbsenceTypeDto, AbsenceType>();
     }
 }

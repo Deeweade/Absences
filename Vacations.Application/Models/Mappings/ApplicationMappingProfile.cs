@@ -1,8 +1,8 @@
-using AutoMapper;
 using Vacations.Application.Models.Queries;
 using Vacations.Application.Models.Views;
 using Vacations.Domain.Dtos.Entities;
 using Vacations.Domain.Dtos.Queries;
+using AutoMapper;
 
 namespace Vacations.Application.Models.Mappings;
 
@@ -23,8 +23,8 @@ public class ApplicationMappingProfile : Profile
 
     private void CreateAvailableDaysMappings()
     {
-        CreateMap<AvailableDaysView, AvailableDaysDto>();
-        CreateMap<AvailableDaysDto, AvailableDaysView>();
+        CreateMap<VacationDaysView, VacationDaysDto>();
+        CreateMap<VacationDaysDto, VacationDaysView>();
     }
 
     private void CreateCommentMappings()
@@ -47,30 +47,30 @@ public class ApplicationMappingProfile : Profile
 
     private void CreatePlanningStatusMappings()
     {
-        CreateMap<PlanningStatusView, PlanningStatusDto>();
-        CreateMap<PlanningStatusDto, PlanningStatusView>();
-    }
-
-    private void CreateStatusMappings()
-    {
         CreateMap<StatusView, StatusDto>();
         CreateMap<StatusDto, StatusView>();
     }
 
+    private void CreateStatusMappings()
+    {
+        CreateMap<EmployeeStatusView, StatusDto>();
+        CreateMap<StatusDto, EmployeeStatusView>();
+    }
+
     private void CreateVacationMappings()
     {
-        CreateMap<VacationView, VacationDto>();
-        CreateMap<VacationDto, VacationView>();
+        CreateMap<AbsenceView, AbsenceDto>();
+        CreateMap<AbsenceDto, AbsenceView>();
     }
     private void CreateVacationTypeMappings()
     {
-        CreateMap<VacationTypeView, VacationTypeDto>();
-        CreateMap<VacationTypeDto, VacationTypeView>();
+        CreateMap<AbsenceTypeView, AbsenceTypeDto>();
+        CreateMap<AbsenceTypeDto, AbsenceTypeView>();
     }
 
     private void CreateVacationFilterMappings()
     {
-        CreateMap<VacationQueryView, VacationQueryDto>();
-        CreateMap<VacationQueryDto, VacationQueryView>();
+        CreateMap<AbsenceQueryView, AbsenceQueryDto>();
+        CreateMap<AbsenceQueryDto, AbsenceQueryView>();
     }
 }

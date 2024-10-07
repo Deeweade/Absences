@@ -9,10 +9,10 @@ namespace Vacations.Infrastructure.Data.Repositories;
 
 public class PlanningProcessRepository : IPlanningProcessRepository
 {
-    private readonly VacationsDbContext _vacationsDbContext;
+    private readonly AbsenceDbContext _vacationsDbContext;
     private readonly IMapper _mapper;
 
-    public PlanningProcessRepository(VacationsDbContext vacationsDbContext, IMapper mapper)
+    public PlanningProcessRepository(AbsenceDbContext vacationsDbContext, IMapper mapper)
     {
         _vacationsDbContext = vacationsDbContext;
         _mapper = mapper;

@@ -1,6 +1,6 @@
 namespace Vacations.Domain.Dtos.Entities;
 
-public class PlanningProcessDto : BaseEntityDto
+public class PlanningProcessDto : BaseDto
 {
     public string Title { get; set; }
     public int Year { get; set; }
