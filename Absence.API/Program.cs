@@ -70,7 +70,7 @@ builder.Services.AddControllers(options =>
 string connectionString = builder.Configuration.GetConnectionString("Absence");
 
 builder.Services.AddDbContext<AbsenceDbContext>(options =>
-    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Absence.API").UseCompatibilityLevel(120)));
+    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Absence.API")));
 
 
 #endregion
