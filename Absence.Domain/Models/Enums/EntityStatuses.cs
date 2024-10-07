@@ -3,8 +3,8 @@ namespace Vacations.Domain.Models.Enums;
 public enum EntityStatuses
 {
     ActiveDraft = 1,
-    InactiveDraft = 2,
+    Approval = 2,
     CompletedAndApproved = 3,
-    Deleted = 4,
-    DeletedAndApproved = 5
+    Rejected = 4,
+    Cancelled = 5
 }
