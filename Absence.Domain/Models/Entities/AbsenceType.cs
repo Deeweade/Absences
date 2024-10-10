@@ -6,4 +6,5 @@ public class AbsenceType : BaseEntity
 
     // VacationType -> Vacation
     public virtual ICollection<Absence> Absences { get; set; }
+    public virtual ICollection<VacationDays> VacationDays { get; set; }
 }

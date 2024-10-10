@@ -13,5 +13,5 @@ public class Absence : BaseEntity
     
     // Vacation -> EntityStatus
     public int EntityStatusId { get; set; }
-    public virtual EntityStatus EntityStatus { get; set; }
+    public virtual AbsenceStatus AbsenceStatus { get; set; }
 }

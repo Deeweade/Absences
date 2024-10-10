@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vacations.Infrastructure.Data.Contexts;
 
@@ -11,9 +12,11 @@ using Vacations.Infrastructure.Data.Contexts;
 namespace Vacations.API.Migrations
 {
     [DbContext(typeof(AbsenceDbContext))]
-    partial class AbsenceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241009133155_LinkedDaysAndAbsenceType")]
+    partial class LinkedDaysAndAbsenceType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,9 +32,6 @@ namespace Vacations.API.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AbsenceStatusId")
-                        .HasColumnType("int");
 
                     b.Property<int>("AbsenceTypeId")
                         .HasColumnType("int");
@@ -53,27 +53,11 @@ namespace Vacations.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AbsenceStatusId");
-
                     b.HasIndex("AbsenceTypeId");
 
+                    b.HasIndex("EntityStatusId");
+
                     b.ToTable("Absences");
-                });
-
-            modelBuilder.Entity("Vacations.Domain.Models.Entities.AbsenceStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EntityStatuses");
                 });
 
             modelBuilder.Entity("Vacations.Domain.Models.Entities.AbsenceType", b =>
@@ -124,6 +108,9 @@ namespace Vacations.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<int>("PId")
                         .HasColumnType("int");
 
@@ -138,6 +125,22 @@ namespace Vacations.API.Migrations
                     b.HasIndex("StatusId");
 
                     b.ToTable("EmployeeStatuses");
+                });
+
+            modelBuilder.Entity("Vacations.Domain.Models.Entities.EntityStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EntityStatuses");
                 });
 
             modelBuilder.Entity("Vacations.Domain.Models.Entities.PlanningProcess", b =>
@@ -232,19 +235,21 @@ namespace Vacations.API.Migrations
 
             modelBuilder.Entity("Vacations.Domain.Models.Entities.Absence", b =>
                 {
-                    b.HasOne("Vacations.Domain.Models.Entities.AbsenceStatus", "AbsenceStatus")
-                        .WithMany("Absences")
-                        .HasForeignKey("AbsenceStatusId");
-
                     b.HasOne("Vacations.Domain.Models.Entities.AbsenceType", "AbsenceType")
                         .WithMany("Absences")
                         .HasForeignKey("AbsenceTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AbsenceStatus");
+                    b.HasOne("Vacations.Domain.Models.Entities.EntityStatus", "EntityStatus")
+                        .WithMany("Absences")
+                        .HasForeignKey("EntityStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AbsenceType");
+
+                    b.Navigation("EntityStatus");
                 });
 
             modelBuilder.Entity("Vacations.Domain.Models.Entities.Comment", b =>
@@ -280,11 +285,6 @@ namespace Vacations.API.Migrations
                     b.Navigation("AbsenceType");
                 });
 
-            modelBuilder.Entity("Vacations.Domain.Models.Entities.AbsenceStatus", b =>
-                {
-                    b.Navigation("Absences");
-                });
-
             modelBuilder.Entity("Vacations.Domain.Models.Entities.AbsenceType", b =>
                 {
                     b.Navigation("Absences");
@@ -295,6 +295,11 @@ namespace Vacations.API.Migrations
             modelBuilder.Entity("Vacations.Domain.Models.Entities.EmployeeStatus", b =>
                 {
                     b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("Vacations.Domain.Models.Entities.EntityStatus", b =>
+                {
+                    b.Navigation("Absences");
                 });
 
             modelBuilder.Entity("Vacations.Domain.Models.Entities.Status", b =>

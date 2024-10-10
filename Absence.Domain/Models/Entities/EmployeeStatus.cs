@@ -4,7 +4,6 @@ public class EmployeeStatus : BaseEntity
 {
     public int PId { get; set; }
     public int Year { get; set; }
-    public bool IsActive { get; set; }
  
     // Status -> PlanningStatus
     public int StatusId { get; set; }

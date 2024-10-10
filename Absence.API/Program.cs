@@ -9,6 +9,8 @@ using Vacations.API.Middlewares;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using Absence.Application.Interfaces.Services;
+using Absence.Application.Services.NotificationService;
 
 #region EnvironmentConfiguring
 
@@ -78,9 +80,10 @@ builder.Services.AddDbContext<AbsenceDbContext>(options =>
 #region DependenciesInjection
 
 //services
-builder.Services.AddScoped<IAbsenceService, AbsenceService>();
-builder.Services.AddScoped<IPlanningProcessService, PlanningProcessService>();
+builder.Services.AddScoped<INotificationSenderFacade, NotificationSenderFacade>();
 builder.Services.AddScoped<IEmployeeStatusesService, EmployeeStatusesService>();
+builder.Services.AddScoped<IPlanningProcessService, PlanningProcessService>();
+builder.Services.AddScoped<IAbsenceService, AbsenceService>();
 
 //data
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

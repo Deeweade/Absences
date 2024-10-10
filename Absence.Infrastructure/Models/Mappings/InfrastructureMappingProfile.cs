@@ -10,7 +10,7 @@ public class InfrastructureMappingProfile : Profile
     {
         CreateMap<PlanningProcess, PlanningProcessDto>().ReverseMap();
         CreateMap<EmployeeStatus, EmployeeStatusDto>().ReverseMap();
-        CreateMap<EntityStatus, EntityStatusDto>().ReverseMap();
+        CreateMap<AbsenceStatus, AbsenceStatusDto>().ReverseMap();
         CreateMap<VacationDays, VacationDaysDto>().ReverseMap();
         CreateMap<AbsenceType, AbsenceTypeDto>().ReverseMap();
         CreateMap<Comment, CommentDto>().ReverseMap();

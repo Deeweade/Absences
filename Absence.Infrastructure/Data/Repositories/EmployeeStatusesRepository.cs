@@ -24,18 +24,18 @@ public class EmployeeStatusesRepository : IEmployeeStatusesRepository
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         return await _context.EmployeeStatuses
-                .AsNoTracking()
-                .ProjectTo<EmployeeStatusDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            .AsNoTracking()
+            .ProjectTo<EmployeeStatusDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<EmployeeStatusDto> GetLastStatus(int pId)
     {
         return await _context.EmployeeStatuses
-                .AsNoTracking()
-                .ProjectTo<EmployeeStatusDto>(_mapper.ConfigurationProvider)
-                .Where(x => x.PId == pId)
-                .LastOrDefaultAsync();
+            .AsNoTracking()
+            .ProjectTo<EmployeeStatusDto>(_mapper.ConfigurationProvider)
+            .Where(x => x.PId == pId)
+            .LastOrDefaultAsync();
     }
 
     public async Task<EmployeeStatusDto> Create(EmployeeStatusDto status)
@@ -43,8 +43,6 @@ public class EmployeeStatusesRepository : IEmployeeStatusesRepository
         ArgumentNullException.ThrowIfNull(status);
 
         var newStatus = _mapper.Map<EmployeeStatus>(status);
-
-        newStatus.IsActive = true;
 
         _context.EmployeeStatuses.Add(newStatus);
         await _context.SaveChangesAsync();
@@ -54,8 +52,6 @@ public class EmployeeStatusesRepository : IEmployeeStatusesRepository
 
     public void DeactivateStatus(EmployeeStatusDto status)
     {
-        status.IsActive = false;
-
         var newStatus = _mapper.Map<EmployeeStatus>(status);
 
         _context.EmployeeStatuses.Update(newStatus);
@@ -72,8 +68,6 @@ public class EmployeeStatusesRepository : IEmployeeStatusesRepository
 
     public EmployeeStatusDto CloseStatus(EmployeeStatusDto status)
     {
-        status.IsActive = false;
-
         var newStatus = Update(status);
 
         return newStatus;

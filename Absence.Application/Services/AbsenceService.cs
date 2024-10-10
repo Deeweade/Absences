@@ -3,8 +3,8 @@ using Vacations.Domain.Interfaces.Repositories;
 using Vacations.Application.Models.Queries;
 using Vacations.Application.Models.Views;
 using Vacations.Domain.Dtos.Entities;
-using Vacations.Domain.Dtos.Queries;
 using Vacations.Domain.Models.Enums;
+using Vacations.Domain.Dtos.Queries;
 using AutoMapper;
 
 namespace Vacations.Application.Services;
@@ -55,7 +55,7 @@ public class AbsenceService : IAbsenceService
         var newAbsence = _unitOfWork.AbsencesRepository.Update(dto);
         await _unitOfWork.SaveChangesAsync();
 
-        if (dto.EntityStatusId == absence.EntityStatusId)
+        if (dto.AbsenceStatusId == absence.AbsenceStatusId)
         {
             _unitOfWork.EmployeeStatusesRepository.CloseStatus(lastStatus);
             await _unitOfWork.SaveChangesAsync();

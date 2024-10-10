@@ -46,7 +46,7 @@ public class AbsenceRepository : IAbsenceRepository
 
         if (query.EntityStatuses.Count != 0 && !query.EntityStatuses.Contains(0))
         {
-            vacations = vacations.Where(x => query.EntityStatuses.Contains(x.EntityStatusId));
+            vacations = vacations.Where(x => query.EntityStatuses.Contains(x.AbsenceStatusId));
         }
 
         if (query.PIds.Count != 0 && !query.PIds.Contains(0))
@@ -63,7 +63,7 @@ public class AbsenceRepository : IAbsenceRepository
     {
         ArgumentNullException.ThrowIfNull(vacationDto);
 
-        vacationDto.EntityStatusId = (int)EntityStatuses.ActiveDraft;
+        vacationDto.AbsenceStatusId = (int)EntityStatuses.ActiveDraft;
 
         var vacation = _mapper.Map<Absence>(vacationDto);
 

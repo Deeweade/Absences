@@ -1,5 +1,6 @@
 using Vacations.Application.Interfaces.Services;
 using Vacations.Domain.Interfaces.Repositories;
+using Absence.Application.Interfaces.Services;
 using Vacations.Application.Models.Views;
 using Vacations.Domain.Dtos.Entities;
 using AutoMapper;
@@ -8,13 +9,16 @@ namespace Vacations.Application.Services;
 
 public class EmployeeStatusesService : IEmployeeStatusesService
 {
+    private readonly INotificationSenderFacade _sender;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public EmployeeStatusesService(IUnitOfWork unitOfWork, IMapper mapper)
+    public EmployeeStatusesService(IUnitOfWork unitOfWork, IMapper mapper, 
+        INotificationSenderFacade sender)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _sender = sender;
     }
 
     public async Task<EmployeeStatusView> ChangeStatus(EmployeeStatusView status)

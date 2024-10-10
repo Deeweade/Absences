@@ -1,6 +1,6 @@
 namespace Vacations.Application.Models.Views;
 
-public class EntityStatusView : BaseView
+public class AbsenceStatusView : BaseView
 {
     public string Name { get; set; }
 }

@@ -11,7 +11,7 @@ public class AbsenceDbContext(DbContextOptions<AbsenceDbContext> options) : DbCo
     public DbSet<WorkPeriods> WorkPeriods { get; set; }
     public DbSet<AbsenceType> AbsenceTypes { get; set; }
     public DbSet<VacationDays> VacationDays { get; set; }
-    public DbSet<EntityStatus> EntityStatuses { get; set; }
+    public DbSet<AbsenceStatus> EntityStatuses { get; set; }
     public DbSet<EmployeeStatus> EmployeeStatuses { get; set; }
     public DbSet<PlanningProcess> PlanningProcesses { get; set; }
 
