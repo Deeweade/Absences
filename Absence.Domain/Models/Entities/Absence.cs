@@ -8,7 +8,7 @@ public class Absence : BaseEntity
     public DateTime DateEnd { get; set; }
     
     // Vacation -> VacationType
-    public int AbsenceTypeId { get; set; }
+    public string AbsenceTypeId { get; set; }
     public virtual AbsenceType AbsenceType { get; set; }
     
     // Vacation -> EntityStatus

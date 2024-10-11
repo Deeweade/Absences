@@ -23,6 +23,10 @@ public class AbsenceDbContext(DbContextOptions<AbsenceDbContext> options) : DbCo
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<AbsenceType>()
+            .Property(e => e.Id)
+            .IsRequired();
+
         base.OnModelCreating(modelBuilder);
     }
 }

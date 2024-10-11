@@ -36,6 +36,7 @@ public class EmployeeStagesRepository : IEmployeeStagesRepository
             .ProjectTo<EmployeeStageDto>(_mapper.ConfigurationProvider)
             .Where(x => x.PId.Equals(pId)
                 && x.Stage.Year == year)
+            .OrderBy(x => x.Id)
             .LastOrDefaultAsync();
     }
 

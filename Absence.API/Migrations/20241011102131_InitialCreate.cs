@@ -28,8 +28,7 @@ namespace Absence.API.Migrations
                 name: "AbsenceTypes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -91,7 +90,7 @@ namespace Absence.API.Migrations
                     ParentAbsenceId = table.Column<int>(type: "int", nullable: false),
                     DateStart = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateEnd = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AbsenceTypeId = table.Column<int>(type: "int", nullable: false),
+                    AbsenceTypeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     AbsenceStatusId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -107,8 +106,7 @@ namespace Absence.API.Migrations
                         name: "FK_Absences_AbsenceTypes_AbsenceTypeId",
                         column: x => x.AbsenceTypeId,
                         principalTable: "AbsenceTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -120,7 +118,7 @@ namespace Absence.API.Migrations
                     PId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DaysNumber = table.Column<int>(type: "int", nullable: false),
                     IsYearPlanning = table.Column<bool>(type: "bit", nullable: false),
-                    AbsenceTypeId = table.Column<int>(type: "int", nullable: false)
+                    AbsenceTypeId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -129,8 +127,7 @@ namespace Absence.API.Migrations
                         name: "FK_VacationDays_AbsenceTypes_AbsenceTypeId",
                         column: x => x.AbsenceTypeId,
                         principalTable: "AbsenceTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(

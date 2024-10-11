@@ -33,8 +33,8 @@ namespace Absence.API.Migrations
                     b.Property<int>("AbsenceStatusId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AbsenceTypeId")
-                        .HasColumnType("int");
+                    b.Property<string>("AbsenceTypeId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateEnd")
                         .HasColumnType("datetime2");
@@ -75,11 +75,8 @@ namespace Absence.API.Migrations
 
             modelBuilder.Entity("Absence.Domain.Models.Entities.AbsenceType", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -210,8 +207,8 @@ namespace Absence.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AbsenceTypeId")
-                        .HasColumnType("int");
+                    b.Property<string>("AbsenceTypeId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("DaysNumber")
                         .HasColumnType("int");
@@ -258,9 +255,7 @@ namespace Absence.API.Migrations
 
                     b.HasOne("Absence.Domain.Models.Entities.AbsenceType", "AbsenceType")
                         .WithMany("Absences")
-                        .HasForeignKey("AbsenceTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AbsenceTypeId");
 
                     b.Navigation("AbsenceStatus");
 
@@ -304,9 +299,7 @@ namespace Absence.API.Migrations
                 {
                     b.HasOne("Absence.Domain.Models.Entities.AbsenceType", "AbsenceType")
                         .WithMany("VacationDays")
-                        .HasForeignKey("AbsenceTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AbsenceTypeId");
 
                     b.Navigation("AbsenceType");
                 });
