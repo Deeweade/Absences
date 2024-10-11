@@ -1,10 +1,10 @@
-using Vacations.Infrastructure.Data.Repositories;
-using Vacations.Domain.Interfaces.Repositories;
-using Vacations.Infrastructure.Data.Contexts;
+using Absence.Infrastructure.Data.Repositories;
+using Absence.Domain.Interfaces.Repositories;
+using Absence.Infrastructure.Data.Contexts;
 using Microsoft.EntityFrameworkCore.Storage;
 using AutoMapper;
 
-namespace Vacations.Infrastructure.Data;
+namespace Absence.Infrastructure.Data;
 
 public class UnitOfWork : IUnitOfWork
 {

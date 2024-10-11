@@ -1,9 +1,9 @@
+using Absence.Application.Interfaces.Services;
+using Absence.Domain.Interfaces.Repositories;
+using Absence.Application.Models.Views;
 using AutoMapper;
-using Vacations.Application.Interfaces.Services;
-using Vacations.Application.Models.Views;
-using Vacations.Domain.Interfaces.Repositories;
 
-namespace Vacations.Application.Services;
+namespace Absence.Application.Services;
 
 public class PlanningProcessService : IPlanningProcessService
 {

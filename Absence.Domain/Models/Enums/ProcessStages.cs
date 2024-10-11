@@ -1,4 +1,4 @@
-namespace Vacations.Domain.Models.Enums;
+namespace Absence.Domain.Models.Enums;
 
 public enum ProcessStages
 {

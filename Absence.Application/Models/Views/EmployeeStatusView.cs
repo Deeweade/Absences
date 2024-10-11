@@ -1,4 +1,4 @@
-namespace Vacations.Application.Models.Views;
+namespace Absence.Application.Models.Views;
 
 public class EmployeeStatusView : BaseView
 {

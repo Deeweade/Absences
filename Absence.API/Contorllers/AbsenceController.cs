@@ -1,11 +1,11 @@
-using Vacations.Application.Interfaces.Services;
-using Vacations.Application.Models.Queries;
-using Vacations.Application.Models.Views;
+using Absence.Application.Interfaces.Services;
+using Absence.Application.Models.Actions;
+using Absence.Application.Models.Queries;
+using Absence.Application.Models.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Absence.Application.Models.Actions;
 
-namespace Vacations.API.Contorllers;
+namespace Absence.API.Contorllers;
 
 [ApiController]
 [Route("api/[controller]")]

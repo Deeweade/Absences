@@ -1,9 +1,9 @@
-using Vacations.API.Models.Exceptions;
-using Vacations.Application.Exceptions;
+using Absence.Application.Exceptions;
+using Absence.API.Models.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
-namespace Vacations.API.Middlewares;
+namespace Absence.API.Middlewares;
 
 public class ExceptionHandlingMiddleware
 {

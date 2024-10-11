@@ -1,10 +1,10 @@
-using Vacations.Application.Models.Queries;
-using Vacations.Application.Models.Views;
-using Vacations.Domain.Dtos.Entities;
-using Vacations.Domain.Dtos.Queries;
+using Absence.Application.Models.Queries;
+using Absence.Application.Models.Views;
+using Absence.Domain.Dtos.Entities;
+using Absence.Domain.Dtos.Queries;
 using AutoMapper;
 
-namespace Vacations.Application.Models.Mappings;
+namespace Absence.Application.Models.Mappings;
 
 public class ApplicationMappingProfile : Profile
 {

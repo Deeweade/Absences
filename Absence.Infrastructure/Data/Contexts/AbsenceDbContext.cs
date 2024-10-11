@@ -1,7 +1,7 @@
 using Absence.Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Vacations.Infrastructure.Data.Contexts;
+namespace Absence.Infrastructure.Data.Contexts;
 
 public class AbsenceDbContext(DbContextOptions<AbsenceDbContext> options) : DbContext(options)
 {

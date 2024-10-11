@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Vacations.API.Middlewares;
+namespace Absence.API.Middlewares;
 
 public class DevAuthMiddleware
 {

@@ -1,8 +1,8 @@
+using Absence.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Vacations.Application.Interfaces.Services;
 
-namespace Vacations.API.Contorllers;
+namespace Absence.API.Contorllers;
 
 [ApiController]
 [Route("api/[controller]")]

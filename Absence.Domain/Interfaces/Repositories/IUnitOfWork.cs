@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Vacations.Domain.Interfaces.Repositories;
+namespace Absence.Domain.Interfaces.Repositories;
 
 public interface IUnitOfWork
 {

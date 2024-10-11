@@ -1,8 +1,8 @@
-using Vacations.Domain.Dtos.Entities;
+using Absence.Domain.Dtos.Entities;
 using Absence.Domain.Models.Entities;
 using AutoMapper;
 
-namespace Vacations.Infrastructure.Models.Mappings;
+namespace Absence.Infrastructure.Models.Mappings;
 
 public class InfrastructureMappingProfile : Profile
 {

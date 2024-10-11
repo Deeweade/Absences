@@ -1,4 +1,4 @@
-namespace Vacations.Application.Exceptions;
+namespace Absence.Application.Exceptions;
 
 public class NotFoundException : Exception
 {

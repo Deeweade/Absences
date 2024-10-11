@@ -1,4 +1,4 @@
-namespace Vacations.Domain.Dtos.Entities;
+namespace Absence.Domain.Dtos.Entities;
 
 public class AbsenceStatusDto : BaseDto
 {

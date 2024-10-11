@@ -1,6 +1,6 @@
-namespace Vacations.Domain.Dtos.Queries;
+namespace Absence.Domain.Dtos.Queries;
 
 public class StatusQueryDto
 {
-    public int? EmployeeTabNumber { get; set; }
+    public string PId { get; set; }
 }

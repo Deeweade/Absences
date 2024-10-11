@@ -1,4 +1,4 @@
-namespace Vacations.API.Models.Exceptions;
+namespace Absence.API.Models.Exceptions;
 
 public abstract class BadRequestException : Exception
 {

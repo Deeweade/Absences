@@ -1,13 +1,13 @@
-using Vacations.Domain.Interfaces.Repositories;
-using Vacations.Infrastructure.Data.Contexts;
-using Vacations.Domain.Dtos.Entities;
-using Vacations.Domain.Dtos.Queries;
-using Vacations.Domain.Models.Enums;
+using Absence.Domain.Interfaces.Repositories;
+using Absence.Infrastructure.Data.Contexts;
+using Absence.Domain.Dtos.Entities;
+using Absence.Domain.Dtos.Queries;
+using Absence.Domain.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper.QueryableExtensions;
 using AutoMapper;
 
-namespace Vacations.Infrastructure.Data.Repositories;
+namespace Absence.Infrastructure.Data.Repositories;
 
 public class AbsenceRepository : IAbsenceRepository
 {

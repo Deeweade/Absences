@@ -1,6 +1,6 @@
 using Absence.Domain.Models.Entities;
 
-namespace Vacations.Domain.Dtos.Entities;
+namespace Absence.Domain.Dtos.Entities;
 
 public class ProcessStageDto : BaseDto
 {

@@ -1,7 +1,7 @@
-using Vacations.Domain.Dtos.Entities;
-using Vacations.Domain.Dtos.Queries;
+using Absence.Domain.Dtos.Entities;
+using Absence.Domain.Dtos.Queries;
 
-namespace Vacations.Domain.Interfaces.Repositories;
+namespace Absence.Domain.Interfaces.Repositories;
 
 public interface IAbsenceRepository
 {

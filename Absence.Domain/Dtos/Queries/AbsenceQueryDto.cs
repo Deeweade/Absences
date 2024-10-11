@@ -1,4 +1,4 @@
-namespace Vacations.Domain.Dtos.Queries;
+namespace Absence.Domain.Dtos.Queries;
 
 public class AbsenceQueryDto
 {

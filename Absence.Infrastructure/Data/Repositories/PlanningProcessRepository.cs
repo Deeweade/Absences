@@ -1,11 +1,11 @@
-using Vacations.Domain.Interfaces.Repositories;
-using Vacations.Infrastructure.Data.Contexts;
-using Vacations.Domain.Dtos.Entities;
+using Absence.Domain.Interfaces.Repositories;
+using Absence.Infrastructure.Data.Contexts;
+using Absence.Domain.Dtos.Entities;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper.QueryableExtensions;
 using AutoMapper;
 
-namespace Vacations.Infrastructure.Data.Repositories;
+namespace Absence.Infrastructure.Data.Repositories;
 
 public class PlanningProcessRepository : IPlanningProcessRepository
 {

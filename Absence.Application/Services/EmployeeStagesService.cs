@@ -1,13 +1,11 @@
-using Vacations.Application.Interfaces.Services;
-using Vacations.Domain.Interfaces.Repositories;
 using Absence.Application.Interfaces.Services;
-using Vacations.Application.Models.Views;
-using Vacations.Domain.Dtos.Entities;
-using Vacations.Domain.Models.Enums;
+using Absence.Domain.Interfaces.Repositories;
+using Absence.Application.Models.Views;
+using Absence.Domain.Dtos.Entities;
 using Absence.Domain.Models.Enums;
 using AutoMapper;
 
-namespace Vacations.Application.Services;
+namespace Absence.Application.Services;
 
 public class EmployeeStagesService : IEmployeeStagesService
 {

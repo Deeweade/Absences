@@ -1,6 +1,6 @@
-using Vacations.Domain.Dtos.Entities;
+using Absence.Domain.Dtos.Entities;
 
-namespace Vacations.Domain.Interfaces.Repositories;
+namespace Absence.Domain.Interfaces.Repositories;
 
 public interface IPlanningProcessRepository
 {

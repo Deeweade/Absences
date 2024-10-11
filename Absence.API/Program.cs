@@ -1,16 +1,15 @@
-using Vacations.Application.Interfaces.Services;
-using Vacations.Infrastructure.Models.Mappings;
-using Vacations.Domain.Interfaces.Repositories;
-using Vacations.Infrastructure.Data.Contexts;
-using Vacations.Application.Models.Mappings;
-using Vacations.Application.Services;
-using Vacations.Infrastructure.Data;
-using Vacations.API.Middlewares;
+using Absence.Application.Services.NotificationService;
+using Absence.Application.Interfaces.Services;
+using Absence.Infrastructure.Models.Mappings;
+using Absence.Domain.Interfaces.Repositories;
+using Absence.Infrastructure.Data.Contexts;
+using Absence.Application.Models.Mappings;
+using Absence.Application.Services;
+using Absence.Infrastructure.Data;
+using Absence.API.Middlewares;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
-using Absence.Application.Interfaces.Services;
-using Absence.Application.Services.NotificationService;
 
 #region EnvironmentConfiguring
 

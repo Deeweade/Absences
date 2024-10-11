@@ -1,6 +1,6 @@
-namespace Vacations.Application.Models.Queries;
+namespace Absence.Application.Models.Queries;
 
 public class StatusQueryView
 {
-    public int? EmployeeTabNumber { get; set; }
+    public string EmployeeTabNumber { get; set; }
 }

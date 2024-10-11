@@ -1,6 +1,6 @@
-using Vacations.Application.Models.Views;
+using Absence.Application.Models.Views;
 
-namespace Vacations.Application.Interfaces.Services;
+namespace Absence.Application.Interfaces.Services;
 
 public interface IEmployeeStagesService
 {
