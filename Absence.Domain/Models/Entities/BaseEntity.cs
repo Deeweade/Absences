@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Vacations.Domain.Models.Entities;
+namespace Absence.Domain.Models.Entities;
 
 public abstract class BaseEntity
 {

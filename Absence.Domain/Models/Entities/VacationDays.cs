@@ -1,8 +1,8 @@
-namespace Vacations.Domain.Models.Entities;
+namespace Absence.Domain.Models.Entities;
 
 public class VacationDays : BaseEntity
 {
-    public int PId { get; set; }
+    public string PId { get; set; }
     public int DaysNumber { get; set; }
     public bool IsYearPlanning { get; set; }
     public int AbsenceTypeId { get; set; }

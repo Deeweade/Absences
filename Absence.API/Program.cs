@@ -81,7 +81,7 @@ builder.Services.AddDbContext<AbsenceDbContext>(options =>
 
 //services
 builder.Services.AddScoped<INotificationSenderFacade, NotificationSenderFacade>();
-builder.Services.AddScoped<IEmployeeStatusesService, EmployeeStatusesService>();
+builder.Services.AddScoped<IEmployeeStagesService, EmployeeStagesService>();
 builder.Services.AddScoped<IPlanningProcessService, PlanningProcessService>();
 builder.Services.AddScoped<IAbsenceService, AbsenceService>();
 

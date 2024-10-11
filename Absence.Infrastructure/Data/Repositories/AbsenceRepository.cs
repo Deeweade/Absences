@@ -1,6 +1,5 @@
 using Vacations.Domain.Interfaces.Repositories;
 using Vacations.Infrastructure.Data.Contexts;
-using Vacations.Domain.Models.Entities;
 using Vacations.Domain.Dtos.Entities;
 using Vacations.Domain.Dtos.Queries;
 using Vacations.Domain.Models.Enums;
@@ -49,7 +48,7 @@ public class AbsenceRepository : IAbsenceRepository
             vacations = vacations.Where(x => query.EntityStatuses.Contains(x.AbsenceStatusId));
         }
 
-        if (query.PIds.Count != 0 && !query.PIds.Contains(0))
+        if (query.PIds.Count != 0)
         {
             vacations = vacations.Where(x => query.PIds.Contains(x.PId));
         }
@@ -59,29 +58,29 @@ public class AbsenceRepository : IAbsenceRepository
         return result;
     } 
     
-    public async Task<AbsenceDto> Create(AbsenceDto vacationDto)
+    public async Task<AbsenceDto> Create(AbsenceDto dto)
     {
-        ArgumentNullException.ThrowIfNull(vacationDto);
+        ArgumentNullException.ThrowIfNull(dto);
 
-        vacationDto.AbsenceStatusId = (int)EntityStatuses.ActiveDraft;
+        dto.AbsenceStatusId = (int)EntityStatuses.ActiveDraft;
 
-        var vacation = _mapper.Map<Absence>(vacationDto);
+        var absence = _mapper.Map<Absence.Domain.Models.Entities.Absence>(dto);
 
-        _context.Absences.Add(vacation);
+        _context.Absences.Add(absence);
         await _context.SaveChangesAsync();
 
-        return await GetById(vacation.Id);
+        return await GetById(absence.Id);
     }
 
-    public AbsenceDto Update(AbsenceDto vacationDto)
+    public AbsenceDto Update(AbsenceDto dto)
     {
-        ArgumentNullException.ThrowIfNull(vacationDto);
+        ArgumentNullException.ThrowIfNull(dto);
 
-        var vacation = _mapper.Map<Absence>(vacationDto);
+        var absence = _mapper.Map<Absence.Domain.Models.Entities.Absence>(dto);
 
-        vacation.EntityStatusId = (int)EntityStatuses.ActiveDraft;
+        absence.AbsenceStatusId = (int)EntityStatuses.ActiveDraft;
 
-        var newVacation = _context.Absences.Update(vacation);
+        var newVacation = _context.Absences.Update(absence);
 
         return _mapper.Map<AbsenceDto>(newVacation);
     }

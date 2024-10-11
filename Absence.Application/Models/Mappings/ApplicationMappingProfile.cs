@@ -16,9 +16,9 @@ public class ApplicationMappingProfile : Profile
         CreateMap<VacationDaysView, VacationDaysDto>().ReverseMap();
         CreateMap<AbsenceStatusView, AbsenceStatusDto>().ReverseMap();
         CreateMap<AbsenceTypeView, AbsenceTypeDto>().ReverseMap();
-        CreateMap<EmployeeStatusView, StatusDto>().ReverseMap();
+        CreateMap<EmployeeStatusView, ProcessStageDto>().ReverseMap();
         CreateMap<AbsenceView, AbsenceDto>().ReverseMap();
         CreateMap<CommentView, CommentDto>().ReverseMap();
-        CreateMap<StatusView, StatusDto>().ReverseMap();
+        CreateMap<StatusView, ProcessStageDto>().ReverseMap();
     }
 }

@@ -1,4 +1,4 @@
-namespace Vacations.Domain.Models.Entities;
+namespace Absence.Domain.Models.Entities;
 
 public class AbsenceStatus : BaseEntity
 {

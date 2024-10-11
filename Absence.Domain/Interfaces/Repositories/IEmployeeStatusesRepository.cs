@@ -2,12 +2,12 @@ using Vacations.Domain.Dtos.Entities;
 
 namespace Vacations.Domain.Interfaces.Repositories;
 
-public interface IEmployeeStatusesRepository
+public interface IEmployeeStagesRepository
 {
-    Task<EmployeeStatusDto> GetById(int id);
-    Task<EmployeeStatusDto> GetLastStatus(int employeeTabNumber);
-    Task<EmployeeStatusDto> Create(EmployeeStatusDto status);
-    void DeactivateStatus(EmployeeStatusDto status);
-    EmployeeStatusDto Update(EmployeeStatusDto status);
-    EmployeeStatusDto CloseStatus(EmployeeStatusDto status);
+    Task<EmployeeStageDto> GetById(int id);
+    Task<EmployeeStageDto> GetLastStage(string employeeTabNumber, int year);
+    Task<EmployeeStageDto> Create(EmployeeStageDto status);
+    void DeactivateStatus(EmployeeStageDto status);
+    EmployeeStageDto Update(EmployeeStageDto status);
+    EmployeeStageDto CloseStatus(EmployeeStageDto status);
 }

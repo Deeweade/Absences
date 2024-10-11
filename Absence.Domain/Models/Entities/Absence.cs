@@ -1,8 +1,8 @@
-namespace Vacations.Domain.Models.Entities;
+namespace Absence.Domain.Models.Entities;
 
 public class Absence : BaseEntity
 {
-    public int PId { get; set; }
+    public string PId { get; set; }
     public int ParentAbsenceId { get; set; }
     public DateTime DateStart { get; set; }
     public DateTime DateEnd { get; set; }
@@ -12,6 +12,6 @@ public class Absence : BaseEntity
     public virtual AbsenceType AbsenceType { get; set; }
     
     // Vacation -> EntityStatus
-    public int EntityStatusId { get; set; }
+    public int AbsenceStatusId { get; set; }
     public virtual AbsenceStatus AbsenceStatus { get; set; }
 }

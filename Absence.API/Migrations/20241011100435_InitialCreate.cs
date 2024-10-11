@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Vacations.API.Migrations
+namespace Absence.API.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -11,6 +11,19 @@ namespace Vacations.API.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AbsenceStatuses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AbsenceStatuses", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AbsenceTypes",
                 columns: table => new
@@ -22,19 +35,6 @@ namespace Vacations.API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AbsenceTypes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EntityStatuses",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EntityStatuses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,7 +55,7 @@ namespace Vacations.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Statuses",
+                name: "Processes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -64,23 +64,7 @@ namespace Vacations.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Statuses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "VacationDays",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PId = table.Column<int>(type: "int", nullable: false),
-                    NorthernDaysCount = table.Column<int>(type: "int", nullable: false),
-                    RegularDaysCount = table.Column<int>(type: "int", nullable: false),
-                    IsYearPlanning = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VacationDays", x => x.Id);
+                    table.PrimaryKey("PK_Processes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -103,48 +87,89 @@ namespace Vacations.API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PId = table.Column<int>(type: "int", nullable: false),
+                    PId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ParentAbsenceId = table.Column<int>(type: "int", nullable: false),
                     DateStart = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateEnd = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AbsenceTypeId = table.Column<int>(type: "int", nullable: false),
-                    EntityStatusId = table.Column<int>(type: "int", nullable: false)
+                    AbsenceStatusId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Absences", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Absences_AbsenceStatuses_AbsenceStatusId",
+                        column: x => x.AbsenceStatusId,
+                        principalTable: "AbsenceStatuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Absences_AbsenceTypes_AbsenceTypeId",
                         column: x => x.AbsenceTypeId,
                         principalTable: "AbsenceTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VacationDays",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DaysNumber = table.Column<int>(type: "int", nullable: false),
+                    IsYearPlanning = table.Column<bool>(type: "bit", nullable: false),
+                    AbsenceTypeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VacationDays", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Absences_EntityStatuses_EntityStatusId",
-                        column: x => x.EntityStatusId,
-                        principalTable: "EntityStatuses",
+                        name: "FK_VacationDays_AbsenceTypes_AbsenceTypeId",
+                        column: x => x.AbsenceTypeId,
+                        principalTable: "AbsenceTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "EmployeeStatuses",
+                name: "ProcessStages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PId = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Year = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    StatusId = table.Column<int>(type: "int", nullable: false)
+                    ProcessId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EmployeeStatuses", x => x.Id);
+                    table.PrimaryKey("PK_ProcessStages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EmployeeStatuses_Statuses_StatusId",
-                        column: x => x.StatusId,
-                        principalTable: "Statuses",
+                        name: "FK_ProcessStages_Processes_ProcessId",
+                        column: x => x.ProcessId,
+                        principalTable: "Processes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmployeeStages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StageId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeeStages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EmployeeStages_ProcessStages_StageId",
+                        column: x => x.StageId,
+                        principalTable: "ProcessStages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -156,19 +181,24 @@ namespace Vacations.API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PId = table.Column<int>(type: "int", nullable: false),
-                    StatusId = table.Column<int>(type: "int", nullable: false)
+                    PId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StageId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_EmployeeStatuses_StatusId",
-                        column: x => x.StatusId,
-                        principalTable: "EmployeeStatuses",
+                        name: "FK_Comments_EmployeeStages_StageId",
+                        column: x => x.StageId,
+                        principalTable: "EmployeeStages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Absences_AbsenceStatusId",
+                table: "Absences",
+                column: "AbsenceStatusId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Absences_AbsenceTypeId",
@@ -176,19 +206,24 @@ namespace Vacations.API.Migrations
                 column: "AbsenceTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Absences_EntityStatusId",
-                table: "Absences",
-                column: "EntityStatusId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Comments_StatusId",
+                name: "IX_Comments_StageId",
                 table: "Comments",
-                column: "StatusId");
+                column: "StageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeeStatuses_StatusId",
-                table: "EmployeeStatuses",
-                column: "StatusId");
+                name: "IX_EmployeeStages_StageId",
+                table: "EmployeeStages",
+                column: "StageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProcessStages_ProcessId",
+                table: "ProcessStages",
+                column: "ProcessId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VacationDays_AbsenceTypeId",
+                table: "VacationDays",
+                column: "AbsenceTypeId");
         }
 
         /// <inheritdoc />
@@ -210,16 +245,19 @@ namespace Vacations.API.Migrations
                 name: "WorkPeriods");
 
             migrationBuilder.DropTable(
+                name: "AbsenceStatuses");
+
+            migrationBuilder.DropTable(
+                name: "EmployeeStages");
+
+            migrationBuilder.DropTable(
                 name: "AbsenceTypes");
 
             migrationBuilder.DropTable(
-                name: "EntityStatuses");
+                name: "ProcessStages");
 
             migrationBuilder.DropTable(
-                name: "EmployeeStatuses");
-
-            migrationBuilder.DropTable(
-                name: "Statuses");
+                name: "Processes");
         }
     }
 }

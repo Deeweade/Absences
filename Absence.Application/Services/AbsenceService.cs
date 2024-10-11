@@ -2,8 +2,8 @@ using Vacations.Application.Interfaces.Services;
 using Vacations.Domain.Interfaces.Repositories;
 using Vacations.Application.Models.Queries;
 using Vacations.Application.Models.Views;
+using Absence.Application.Models.Actions;
 using Vacations.Domain.Dtos.Entities;
-using Vacations.Domain.Models.Enums;
 using Vacations.Domain.Dtos.Queries;
 using AutoMapper;
 
@@ -11,13 +11,15 @@ namespace Vacations.Application.Services;
 
 public class AbsenceService : IAbsenceService
 {
+    private readonly IEmployeeStagesService _employeeStagesService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public AbsenceService(IUnitOfWork unitOfWork, IMapper mapper)
+    public AbsenceService(IUnitOfWork unitOfWork, IMapper mapper, IEmployeeStagesService employeeStagesService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _employeeStagesService = employeeStagesService;
     }
 
     public async Task<IEnumerable<AbsenceView>> GetByQuery(AbsenceQueryView query)
@@ -37,34 +39,58 @@ public class AbsenceService : IAbsenceService
 
         var dto = _mapper.Map<AbsenceDto>(view);
 
-        var absence = await _unitOfWork.AbsencesRepository.Create(dto);
+        using (var transaction = await _unitOfWork.BeginTransactionAsync())
+        {
+            try
+            {
+                dto = await _unitOfWork.AbsencesRepository.Create(dto);
 
-        return _mapper.Map<AbsenceView>(absence);
+                //проставляем этап сотруднику
+                await _employeeStagesService.CreateOrSetFirstStatus(dto.PId, dto.DateStart.Date.Year);
+
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
+        return _mapper.Map<AbsenceView>(dto);
     }
 
+    public async Task ChangeStatusesBulk(ChangeStatusesBulkView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+    }
+    
     public async Task<AbsenceView> Update(AbsenceView view)
     {
         ArgumentNullException.ThrowIfNull(view);
 
         var dto = _mapper.Map<AbsenceDto>(view);
 
-        var absence = await _unitOfWork.AbsencesRepository.GetById(dto.Id);
-
-        var lastStatus = await _unitOfWork.EmployeeStatusesRepository.GetLastStatus(dto.PId);
-        
-        var newAbsence = _unitOfWork.AbsencesRepository.Update(dto);
-        await _unitOfWork.SaveChangesAsync();
-
-        if (dto.AbsenceStatusId == absence.AbsenceStatusId)
+        using (var transaction = await _unitOfWork.BeginTransactionAsync())
         {
-            _unitOfWork.EmployeeStatusesRepository.CloseStatus(lastStatus);
-            await _unitOfWork.SaveChangesAsync();
-            
-            lastStatus.StatusId = (int)PlanningStatuses.Planning;
+            try
+            {
+                var absence = await _unitOfWork.AbsencesRepository.GetById(dto.Id);
+                
+                dto = _unitOfWork.AbsencesRepository.Update(dto);
 
-            await _unitOfWork.EmployeeStatusesRepository.Create(lastStatus);
+                //проставляем этап сотруднику
+                await _employeeStagesService.CreateOrSetFirstStatus(dto.PId, dto.DateStart.Date.Year);
+
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
-        return _mapper.Map<AbsenceView>(newAbsence);
+        return _mapper.Map<AbsenceView>(dto);
     }
 }

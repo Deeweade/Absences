@@ -1,9 +1,9 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Microsoft.EntityFrameworkCore;
-using Vacations.Domain.Dtos.Entities;
 using Vacations.Domain.Interfaces.Repositories;
 using Vacations.Infrastructure.Data.Contexts;
+using Vacations.Domain.Dtos.Entities;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper.QueryableExtensions;
+using AutoMapper;
 
 namespace Vacations.Infrastructure.Data.Repositories;
 

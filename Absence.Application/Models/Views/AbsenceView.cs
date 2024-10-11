@@ -2,7 +2,7 @@ namespace Vacations.Application.Models.Views;
 
 public class AbsenceView : BaseView
 {
-    public int PId { get; set; }
+    public string PId { get; set; }
     public int ParentAbsenceId { get; set; }
     public int AbsenceTypeId { get; set; }
     public int AbsenceStatusId { get; set; }

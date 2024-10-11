@@ -11,9 +11,9 @@ namespace Vacations.API.Contorllers;
 
 public class EmployeeStatusesController : ControllerBase
 {
-    private readonly IEmployeeStatusesService _service;
+    private readonly IEmployeeStagesService _service;
 
-    public EmployeeStatusesController(IEmployeeStatusesService service)
+    public EmployeeStatusesController(IEmployeeStagesService service)
     {
         _service = service;
     }

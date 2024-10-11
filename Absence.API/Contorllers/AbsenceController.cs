@@ -3,6 +3,7 @@ using Vacations.Application.Models.Queries;
 using Vacations.Application.Models.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Absence.Application.Models.Actions;
 
 namespace Vacations.API.Contorllers;
 
@@ -52,5 +53,15 @@ public class AbsenceController : ControllerBase
         var absence = await _service.Update(view);
 
         return Ok(absence);
+    }
+
+    [HttpPost("changeStatuses/bulk")]
+    public async Task<IActionResult> Update(ChangeStatusesBulkView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+
+        await _service.ChangeStatusesBulk(view);
+
+        return Ok();
     }
 } 
