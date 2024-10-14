@@ -2,6 +2,7 @@ using Absence.Domain.Interfaces.Repositories;
 using Absence.Infrastructure.Data.Contexts;
 using Absence.Domain.Models.Entities;
 using Absence.Domain.Dtos.Entities;
+using Absence.Domain.Dtos.Queries;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper.QueryableExtensions;
 using AutoMapper;
@@ -29,7 +30,7 @@ public class EmployeeStagesRepository : IEmployeeStagesRepository
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<EmployeeStageDto> GetLastStage(string pId, int year)
+    public async Task<EmployeeStageDto> GetLast(string pId, int year)
     {
         return await _context.EmployeeStages
             .AsNoTracking()
@@ -38,6 +39,28 @@ public class EmployeeStagesRepository : IEmployeeStagesRepository
                 && x.Stage.Year == year)
             .OrderBy(x => x.Id)
             .LastOrDefaultAsync();
+    }
+
+
+    public async Task<List<EmployeeStageDto>> GetLastByQuery(EmployeeStagesQueryDto queryDto)
+    {
+        ArgumentNullException.ThrowIfNull(queryDto);
+
+        var query = _context.EmployeeStages
+            .AsNoTracking()
+            .ProjectTo<EmployeeStageDto>(_mapper.ConfigurationProvider);
+
+        if (queryDto.PIds.Count != 0)
+        {
+            query = query.Where(x => queryDto.PIds.Contains(x.PId));
+        }
+
+        if (queryDto.Year is not null)
+        {
+            query = query.Where(x => x.Stage.Year == queryDto.Year);
+        }
+
+        return await query.ToListAsync();
     }
 
     public async Task<EmployeeStageDto> Create(EmployeeStageDto status)
@@ -52,26 +75,36 @@ public class EmployeeStagesRepository : IEmployeeStagesRepository
         return await GetById(newStatus.Id);
     }
 
-    public void DeactivateStatus(EmployeeStageDto status)
+    public async Task<EmployeeStageDto> Update(EmployeeStageDto dto)
     {
-        var newStatus = _mapper.Map<EmployeeStage>(status);
+        ArgumentNullException.ThrowIfNull(dto);
 
-        _context.EmployeeStages.Update(newStatus);
+        var entity = await _context.EmployeeStages.FirstOrDefaultAsync(x => x.Id == dto.Id);
+
+        entity.StageId = dto.StageId;
+
+        var changes = _context.EmployeeStages.Update(entity);
+
+        return _mapper.Map<EmployeeStageDto>(changes.Entity);
     }
 
-    public EmployeeStageDto Update(EmployeeStageDto status)
+    public async Task UpdateBulk(List<EmployeeStageDto> dtos)
     {
-        var entity = _mapper.Map<EmployeeStage>(status);
+        ArgumentNullException.ThrowIfNull(dtos);
 
-        var newStatus = _context.EmployeeStages.Update(entity);
+        var stagesIds = dtos.Select(x => x.Id).ToList();
 
-        return _mapper.Map<EmployeeStageDto>(newStatus);
-    }
+        var entities = await _context.EmployeeStages
+            .Where(x => stagesIds.Contains(x.Id))
+            .ToListAsync();
 
-    public EmployeeStageDto CloseStatus(EmployeeStageDto status)
-    {
-        var newStatus = Update(status);
+        if (!entities.Any()) throw new Exception("No matching EmployeeStages found in the database.");
 
-        return newStatus;
+        foreach (var entity in entities)
+        {
+            var dto = dtos.First(x => x.Id == entity.Id);
+            
+            entity.StageId = dto.StageId;
+        }
     }
 }

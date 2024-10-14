@@ -39,30 +39,44 @@ public class AbsenceService : IAbsenceService
 
         var dto = _mapper.Map<AbsenceDto>(view);
 
-        using (var transaction = await _unitOfWork.BeginTransactionAsync())
+        await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            try
-            {
-                dto = await _unitOfWork.AbsencesRepository.Create(dto);
+            dto = await _unitOfWork.AbsencesRepository.Create(dto);
 
-                //проставляем этап сотруднику
-                await _employeeStagesService.CreateOrSetFirstStatus(dto.PId, dto.DateStart.Date.Year);
-
-                await transaction.CommitAsync();
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        }
+            //проставляем этап сотруднику
+            await _employeeStagesService.CreateOrSetFirstStatus(dto.PId, dto.DateStart.Date.Year);
+        });
 
         return _mapper.Map<AbsenceView>(dto);
     }
 
-    public async Task ChangeStatusesBulk(ChangeStatusesBulkView view)
+    public async Task ChangeStatusesBulk(UpdateAbsencesBulkView view)
     {
         ArgumentNullException.ThrowIfNull(view);
+
+        //проставляем статусы отсутствиям
+        var absences = await _unitOfWork.AbsencesRepository.GetByQuery(new AbsenceQueryDto
+        {
+            Ids = view.AbsencesIds
+        });
+
+        foreach (var absence in absences)
+        {
+            absence.AbsenceStatusId = view.AbsenceStatusId;
+        }
+
+        await _unitOfWork.ExecuteInTransactionAsync(async () =>
+        {
+            _unitOfWork.AbsencesRepository.UpdateBulk(absences);
+
+            //проставляем этапы сотрудникам в зависимости от статусов отсутствий и типов процессов
+            await _employeeStagesService.UpdateStagesBulk(new UpdateStagesBulkView
+            {
+                PIds = absences.Select(x => x.PId).Distinct().ToList(),
+                Year = absences.FirstOrDefault().DateStart.Date.Year,
+                AbsenceStatusId = view.AbsenceStatusId
+            });
+        });
     }
     
     public async Task<AbsenceView> Update(AbsenceView view)
@@ -71,25 +85,18 @@ public class AbsenceService : IAbsenceService
 
         var dto = _mapper.Map<AbsenceDto>(view);
 
-        using (var transaction = await _unitOfWork.BeginTransactionAsync())
+        await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
-            try
-            {
-                var absence = await _unitOfWork.AbsencesRepository.GetById(dto.Id);
-                
-                dto = _unitOfWork.AbsencesRepository.Update(dto);
+            var absence = await _unitOfWork.AbsencesRepository.GetById(dto.Id);
 
-                //проставляем этап сотруднику
-                await _employeeStagesService.CreateOrSetFirstStatus(dto.PId, dto.DateStart.Date.Year);
+            absence.DateStart = dto.DateStart;
+            absence.DateEnd = dto.DateEnd;
+            
+            dto = await _unitOfWork.AbsencesRepository.Update(dto);
 
-                await transaction.CommitAsync();
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        }
+            //проставляем этап сотруднику
+            await _employeeStagesService.CreateOrSetFirstStatus(absence.PId, absence.DateStart.Date.Year);
+        });
 
         return _mapper.Map<AbsenceView>(dto);
     }

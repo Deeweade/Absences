@@ -30,30 +30,35 @@ public class AbsenceRepository : IAbsenceRepository
                 .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<IEnumerable<AbsenceDto>> GetByQuery(AbsenceQueryDto query)
+    public async Task<List<AbsenceDto>> GetByQuery(AbsenceQueryDto queryDto)
     {
-        ArgumentNullException.ThrowIfNull(query);
+        ArgumentNullException.ThrowIfNull(queryDto);
 
-        var vacations = _context.Absences
+        var query = _context.Absences
             .AsNoTracking()
             .ProjectTo<AbsenceDto>(_mapper.ConfigurationProvider);
 
-        if (query.Years.Count != 0 && !query.Years.Contains(0))
+        if (queryDto.Ids is not null && queryDto.Ids.Any())
         {
-            vacations = vacations.Where(x => query.Years.Contains(x.DateStart.Year));
+            query = query.Where(x => queryDto.Ids.Contains(x.Id));
         }
 
-        if (query.EntityStatuses.Count != 0 && !query.EntityStatuses.Contains(0))
+        if (queryDto.Years.Count != 0 && !queryDto.Years.Contains(0))
         {
-            vacations = vacations.Where(x => query.EntityStatuses.Contains(x.AbsenceStatusId));
+            query = query.Where(x => queryDto.Years.Contains(x.DateStart.Year));
         }
 
-        if (query.PIds.Count != 0)
+        if (queryDto.AbsenceStatuses.Count != 0 && !queryDto.AbsenceStatuses.Contains(0))
         {
-            vacations = vacations.Where(x => query.PIds.Contains(x.PId));
+            query = query.Where(x => queryDto.AbsenceStatuses.Contains(x.AbsenceStatusId));
         }
 
-        var result = await vacations.ToListAsync();
+        if (queryDto.PIds.Count != 0)
+        {
+            query = query.Where(x => queryDto.PIds.Contains(x.PId));
+        }
+
+        var result = await query.ToListAsync();
 
         return result;
     } 
@@ -62,9 +67,9 @@ public class AbsenceRepository : IAbsenceRepository
     {
         ArgumentNullException.ThrowIfNull(dto);
 
-        dto.AbsenceStatusId = (int)EntityStatuses.ActiveDraft;
+        dto.AbsenceStatusId = (int)AbsenceStatuses.ActiveDraft;
 
-        var absence = _mapper.Map<Absence.Domain.Models.Entities.Absence>(dto);
+        var absence = _mapper.Map<Domain.Models.Entities.Absence>(dto);
 
         _context.Absences.Add(absence);
         await _context.SaveChangesAsync();
@@ -72,16 +77,30 @@ public class AbsenceRepository : IAbsenceRepository
         return await GetById(absence.Id);
     }
 
-    public AbsenceDto Update(AbsenceDto dto)
+    public async Task<AbsenceDto> Update(AbsenceDto dto)
     {
         ArgumentNullException.ThrowIfNull(dto);
 
-        var absence = _mapper.Map<Absence.Domain.Models.Entities.Absence>(dto);
+        var entity = await _context.Absences.FirstOrDefaultAsync(x => x.Id == dto.Id);
 
-        absence.AbsenceStatusId = (int)EntityStatuses.ActiveDraft;
+        entity.DateStart = dto.DateStart;
+        entity.DateEnd = dto.DateEnd;
+        entity.ParentAbsenceId = dto.ParentAbsenceId;
+        entity.AbsenceTypeId = dto.AbsenceTypeId;
+        entity.AbsenceStatusId = (int)AbsenceStatuses.ActiveDraft;
 
-        var newVacation = _context.Absences.Update(absence);
+        var changes = _context.Absences.Update(entity);
 
-        return _mapper.Map<AbsenceDto>(newVacation);
+        return _mapper.Map<AbsenceDto>(changes.Entity);
+    }
+
+
+    public void UpdateBulk(List<AbsenceDto> dtos)
+    {
+        ArgumentNullException.ThrowIfNull(dtos);
+
+        var absences = _mapper.Map<List<Domain.Models.Entities.Absence>>(dtos);
+
+        _context.Absences.UpdateRange(absences);
     }
 }

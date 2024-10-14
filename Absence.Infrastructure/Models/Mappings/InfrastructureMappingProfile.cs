@@ -8,7 +8,6 @@ public class InfrastructureMappingProfile : Profile
 {
     public InfrastructureMappingProfile()
     {
-        CreateMap<Absence.Domain.Models.Entities.Absence, AbsenceDto>().ReverseMap();
         CreateMap<PlanningProcess, PlanningProcessDto>().ReverseMap();
         CreateMap<EmployeeStage, EmployeeStageDto>().ReverseMap();
         CreateMap<AbsenceStatus, AbsenceStatusDto>().ReverseMap();
@@ -17,5 +16,12 @@ public class InfrastructureMappingProfile : Profile
         CreateMap<AbsenceType, AbsenceTypeDto>().ReverseMap();
         CreateMap<Comment, CommentDto>().ReverseMap();
 
+        CreateMap<Domain.Models.Entities.Absence, AbsenceDto>()
+            .ForMember(dest => dest.AbsenceStatus, opt => opt.MapFrom(src => src.AbsenceStatus))
+            .ForMember(dest => dest.AbsenceType, opt => opt.MapFrom(src => src.AbsenceType));
+
+        CreateMap<AbsenceDto, Domain.Models.Entities.Absence>()
+            .ForMember(dest => dest.AbsenceStatus, opt => opt.Ignore())
+            .ForMember(dest => dest.AbsenceType, opt => opt.Ignore());
     }
 }

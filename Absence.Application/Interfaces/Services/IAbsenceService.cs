@@ -8,6 +8,6 @@ public interface IAbsenceService
 {
     Task<IEnumerable<AbsenceView>> GetByQuery(AbsenceQueryView query);
     Task<AbsenceView> Create(AbsenceView view);
-    Task ChangeStatusesBulk(ChangeStatusesBulkView view);
+    Task ChangeStatusesBulk(UpdateAbsencesBulkView view);
     Task<AbsenceView> Update(AbsenceView view);
 }

@@ -1,13 +1,14 @@
 using Absence.Domain.Dtos.Entities;
+using Absence.Domain.Dtos.Queries;
 
 namespace Absence.Domain.Interfaces.Repositories;
 
 public interface IEmployeeStagesRepository
 {
     Task<EmployeeStageDto> GetById(int id);
-    Task<EmployeeStageDto> GetLastStage(string employeeTabNumber, int year);
+    Task<EmployeeStageDto> GetLast(string employeeTabNumber, int year);
+    Task<List<EmployeeStageDto>> GetLastByQuery(EmployeeStagesQueryDto employeeStagesQueryDto);
     Task<EmployeeStageDto> Create(EmployeeStageDto status);
-    void DeactivateStatus(EmployeeStageDto status);
-    EmployeeStageDto Update(EmployeeStageDto status);
-    EmployeeStageDto CloseStatus(EmployeeStageDto status);
+    Task<EmployeeStageDto> Update(EmployeeStageDto status);
+    Task UpdateBulk(List<EmployeeStageDto> employeesStages);
 }

@@ -56,7 +56,7 @@ public class AbsenceController : ControllerBase
     }
 
     [HttpPost("changeStatuses/bulk")]
-    public async Task<IActionResult> Update(ChangeStatusesBulkView view)
+    public async Task<IActionResult> Update(UpdateAbsencesBulkView view)
     {
         ArgumentNullException.ThrowIfNull(view);
 

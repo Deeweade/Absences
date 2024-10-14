@@ -1,9 +1,10 @@
 using Absence.Application.Interfaces.Services;
 using Absence.Domain.Interfaces.Repositories;
-using Absence.Application.Models.Views;
 using Absence.Domain.Dtos.Entities;
 using Absence.Domain.Models.Enums;
 using AutoMapper;
+using Absence.Application.Models.Actions;
+using Absence.Domain.Dtos.Queries;
 
 namespace Absence.Application.Services;
 
@@ -26,7 +27,7 @@ public class EmployeeStagesService : IEmployeeStagesService
         ArgumentNullException.ThrowIfNullOrEmpty(pId);
         ArgumentOutOfRangeException.ThrowIfLessThan(year, 2024);
 
-        var lastStage = await _unitOfWork.EmployeeStagesRepository.GetLastStage(pId, year);
+        var lastStage = await _unitOfWork.EmployeeStagesRepository.GetLast(pId, year);
 
         //если нет этапа на год отпуска, создаем первый этап годового планирования
         if (lastStage is null)
@@ -34,6 +35,7 @@ public class EmployeeStagesService : IEmployeeStagesService
             var stage = new EmployeeStageDto
             {
                 PId = pId,
+                
                 StageId = (int)ProcessStages.YearPlanning
             };
 
@@ -67,31 +69,45 @@ public class EmployeeStagesService : IEmployeeStagesService
                     lastStage.StageId = (int)ProcessStages.Correction;
                 }
 
-                _unitOfWork.EmployeeStagesRepository.Update(lastStage);
+                await _unitOfWork.EmployeeStagesRepository.Update(lastStage);
             }
         }
 
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<EmployeeStatusView> ChangeStatus(EmployeeStatusView status)
+    public async Task UpdateStagesBulk(UpdateStagesBulkView view)
     {
-        ArgumentNullException.ThrowIfNull(status);
+        ArgumentNullException.ThrowIfNull(view);
 
-        var statusDto = _mapper.Map<EmployeeStageDto>(status);
+        var employeesStages = await _unitOfWork.EmployeeStagesRepository.GetLastByQuery(new EmployeeStagesQueryDto
+            {
+                PIds = view.PIds,
+                Year = view.Year
+            });
 
-        var currentStage = await _unitOfWork.EmployeeStagesRepository.GetById(status.Id);
-
-        if (!currentStage.PId.Equals(status.PId) && currentStage.Stage.Year != status.Year)
+        foreach(var employeeStage in employeesStages)
         {
-            throw new InvalidOperationException();
-        }   
-            
-        _unitOfWork.EmployeeStagesRepository.DeactivateStatus(currentStage);
-        await _unitOfWork.SaveChangesAsync();
+            if (view.AbsenceStatusId == (int)AbsenceStatuses.Approved)
+            {
+                employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
+                    (int)ProcessStages.CorrectionApproved
+                    : (int)ProcessStages.YearPlanningApproved;
+            }
+            else if (view.AbsenceStatusId == (int)AbsenceStatuses.Rejected)
+            {
+                employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
+                    (int)ProcessStages.Correction
+                    : (int)ProcessStages.YearPlanning;
+            }
+            else
+            {
+                throw new ArgumentException($"Impossible to set absence status with Id='{view.AbsenceStatusId}'");
+            }
+        }
+        
+        await _unitOfWork.EmployeeStagesRepository.UpdateBulk(employeesStages);
 
-        var changedStatus = await _unitOfWork.EmployeeStagesRepository.Create(statusDto);
-    
-        return _mapper.Map<EmployeeStatusView>(changedStatus);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

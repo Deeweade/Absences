@@ -9,6 +9,7 @@ namespace Absence.Infrastructure.Data;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly AbsenceDbContext _context;
+    private IDbContextTransaction _transaction;
 
     public UnitOfWork(AbsenceDbContext vacationsDbContext, IMapper mapper)
     {
@@ -23,9 +24,51 @@ public class UnitOfWork : IUnitOfWork
     public IEmployeeStagesRepository EmployeeStagesRepository { get; }
     public IAbsenceRepository AbsencesRepository { get; }
 
-    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+    public async Task BeginTransactionAsync()
     {
-        return _context.Database.BeginTransactionAsync();
+        _transaction = await _context.Database.BeginTransactionAsync();
+    }
+
+    public async Task CommitAsync()
+    {
+        try
+        {
+            await _context.SaveChangesAsync();
+            await _transaction?.CommitAsync();
+        }
+        catch
+        {
+            await RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task RollbackAsync()
+    {
+        if (_transaction != null)
+        {
+            await _transaction.RollbackAsync();
+            await _transaction.DisposeAsync();
+            _transaction = null;
+        }
+    }
+
+    public async Task ExecuteInTransactionAsync(Func<Task> operation)
+    {
+        await BeginTransactionAsync();
+
+        try
+        {
+            await operation();
+            
+            await SaveChangesAsync();
+            await CommitAsync();
+        }
+        catch
+        {
+            await RollbackAsync();
+            throw;
+        }
     }
 
     public async Task<int> SaveChangesAsync()

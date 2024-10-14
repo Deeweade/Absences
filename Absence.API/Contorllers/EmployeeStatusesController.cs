@@ -17,17 +17,4 @@ public class EmployeeStatusesController : ControllerBase
     {
         _service = service;
     }
-
-    [HttpPost("changeStatus/{statusId}")]
-    public async Task<IActionResult> ChangeStatus(int statusId, [FromBody] EmployeeStatusView statusView)
-    {
-        if (statusId != statusView.Id)
-        {
-            return BadRequest();
-        }
-
-        var status = await _service.ChangeStatus(statusView);
-        
-        return Ok(status);
-    }
 }

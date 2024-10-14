@@ -8,6 +8,10 @@ public interface IUnitOfWork
     IEmployeeStagesRepository EmployeeStagesRepository { get; }
     IAbsenceRepository AbsencesRepository { get; }
 
-    Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
+    Task BeginTransactionAsync();
+    Task CommitAsync();
+    Task RollbackAsync();
+    Task ExecuteInTransactionAsync(Func<Task> operation);
+    
     Task<int> SaveChangesAsync();
 }
