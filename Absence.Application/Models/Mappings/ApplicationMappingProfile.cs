@@ -12,13 +12,14 @@ public class ApplicationMappingProfile : Profile
     {
         
         CreateMap<PlanningProcessView, PlanningProcessDto>().ReverseMap();
+        CreateMap<EmployeeStatusView, ProcessStageDto>().ReverseMap();
+        CreateMap<AbsenceStatusView, AbsenceStatusDto>().ReverseMap();
         CreateMap<AbsenceQueryView, AbsenceQueryDto>().ReverseMap();
         CreateMap<VacationDaysView, VacationDaysDto>().ReverseMap();
-        CreateMap<AbsenceStatusView, AbsenceStatusDto>().ReverseMap();
+        CreateMap<SubstitutionView, SubstitutionDto>().ReverseMap();
         CreateMap<AbsenceTypeView, AbsenceTypeDto>().ReverseMap();
-        CreateMap<EmployeeStatusView, ProcessStageDto>().ReverseMap();
+        CreateMap<StatusView, ProcessStageDto>().ReverseMap();
         CreateMap<AbsenceView, AbsenceDto>().ReverseMap();
         CreateMap<CommentView, CommentDto>().ReverseMap();
-        CreateMap<StatusView, ProcessStageDto>().ReverseMap();
     }
 }

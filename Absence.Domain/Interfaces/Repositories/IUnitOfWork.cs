@@ -6,6 +6,7 @@ public interface IUnitOfWork
 {
     IPlanningProcessRepository PlanningProcessRepository { get; }
     IEmployeeStagesRepository EmployeeStagesRepository { get; }
+    ISubstitutionsRepository SubstitutionsRepository { get; }
     IAbsenceRepository AbsencesRepository { get; }
 
     Task BeginTransactionAsync();

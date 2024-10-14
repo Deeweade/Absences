@@ -13,6 +13,7 @@ public class InfrastructureMappingProfile : Profile
         CreateMap<AbsenceStatus, AbsenceStatusDto>().ReverseMap();
         CreateMap<ProcessStage, ProcessStageDto>().ReverseMap();
         CreateMap<VacationDays, VacationDaysDto>().ReverseMap();
+        CreateMap<Substitution, SubstitutionDto>().ReverseMap();
         CreateMap<AbsenceType, AbsenceTypeDto>().ReverseMap();
         CreateMap<Comment, CommentDto>().ReverseMap();
 

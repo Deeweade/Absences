@@ -16,12 +16,14 @@ public class UnitOfWork : IUnitOfWork
         _context = vacationsDbContext;
 
         AbsencesRepository = new AbsenceRepository(_context, mapper);
-        PlanningProcessRepository = new PlanningProcessRepository(_context, mapper);
+        SubstitutionsRepository = new SubstitutionsRepository(_context, mapper);
         EmployeeStagesRepository = new EmployeeStagesRepository(_context, mapper);
+        PlanningProcessRepository = new PlanningProcessRepository(_context, mapper);
     }
 
     public IPlanningProcessRepository PlanningProcessRepository { get; }
     public IEmployeeStagesRepository EmployeeStagesRepository { get; }
+    public ISubstitutionsRepository SubstitutionsRepository { get; }
     public IAbsenceRepository AbsencesRepository { get; }
 
     public async Task BeginTransactionAsync()
@@ -75,5 +77,4 @@ public class UnitOfWork : IUnitOfWork
     {
         return await _context.SaveChangesAsync();
     }
-
 }
