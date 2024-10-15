@@ -6,6 +6,7 @@ namespace Absence.Domain.Interfaces.Repositories;
 public interface IAbsenceRepository
 {
     Task<AbsenceDto> GetById(int id);
+    Task<int> GetVacationDaysSum(string pId, int year);
     Task<List<AbsenceDto>> GetByQuery(AbsenceQueryDto query);
     Task<AbsenceDto> Create(AbsenceDto absenceDto);
     Task<AbsenceDto> Update(AbsenceDto absenceDto);

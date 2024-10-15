@@ -6,6 +6,7 @@ using Absence.Domain.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper.QueryableExtensions;
 using AutoMapper;
+using System.Net.NetworkInformation;
 
 namespace Absence.Infrastructure.Data.Repositories;
 
@@ -28,6 +29,21 @@ public class AbsenceRepository : IAbsenceRepository
                 .AsNoTracking()
                 .ProjectTo<AbsenceDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task<int> GetVacationDaysSum(string pId, int year)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(pId);
+        ArgumentOutOfRangeException.ThrowIfLessThan(year, 2024);
+
+        return await _context.Absences
+            .AsNoTracking()
+            .Where(x => x.PId.Equals(pId)
+                && x.DateStart.Year == year
+                && x.AbsenceTypeId == "0101"
+                || x.AbsenceTypeId == "0105")
+            .Select(x => (x.DateEnd - x.DateStart).Days)
+            .SumAsync();
     }
 
     public async Task<List<AbsenceDto>> GetByQuery(AbsenceQueryDto queryDto)

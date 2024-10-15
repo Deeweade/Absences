@@ -90,9 +90,25 @@ public class EmployeeStagesService : IEmployeeStagesService
         {
             if (view.AbsenceStatusId == (int)AbsenceStatuses.Approved)
             {
-                employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
-                    (int)ProcessStages.CorrectionApproved
-                    : (int)ProcessStages.YearPlanningApproved;
+                var remainingDays = await _unitOfWork.VacationDaysRepository.GetAvailableDays(employeeStage.PId, employeeStage.Stage.Year, true);
+
+                if (remainingDays.RegularDaysCount == 0)
+                {
+                    employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
+                        (int)ProcessStages.CorrectionApproved
+                        : (int)ProcessStages.YearPlanningApproved;
+                }
+                else
+                {
+                    var vacationDaysNumber = await _unitOfWork.AbsencesRepository.GetVacationDaysSum(employeeStage.PId, employeeStage.Stage.Year);
+
+                    if (vacationDaysNumber == remainingDays.RegularDaysCount)
+                    {
+                        employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
+                        (int)ProcessStages.CorrectionApproved
+                        : (int)ProcessStages.YearPlanningApproved;
+                    }
+                }
             }
             else if (view.AbsenceStatusId == (int)AbsenceStatuses.Rejected)
             {

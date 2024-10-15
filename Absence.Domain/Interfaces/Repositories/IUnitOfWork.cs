@@ -5,6 +5,7 @@ public interface IUnitOfWork
     IPlanningProcessRepository PlanningProcessRepository { get; }
     IEmployeeStagesRepository EmployeeStagesRepository { get; }
     ISubstitutionsRepository SubstitutionsRepository { get; }
+    IVacationDaysRepository VacationDaysRepository { get; }
     IEmployeesRepository EmployeesRepository { get; }
     IAbsenceRepository AbsencesRepository { get; }
 
