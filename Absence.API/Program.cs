@@ -83,6 +83,7 @@ builder.Services.AddScoped<INotificationSenderFacade, NotificationSenderFacade>(
 builder.Services.AddScoped<IPlanningProcessService, PlanningProcessService>();
 builder.Services.AddScoped<IEmployeeStagesService, EmployeeStagesService>();
 builder.Services.AddScoped<ISubstitutionsService, SubstitutionsService>();
+builder.Services.AddScoped<IEmployeesService, EmployeesService>();
 builder.Services.AddScoped<IAbsenceService, AbsenceService>();
 
 //data

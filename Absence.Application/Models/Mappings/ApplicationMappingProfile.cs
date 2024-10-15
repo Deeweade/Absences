@@ -10,7 +10,7 @@ public class ApplicationMappingProfile : Profile
 {
     public ApplicationMappingProfile()
     {
-        
+        CreateMap<PositionAndEmployeesView, PositionAndEmployeesDto>().ReverseMap();
         CreateMap<PlanningProcessView, PlanningProcessDto>().ReverseMap();
         CreateMap<EmployeeStatusView, ProcessStageDto>().ReverseMap();
         CreateMap<AbsenceStatusView, AbsenceStatusDto>().ReverseMap();

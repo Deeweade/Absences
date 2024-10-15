@@ -15,7 +15,8 @@ public class AbsenceDbContext(DbContextOptions<AbsenceDbContext> options) : DbCo
     public DbSet<EmployeeStage> EmployeeStages { get; set; }
     public DbSet<AbsenceStatus> AbsenceStatuses { get; set; }
     public DbSet<PlanningProcess> PlanningProcesses { get; set; }
-    public DbSet<Absence.Domain.Models.Entities.Absence> Absences { get; set; }
+    public DbSet<Domain.Models.Entities.Absence> Absences { get; set; }
+    public DbSet<PositionAndEmployees> PositionAndEmployees { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -27,6 +28,16 @@ public class AbsenceDbContext(DbContextOptions<AbsenceDbContext> options) : DbCo
         modelBuilder.Entity<AbsenceType>()
             .Property(e => e.Id)
             .IsRequired();
+
+        modelBuilder.Entity<PositionAndEmployees>()
+            .HasNoKey();
+
+        modelBuilder.Entity<PositionAndEmployees>()
+            .Property(x => x.SOPercent)
+            .HasPrecision(18, 0);
+        modelBuilder.Entity<PositionAndEmployees>()
+            .Property(x => x.SPPercent)
+            .HasPrecision(18, 0);
 
         base.OnModelCreating(modelBuilder);
     }

@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore.Storage;
-
 namespace Absence.Domain.Interfaces.Repositories;
 
 public interface IUnitOfWork
@@ -7,6 +5,7 @@ public interface IUnitOfWork
     IPlanningProcessRepository PlanningProcessRepository { get; }
     IEmployeeStagesRepository EmployeeStagesRepository { get; }
     ISubstitutionsRepository SubstitutionsRepository { get; }
+    IEmployeesRepository EmployeesRepository { get; }
     IAbsenceRepository AbsencesRepository { get; }
 
     Task BeginTransactionAsync();

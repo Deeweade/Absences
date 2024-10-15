@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Absence.API.Contorllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class SustitutionsController : ControllerBase
     {
         private readonly ISubstitutionsService _service;
