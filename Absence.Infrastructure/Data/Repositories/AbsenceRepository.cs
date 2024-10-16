@@ -6,7 +6,6 @@ using Absence.Domain.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper.QueryableExtensions;
 using AutoMapper;
-using System.Net.NetworkInformation;
 
 namespace Absence.Infrastructure.Data.Repositories;
 
@@ -118,5 +117,14 @@ public class AbsenceRepository : IAbsenceRepository
         var absences = _mapper.Map<List<Domain.Models.Entities.Absence>>(dtos);
 
         _context.Absences.UpdateRange(absences);
+    }
+
+    public async Task Delete(int id)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(id, 1);
+
+        var absence = await _context.Absences.FirstOrDefaultAsync(x => x.Id == id);
+
+        _context.Absences.Remove(absence);
     }
 }

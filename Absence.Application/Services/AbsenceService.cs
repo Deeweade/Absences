@@ -6,6 +6,8 @@ using Absence.Application.Models.Views;
 using Absence.Domain.Dtos.Entities;
 using Absence.Domain.Dtos.Queries;
 using AutoMapper;
+using Absence.Domain.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Absence.Application.Services;
 
@@ -99,5 +101,18 @@ public class AbsenceService : IAbsenceService
         });
 
         return _mapper.Map<AbsenceView>(dto);
+    }
+
+    public async Task Delete(int id)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(id, 1);
+
+        var absence = await _unitOfWork.AbsencesRepository.GetById(id);
+
+        if (absence.AbsenceStatusId != (int)AbsenceStatuses.ActiveDraft) 
+            throw new InvalidOperationException($"Cannot delete an absence with an AbsenceStatusId={absence.AbsenceStatusId}");
+
+        await _unitOfWork.AbsencesRepository.Delete(id);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

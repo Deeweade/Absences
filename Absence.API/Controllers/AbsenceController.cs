@@ -64,4 +64,14 @@ public class AbsenceController : ControllerBase
 
         return Ok();
     }
+
+    [HttpPost("delete/{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(id, 1);
+
+        await _service.Delete(id);
+
+        return Ok();
+    }
 } 

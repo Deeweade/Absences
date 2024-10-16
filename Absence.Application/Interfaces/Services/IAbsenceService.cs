@@ -10,4 +10,5 @@ public interface IAbsenceService
     Task<AbsenceView> Create(AbsenceView view);
     Task ChangeStatusesBulk(UpdateAbsencesBulkView view);
     Task<AbsenceView> Update(AbsenceView view);
+    Task Delete(int id);
 }

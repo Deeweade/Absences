@@ -11,4 +11,5 @@ public interface IAbsenceRepository
     Task<AbsenceDto> Create(AbsenceDto absenceDto);
     Task<AbsenceDto> Update(AbsenceDto absenceDto);
     void UpdateBulk(List<AbsenceDto> absences);
+    Task Delete(int id);
 }
