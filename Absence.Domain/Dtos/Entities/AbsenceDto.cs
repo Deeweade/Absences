@@ -1,5 +1,3 @@
-using Absence.Domain.Models.Entities;
-
 namespace Absence.Domain.Dtos.Entities;
 
 public class AbsenceDto : BaseDto
@@ -12,5 +10,5 @@ public class AbsenceDto : BaseDto
     public DateTime DateEnd { get; set; }
 
     public AbsenceTypeDto AbsenceType { get; set; }
-    public AbsenceStatus AbsenceStatus { get; set; }
+    public AbsenceStatusDto AbsenceStatus { get; set; }
 }

@@ -4,7 +4,9 @@ public class VacationDaysDto : BaseDto
 {
     public string PId { get; set; }
     public int Year { get; set; }
-    public int NorthernDaysCount { get; set; }
-    public int RegularDaysCount { get; set; }
+    public int DaysNumber { get; set; }
     public bool IsYearPlanning { get; set; }
+    public string AbsenceTypeId { get; set; }
+
+    public AbsenceTypeDto AbsenceType { get; set; }
 }

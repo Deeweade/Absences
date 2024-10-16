@@ -1,4 +1,5 @@
 using Absence.Application.Services.NotificationService;
+using Absence.Infrastructure.Data.Repositories;
 using Absence.Application.Interfaces.Services;
 using Absence.Infrastructure.Models.Mappings;
 using Absence.Domain.Interfaces.Repositories;
@@ -83,10 +84,12 @@ builder.Services.AddScoped<INotificationSenderFacade, NotificationSenderFacade>(
 builder.Services.AddScoped<IPlanningProcessService, PlanningProcessService>();
 builder.Services.AddScoped<IEmployeeStagesService, EmployeeStagesService>();
 builder.Services.AddScoped<ISubstitutionsService, SubstitutionsService>();
+builder.Services.AddScoped<IVacationDaysService, VacationDaysService>();
 builder.Services.AddScoped<IEmployeesService, EmployeesService>();
 builder.Services.AddScoped<IAbsenceService, AbsenceService>();
 
 //data
+builder.Services.AddScoped<IVacationDaysRepository, VacationDaysRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddAutoMapper(typeof(InfrastructureMappingProfile), typeof(ApplicationMappingProfile));

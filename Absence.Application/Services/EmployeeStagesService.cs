@@ -92,7 +92,7 @@ public class EmployeeStagesService : IEmployeeStagesService
             {
                 var remainingDays = await _unitOfWork.VacationDaysRepository.GetAvailableDays(employeeStage.PId, employeeStage.Stage.Year, true);
 
-                if (remainingDays.RegularDaysCount == 0)
+                if (remainingDays.DaysNumber == 0)
                 {
                     employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
                         (int)ProcessStages.CorrectionApproved
@@ -102,7 +102,7 @@ public class EmployeeStagesService : IEmployeeStagesService
                 {
                     var vacationDaysNumber = await _unitOfWork.AbsencesRepository.GetVacationDaysSum(employeeStage.PId, employeeStage.Stage.Year);
 
-                    if (vacationDaysNumber == remainingDays.RegularDaysCount)
+                    if (vacationDaysNumber == remainingDays.DaysNumber)
                     {
                         employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
                         (int)ProcessStages.CorrectionApproved
