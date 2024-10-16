@@ -18,7 +18,7 @@ public class VacationDaysRepository : IVacationDaysRepository
         _mapper = mapper;
     }
 
-    public async Task<VacationDaysDto> GetAvailableDays(string pId, int year, bool isYearPlanning)
+    public async Task<List<VacationDaysDto>> GetAvailableDays(string pId, int year, bool isYearPlanning)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(pId);
 
@@ -28,6 +28,6 @@ public class VacationDaysRepository : IVacationDaysRepository
             .Where(x => x.PId.Equals(pId)
                 && x.Year == year
                 && x.IsYearPlanning == isYearPlanning)
-            .FirstOrDefaultAsync();
+            .ToListAsync();
     }
 }

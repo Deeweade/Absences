@@ -15,8 +15,8 @@ namespace Absence.API.Controllers
             _service = service;
         }
 
-        [HttpGet("availableDaysNumber/{pId}/{year}")]
-        public async Task<VacationDaysView> GetAvailableDaysNumber(string pId, int year)
+        [HttpGet("availableDays/{pId}/{year}")]
+        public async Task<List<VacationDaysView>> GetAvailableDaysNumber(string pId, int year)
         {
             ArgumentNullException.ThrowIfNullOrEmpty(pId);
 

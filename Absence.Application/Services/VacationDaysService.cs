@@ -16,12 +16,12 @@ public class VacationDaysService : IVacationDaysService
         _mapper = mapper;
     }
 
-    public async Task<VacationDaysView> GetAvailableDaysNumber(string pId, int year)
+    public async Task<List<VacationDaysView>> GetAvailableDaysNumber(string pId, int year)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(pId);
 
         var days = await _repository.GetAvailableDays(pId, year, true);
 
-        return _mapper.Map<VacationDaysView>(days);
+        return _mapper.Map<List<VacationDaysView>>(days);
     }
 }
