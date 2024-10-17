@@ -2,7 +2,7 @@ using Absence.Application.Interfaces.Services;
 using Absence.Application.Models.Views;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Absence.API.Contorllers
+namespace Absence.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

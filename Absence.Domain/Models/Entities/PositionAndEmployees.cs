@@ -32,6 +32,24 @@ public class PositionAndEmployees
     [Column("PGRADESTARTDATE")]
     public DateTime? PGradeStartDate { get; set; }
 
+    [Column("PSURNAME")]
+    public string PSurname { get; set; }
+
+    [Column("PFIRSTNAME")]
+    public string PFirstName { get; set; }
+    
+    [Column("PSECONDNAME")]
+    public string PSecondName { get; set; }
+
+    [Column("PGENDER")]
+    public string PGender { get; set; }
+
+    [Column("PBIRTHDAY")]
+    public DateTime? PBirthDay { get; set; }
+
+    [Column("MAIL")]
+    public string Mail { get; set; }
+
     [Column("CITY_NAME")]
     public string CityName { get; set; }
 

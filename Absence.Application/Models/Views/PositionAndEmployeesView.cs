@@ -11,6 +11,12 @@ public class PositionAndEmployeesView
     public string PId { get; set; }
     public string PGrade { get; set; }
     public DateTime? PGradeStartDate { get; set; }
+    public string PSurname { get; set; }
+    public string PFirstName { get; set; }
+    public string PSecondName { get; set; }
+    public string PGender { get; set; }
+    public DateTime? PBirthDay { get; set; }
+    public string Mail { get; set; }
     public string CityName { get; set; }
     public DateTime? HiredDate { get; set; }
     public string OfficeName { get; set; }

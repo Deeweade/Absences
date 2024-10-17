@@ -5,7 +5,7 @@ using Absence.Application.Models.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Absence.API.Contorllers;
+namespace Absence.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

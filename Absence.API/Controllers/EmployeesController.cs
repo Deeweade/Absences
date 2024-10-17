@@ -2,7 +2,7 @@ using Absence.Application.Interfaces.Services;
 using Absence.Application.Models.Views;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Absence.API.Contorllers
+namespace Absence.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -22,5 +22,13 @@ namespace Absence.API.Contorllers
 
             return await _service.GetByLogin(login);
         }
+
+        // [HttpGet("peers/{pId}")]
+        // public async Task<List<PositionAndEmployeesView>> GetPeers(string pId)
+        // {
+        //     ArgumentNullException.ThrowIfNullOrEmpty(pId);
+
+        //     return await _service.GetPeers(pId);
+        // }
     }
 }

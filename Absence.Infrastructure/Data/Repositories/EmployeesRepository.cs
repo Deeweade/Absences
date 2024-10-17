@@ -18,15 +18,23 @@ public class EmployeesRepository : IEmployeesRepository
         _mapper = mapper;
     }
 
+    public async Task<PositionAndEmployeesDto> GetByPId(string pId)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(pId);
+
+        return await _context.PositionAndEmployees
+            .AsNoTracking()
+            .ProjectTo<PositionAndEmployeesDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(x => x.PId.Equals(pId));
+    }
+
     public async Task<PositionAndEmployeesDto> GetByLogin(string login)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(login);
 
-        throw new Exception();
-
-        // return await _context.PositionAndEmployees
-        //     .AsNoTracking()
-        //     .ProjectTo<PositionAndEmployeesDto>(_mapper.ConfigurationProvider)
-        //     .FirstOrDefaultAsync(x => x.PId.Equals("00118463"));
+        return await _context.PositionAndEmployees
+            .AsNoTracking()
+            .ProjectTo<PositionAndEmployeesDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(x => x.Mail.Contains(login));
     }
 }

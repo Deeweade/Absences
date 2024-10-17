@@ -24,4 +24,19 @@ public class EmployeesService : IEmployeesService
 
         return _mapper.Map<PositionAndEmployeesView>(employee);
     }
+
+    // public async Task<List<PositionAndEmployeesView>> GetPeers(string pId)
+    // {
+    //     ArgumentNullException.ThrowIfNullOrEmpty(pId);
+
+    //     var employee = await _unitOfWork.EmployeesRepository.GetByPId(pId);
+
+    //     // var peers = await _unitOfWork.EmployeesRepository.GetByOId(employee.OId);
+
+    //     employee = peers.FirstOrDefault(x => x.PId == pId);
+
+    //     peers.Remove(employee);
+
+    //     return _mapper.Map<List<PositionAndEmployeesView>>(peers);
+    // }
 }
