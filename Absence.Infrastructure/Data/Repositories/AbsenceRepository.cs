@@ -92,6 +92,23 @@ public class AbsenceRepository : IAbsenceRepository
         return await GetById(absence.Id);
     }
 
+    public async Task<List<AbsenceDto>> CreateBulk(List<AbsenceDto> dtos)
+    {
+        ArgumentNullException.ThrowIfNull(dtos);
+
+        var absences = _mapper.Map<List<Domain.Models.Entities.Absence>>(dtos);
+
+        foreach (var absence in absences)
+        {
+            absence.AbsenceStatusId = (int)AbsenceStatuses.ActiveDraft;
+        }
+
+        _context.Absences.AddRange(absences);
+        await _context.SaveChangesAsync();
+
+        return _mapper.Map<List<AbsenceDto>>(absences);
+    }
+
     public async Task<AbsenceDto> Update(AbsenceDto dto)
     {
         ArgumentNullException.ThrowIfNull(dto);
@@ -102,7 +119,7 @@ public class AbsenceRepository : IAbsenceRepository
         entity.DateEnd = dto.DateEnd;
         entity.ParentAbsenceId = dto.ParentAbsenceId;
         entity.AbsenceTypeId = dto.AbsenceTypeId;
-        entity.AbsenceStatusId = (int)AbsenceStatuses.ActiveDraft;
+        entity.AbsenceStatusId = dto.AbsenceStatusId;
 
         var changes = _context.Absences.Update(entity);
 

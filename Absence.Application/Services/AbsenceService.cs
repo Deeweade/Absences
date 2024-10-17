@@ -4,10 +4,9 @@ using Absence.Application.Models.Actions;
 using Absence.Application.Models.Queries;
 using Absence.Application.Models.Views;
 using Absence.Domain.Dtos.Entities;
+using Absence.Domain.Models.Enums;
 using Absence.Domain.Dtos.Queries;
 using AutoMapper;
-using Absence.Domain.Models.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace Absence.Application.Services;
 
@@ -80,6 +79,41 @@ public class AbsenceService : IAbsenceService
             });
         });
     }
+
+    public async Task<IEnumerable<AbsenceView>> Reschedule(RescheduleAbsenceView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+
+        var cancelledAbsence = await _unitOfWork.AbsencesRepository.GetById(view.CancelledAbsenceId);
+
+        if (cancelledAbsence.AbsenceStatusId != (int)AbsenceStatuses.Approved)
+            throw new InvalidOperationException($"Cannot reschedule unapproved absence. Absence Id = {cancelledAbsence.Id}");
+
+        cancelledAbsence.AbsenceStatusId = (int)AbsenceStatuses.Cancelled;
+
+        var newAbsences = _mapper.Map<List<AbsenceDto>>(view.NewAbsences);
+
+        foreach (var absence in newAbsences)
+        {
+            if (absence.DateStart.Date.Year != cancelledAbsence.DateStart.Year)
+                throw new InvalidOperationException($"Cannot reschedule absence in different year. You choose {absence.DateStart.Date.Year} year.");
+
+            absence.ParentAbsenceId = cancelledAbsence.Id;
+        }
+
+        var absences = new List<AbsenceDto>();
+
+        await _unitOfWork.ExecuteInTransactionAsync(async () => 
+        {
+            await _unitOfWork.AbsencesRepository.Update(cancelledAbsence);
+
+            absences = await _unitOfWork.AbsencesRepository.CreateBulk(newAbsences);
+
+            await _employeeStagesService.SetFirstStatus(cancelledAbsence.PId, cancelledAbsence.DateStart.Date.Year);
+        });
+
+        return _mapper.Map<List<AbsenceView>>(absences);
+    }
     
     public async Task<AbsenceView> Update(AbsenceView view)
     {
@@ -93,6 +127,7 @@ public class AbsenceService : IAbsenceService
 
             absence.DateStart = dto.DateStart;
             absence.DateEnd = dto.DateEnd;
+            absence.AbsenceStatusId = (int)AbsenceStatuses.ActiveDraft;
             
             dto = await _unitOfWork.AbsencesRepository.Update(dto);
 

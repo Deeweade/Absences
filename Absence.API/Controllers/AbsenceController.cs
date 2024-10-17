@@ -39,6 +39,16 @@ public class AbsenceController : ControllerBase
 
         return Ok(absence);
     }
+
+    [HttpPost("reschedule")]
+    public async Task<IActionResult> Reschedule(RescheduleAbsenceView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+
+        var absences = await _service.Reschedule(view);
+
+        return Ok(absences);
+    }
     
     [HttpPost("update/{absenceId}")]
     public async Task<IActionResult> Update(int absenceId, AbsenceView view)

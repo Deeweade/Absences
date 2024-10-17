@@ -20,6 +20,9 @@ public class SubstitutionsService : ISubstitutionsService
     public async Task<SubstitutionView> Create(SubstitutionView view)
     {
         ArgumentNullException.ThrowIfNull(view);
+        
+        view.DateStart = view.DateStart ?? DateTime.Now;
+        view.DateEnd = view.DateEnd ?? DateTime.MaxValue;
 
         var dto = _mapper.Map<SubstitutionDto>(view);
 
