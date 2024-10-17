@@ -10,6 +10,7 @@ using Absence.Infrastructure.Data;
 using Absence.API.Middlewares;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 
 #region EnvironmentConfiguring
@@ -36,7 +37,6 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables();
-
 
 #endregion
 
@@ -97,7 +97,10 @@ builder.Services.AddAutoMapper(typeof(InfrastructureMappingProfile), typeof(Appl
 #endregion
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Absence API", Version = "v1" });
+});
 
 var corsPolicyName = "AllowCors";
 
@@ -111,7 +114,6 @@ builder.Services.AddCors(options =>
             .SetIsOriginAllowed(_ => true);
     });
 });
-
 
 var app = builder.Build();
 
@@ -135,19 +137,18 @@ else
     app.UseHsts();
 }
 
-app.UseStaticFiles();
-app.UseRouting();
-
-app.UseCors(corsPolicyName);
-
-app.UseAuthentication();
-app.UseAuthorization();
-
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    c.RoutePrefix = string.Empty;
 });
+app.UseRouting();
+
+app.UseCors(corsPolicyName);
+
+//app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

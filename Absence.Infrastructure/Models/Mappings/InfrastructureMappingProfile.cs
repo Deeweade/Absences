@@ -12,6 +12,7 @@ public class InfrastructureMappingProfile : Profile
         CreateMap<PlanningProcess, PlanningProcessDto>().ReverseMap();
         CreateMap<EmployeeStage, EmployeeStageDto>().ReverseMap();
         CreateMap<AbsenceStatus, AbsenceStatusDto>().ReverseMap();
+        CreateMap<SystemProcess, SystemProcessDto>().ReverseMap();
         CreateMap<ProcessStage, ProcessStageDto>().ReverseMap();
         CreateMap<VacationDays, VacationDaysDto>().ReverseMap();
         CreateMap<Substitution, SubstitutionDto>().ReverseMap();
@@ -25,5 +26,8 @@ public class InfrastructureMappingProfile : Profile
         CreateMap<AbsenceDto, Domain.Models.Entities.Absence>()
             .ForMember(dest => dest.AbsenceStatus, opt => opt.Ignore())
             .ForMember(dest => dest.AbsenceType, opt => opt.Ignore());
+
+        CreateMap<ProcessStage, ProcessStageDto>()
+            .ForMember(dest => dest.Process, opt => opt.MapFrom(src => src.Process));
     }
 }

@@ -71,7 +71,7 @@ public class AbsenceService : IAbsenceService
             _unitOfWork.AbsencesRepository.UpdateBulk(absences);
 
             //проставляем этапы сотрудникам в зависимости от статусов отсутствий и типов процессов
-            await _employeeStagesService.UpdateStagesBulk(new UpdateStagesBulkView
+            await _employeeStagesService.UpdateBulk(new UpdateStagesBulkView
             {
                 PIds = absences.Select(x => x.PId).Distinct().ToList(),
                 Year = absences.FirstOrDefault().DateStart.Date.Year,

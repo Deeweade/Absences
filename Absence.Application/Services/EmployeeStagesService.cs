@@ -84,7 +84,7 @@ public class EmployeeStagesService : IEmployeeStagesService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task UpdateStagesBulk(UpdateStagesBulkView view)
+    public async Task UpdateBulk(UpdateStagesBulkView view)
     {
         ArgumentNullException.ThrowIfNull(view);
 
@@ -96,7 +96,30 @@ public class EmployeeStagesService : IEmployeeStagesService
 
         foreach(var employeeStage in employeesStages)
         {
-            if (view.AbsenceStatusId == (int)AbsenceStatuses.Approved)
+            if (view.AbsenceStatusId == (int)AbsenceStatuses.Approval)
+            {
+                var remainingDays = (await _unitOfWork.VacationDaysRepository.GetAvailableDays(employeeStage.PId, employeeStage.Stage.Year, true))
+                    .Sum(x => x.DaysNumber);
+
+                if (remainingDays == 0)
+                {
+                    employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
+                        (int)ProcessStages.CorrectionApproval
+                        : (int)ProcessStages.YearPlanningApproval;
+                }
+                else
+                {
+                    var vacationDaysNumber = await _unitOfWork.AbsencesRepository.GetVacationDaysSum(employeeStage.PId, employeeStage.Stage.Year);
+
+                    if (vacationDaysNumber == remainingDays)
+                    {
+                        employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
+                        (int)ProcessStages.CorrectionApproval
+                        : (int)ProcessStages.YearPlanningApproval;
+                    }
+                }
+            }
+            else if (view.AbsenceStatusId == (int)AbsenceStatuses.Approved)
             {
                 var remainingDays = (await _unitOfWork.VacationDaysRepository.GetAvailableDays(employeeStage.PId, employeeStage.Stage.Year, true))
                     .Sum(x => x.DaysNumber);

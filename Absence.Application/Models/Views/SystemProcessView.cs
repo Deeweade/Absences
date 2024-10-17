@@ -1,6 +1,6 @@
 namespace Absence.Application.Models.Views;
 
-public class StatusView : BaseView
+public class SystemProcessView : BaseView
 {
     public string Title { get; set; }
 }

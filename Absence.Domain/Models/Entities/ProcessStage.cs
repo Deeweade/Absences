@@ -1,5 +1,3 @@
-using Absence.Domain.Models.Entities;
-
 namespace Absence.Domain.Models.Entities;
 
 public class ProcessStage : BaseEntity

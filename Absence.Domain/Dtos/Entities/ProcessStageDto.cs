@@ -1,5 +1,3 @@
-using Absence.Domain.Models.Entities;
-
 namespace Absence.Domain.Dtos.Entities;
 
 public class ProcessStageDto : BaseDto
@@ -8,5 +6,5 @@ public class ProcessStageDto : BaseDto
     public int Year { get; set; }
     public int ProcessId { get; set; }
 
-    public SystemProcess Process { get; set; }
+    public SystemProcessDto Process { get; set; }
 }
