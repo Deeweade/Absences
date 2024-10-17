@@ -4,5 +4,6 @@ public class SubstitutionDto : BaseDto
 {
     public string EmployeePId { get; set; }
     public string SubstitutePId { get; set; }
+    public DateTime DateStart { get; set; }
     public DateTime DateEnd { get; set; }
 }
