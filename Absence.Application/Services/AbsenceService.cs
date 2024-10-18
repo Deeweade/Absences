@@ -5,6 +5,7 @@ using Absence.Application.Models.Queries;
 using Absence.Application.Models.Views;
 using Absence.Domain.Dtos.Entities;
 using Absence.Domain.Models.Enums;
+using Absence.Application.Helpers;
 using Absence.Domain.Dtos.Queries;
 using AutoMapper;
 
@@ -46,8 +47,8 @@ public class AbsenceService : IAbsenceService
         var remainingDaysNumber = (await _vacationDaysService.GetAvailableDays(view.PId, view.DateStart.Year))
             .Sum(x => x.DaysNumber);
 
-        // if (remainingDaysNumber < dto.DateEnd.Subtract(dto.DateStart).Days)
-        //     throw new InvalidOperationException("")
+        if (remainingDaysNumber < dto.DateEnd.Subtract(dto.DateStart).Days)
+            ExceptionHelper.ThrowContextualException<InvalidOperationException>(ExceptionalEvents.AbsenceTooLong);
 
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
@@ -96,7 +97,7 @@ public class AbsenceService : IAbsenceService
         var cancelledAbsence = await _unitOfWork.AbsencesRepository.GetById(view.CancelledAbsenceId);
 
         if (cancelledAbsence.AbsenceStatusId != (int)AbsenceStatuses.Approved)
-            throw new InvalidOperationException($"Cannot reschedule unapproved absence. Absence Id = {cancelledAbsence.Id}");
+            ExceptionHelper.ThrowContextualException<InvalidOperationException>(ExceptionalEvents.ReschedullingUnapprovedAbsence);
 
         cancelledAbsence.AbsenceStatusId = (int)AbsenceStatuses.Cancelled;
 
@@ -105,7 +106,7 @@ public class AbsenceService : IAbsenceService
         foreach (var absence in newAbsences)
         {
             if (absence.DateStart.Date.Year != cancelledAbsence.DateStart.Year)
-                throw new InvalidOperationException($"Cannot reschedule absence in different year. You choose {absence.DateStart.Date.Year} year.");
+                ExceptionHelper.ThrowContextualException<InvalidOperationException>(ExceptionalEvents.ReschedullingInDifferentYear);
 
             absence.ParentAbsenceId = cancelledAbsence.Id;
         }
@@ -153,8 +154,8 @@ public class AbsenceService : IAbsenceService
 
         var absence = await _unitOfWork.AbsencesRepository.GetById(id);
 
-        if (absence.AbsenceStatusId != (int)AbsenceStatuses.ActiveDraft) 
-            throw new InvalidOperationException($"Cannot delete an absence with an AbsenceStatusId={absence.AbsenceStatusId}");
+        if (absence.AbsenceStatusId != (int)AbsenceStatuses.ActiveDraft)
+            ExceptionHelper.ThrowContextualException<InvalidOperationException>(ExceptionalEvents.RemovingNotDraftAbsence);
 
         await _unitOfWork.AbsencesRepository.Delete(id);
         await _unitOfWork.SaveChangesAsync();

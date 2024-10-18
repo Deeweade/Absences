@@ -1,4 +1,4 @@
-using Absence.Application.Exceptions;
+using Absence.Domain.Models.Exceptions;
 using Absence.API.Models.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -37,20 +37,42 @@ public class ExceptionHandlingMiddleware
             _ => StatusCodes.Status500InternalServerError
         };
 
-        var response = new
+        if (exception is ContextualException contextualException)
         {
-            errors = new List<string>()
-        };
+            var response = new
+            {
+                stackTrace = $"{Path.GetFileName(contextualException.ClassName)} at method '{contextualException.MethodName}' at line {contextualException.LineNumber}",
+                error = contextualException.InnerException.GetType().Name,
+                message = contextualException.InnerException.Message,
+                innerMessages = GetInnerMessages(contextualException.InnerException.InnerException)
+            };
+
+            await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
+        }
+        else
+        {
+            var response = new
+            {
+                innerMessages = GetInnerMessages(exception)
+            };
+
+            await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
+        }
+    }
+
+    private static List<string> GetInnerMessages(Exception exception)
+    {
+        var innerMessages = new List<string>();
 
         var innerException = exception;
 
         while (innerException is not null)
         {
-            response.errors.Add(innerException.Message);
+            innerMessages.Add(innerException.Message);
 
             innerException = innerException.InnerException;
         }
 
-        await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
+        return innerMessages;
     }
 }

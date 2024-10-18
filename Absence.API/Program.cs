@@ -126,11 +126,7 @@ if (app.Environment.IsDevelopment())
     app.UseMiddleware<DevAuthMiddleware>();
 }
 
-if (!app.Environment.IsProduction())
-{
-    app.UseDeveloperExceptionPage();
-}
-else
+if (app.Environment.IsProduction())
 {
     app.UseHttpsRedirection();
     app.UseExceptionHandler("/Home/Error");
