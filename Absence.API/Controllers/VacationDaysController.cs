@@ -20,7 +20,7 @@ namespace Absence.API.Controllers
         {
             ArgumentNullException.ThrowIfNullOrEmpty(pId);
 
-            return await _service.GetAvailableDaysNumber(pId, year);
+            return await _service.GetAvailableDays(pId, year);
         }
     }
 }

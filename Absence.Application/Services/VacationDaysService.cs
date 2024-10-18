@@ -1,9 +1,9 @@
 using Absence.Application.Interfaces.Services;
 using Absence.Domain.Interfaces.Repositories;
 using Absence.Application.Models.Views;
+using Absence.Domain.Models.Enums;
 using Absence.Domain.Dtos.Queries;
 using AutoMapper;
-using Absence.Domain.Models.Enums;
 
 namespace Absence.Application.Services;
 
@@ -18,7 +18,7 @@ public class VacationDaysService : IVacationDaysService
         _mapper = mapper;
     }
 
-    public async Task<List<VacationDaysView>> GetAvailableDaysNumber(string pId, int year)
+    public async Task<List<VacationDaysView>> GetAvailableDays(string pId, int year)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(pId);
 
@@ -38,7 +38,9 @@ public class VacationDaysService : IVacationDaysService
                 .Select(x => x.DateEnd.Subtract(x.DateStart).Days)
                 .Sum();
 
-            typeAvailableDays.DaysNumber = typeAvailableDays.DaysNumber - unavailableDays;
+            var subtraction = typeAvailableDays.DaysNumber - unavailableDays;
+
+            typeAvailableDays.DaysNumber = subtraction < 0 ? 0 : subtraction;
         }
 
         return _mapper.Map<List<VacationDaysView>>(availableDaysByAbsenceTypes);

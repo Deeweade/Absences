@@ -13,14 +13,17 @@ namespace Absence.Application.Services;
 public class AbsenceService : IAbsenceService
 {
     private readonly IEmployeeStagesService _employeeStagesService;
+    private readonly IVacationDaysService _vacationDaysService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public AbsenceService(IUnitOfWork unitOfWork, IMapper mapper, IEmployeeStagesService employeeStagesService)
+    public AbsenceService(IUnitOfWork unitOfWork, IMapper mapper, IEmployeeStagesService employeeStagesService, 
+        IVacationDaysService vacationDaysService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _employeeStagesService = employeeStagesService;
+        _vacationDaysService = vacationDaysService;
     }
 
     public async Task<IEnumerable<AbsenceView>> GetByQuery(AbsenceQueryView query)
@@ -40,12 +43,18 @@ public class AbsenceService : IAbsenceService
 
         var dto = _mapper.Map<AbsenceDto>(view);
 
+        var remainingDaysNumber = (await _vacationDaysService.GetAvailableDays(view.PId, view.DateStart.Year))
+            .Sum(x => x.DaysNumber);
+
+        // if (remainingDaysNumber < dto.DateEnd.Subtract(dto.DateStart).Days)
+        //     throw new InvalidOperationException("")
+
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
             dto = await _unitOfWork.AbsencesRepository.Create(dto);
 
             //проставляем этап сотруднику
-            await _employeeStagesService.CreateOrSetFirstStatus(dto.PId, dto.DateStart.Date.Year);
+            await _employeeStagesService.CreateOrSetFirstStatus(dto.PId, dto.DateStart.Year);
         });
 
         return _mapper.Map<AbsenceView>(dto);

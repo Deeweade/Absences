@@ -9,5 +9,5 @@ public interface IVacationDaysService
     /// </summary>
     /// <param name="pId">Табельный номер сотрудника</param>
     /// <param name="year">Год</param>
-    Task<List<VacationDaysView>> GetAvailableDaysNumber(string pId, int year);
+    Task<List<VacationDaysView>> GetAvailableDays(string pId, int year);
 }
