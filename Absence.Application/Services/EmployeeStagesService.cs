@@ -94,6 +94,8 @@ public class EmployeeStagesService : IEmployeeStagesService
                 Year = view.Year
             });
 
+        throw new Exception($"PIds: {view.PIds.FirstOrDefault()}, year: {view.Year}");
+
         foreach(var employeeStage in employeesStages)
         {
             if (view.AbsenceStatusId == (int)AbsenceStatuses.Approval)
