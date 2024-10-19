@@ -53,6 +53,7 @@ public class ExceptionHandlingMiddleware
         {
             var response = new
             {
+                stackTrace = exception.StackTrace,
                 innerMessages = GetInnerMessages(exception)
             };
 

@@ -132,6 +132,10 @@ if (app.Environment.IsProduction())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+else
+{
+    app.UseDeveloperExceptionPage();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>

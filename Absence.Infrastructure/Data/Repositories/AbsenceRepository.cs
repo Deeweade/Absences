@@ -35,14 +35,17 @@ public class AbsenceRepository : IAbsenceRepository
         ArgumentNullException.ThrowIfNullOrEmpty(pId);
         ArgumentOutOfRangeException.ThrowIfLessThan(year, 2024);
 
-        return await _context.Absences
+        var absences = await _context.Absences
             .AsNoTracking()
             .Where(x => x.PId.Equals(pId)
                 && x.DateStart.Year == year
-                && x.AbsenceTypeId == "0101"
-                || x.AbsenceTypeId == "0105")
+                && (x.AbsenceTypeId == "0101"
+                || x.AbsenceTypeId == "0105"))
+            .ToListAsync();
+
+        return absences
             .Select(x => (x.DateEnd - x.DateStart).Days)
-            .SumAsync();
+            .Sum();
     }
 
     public async Task<List<AbsenceDto>> GetByQuery(AbsenceQueryDto queryDto)

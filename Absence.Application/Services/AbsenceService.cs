@@ -139,7 +139,7 @@ public class AbsenceService : IAbsenceService
             absence.DateEnd = dto.DateEnd;
             absence.AbsenceStatusId = (int)AbsenceStatuses.ActiveDraft;
             
-            dto = await _unitOfWork.AbsencesRepository.Update(dto);
+            dto = await _unitOfWork.AbsencesRepository.Update(absence);
 
             //проставляем этап сотруднику
             await _employeeStagesService.CreateOrSetFirstStatus(absence.PId, absence.DateStart.Date.Year);
