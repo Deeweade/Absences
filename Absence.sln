@@ -11,6 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Absence.Domain", "Absence.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Absence.Infrastructure", "Absence.Infrastructure\Absence.Infrastructure.csproj", "{81E37F29-A807-4963-B331-B7DCA10C430D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E21B2367-7752-4FF2-BBC8-53D02AE874F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Absence.Application.Tests", "Tests\Absence.Application.Tests\Absence.Application.Tests.csproj", "{3E3F8B84-976C-45A2-802B-3098528845DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Absence.Infrastructure.Tests", "Tests\Absence.Infrastructure.Tests\Absence.Infrastructure.Tests.csproj", "{038D44B3-F720-4015-8478-2065B683D25A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,8 +39,20 @@ Global
 		{81E37F29-A807-4963-B331-B7DCA10C430D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81E37F29-A807-4963-B331-B7DCA10C430D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81E37F29-A807-4963-B331-B7DCA10C430D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E3F8B84-976C-45A2-802B-3098528845DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E3F8B84-976C-45A2-802B-3098528845DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E3F8B84-976C-45A2-802B-3098528845DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E3F8B84-976C-45A2-802B-3098528845DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{038D44B3-F720-4015-8478-2065B683D25A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{038D44B3-F720-4015-8478-2065B683D25A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{038D44B3-F720-4015-8478-2065B683D25A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{038D44B3-F720-4015-8478-2065B683D25A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3E3F8B84-976C-45A2-802B-3098528845DA} = {E21B2367-7752-4FF2-BBC8-53D02AE874F8}
+		{038D44B3-F720-4015-8478-2065B683D25A} = {E21B2367-7752-4FF2-BBC8-53D02AE874F8}
 	EndGlobalSection
 EndGlobal

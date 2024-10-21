@@ -67,12 +67,15 @@ public class UnitOfWork : IUnitOfWork
         {
             await operation();
             
-            await SaveChangesAsync();
-            await CommitAsync();
+            await _context.SaveChangesAsync();
+            await _transaction?.CommitAsync();
         }
         catch
         {
-            await RollbackAsync();
+            await _transaction?.RollbackAsync();
+            await _transaction.DisposeAsync();
+            _transaction = null;
+
             throw;
         }
     }
