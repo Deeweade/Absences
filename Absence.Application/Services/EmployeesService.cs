@@ -84,6 +84,13 @@ public class EmployeesService : IEmployeesService
             .Select(x => x.Value)
             .ToList();
 
+        var deputy = subordinates.FirstOrDefault(x => x.PId.Equals(pId));
+
+        if (deputy is not null)
+        {
+            subordinates.Remove(deputy);
+        }
+
         return _mapper.Map<List<PositionAndEmployeesView>>(subordinates);
     }
 }
