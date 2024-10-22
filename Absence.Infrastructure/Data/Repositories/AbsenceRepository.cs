@@ -54,7 +54,8 @@ public class AbsenceRepository : IAbsenceRepository
 
         var query = _context.Absences
             .AsNoTracking()
-            .ProjectTo<AbsenceDto>(_mapper.ConfigurationProvider);
+            .ProjectTo<AbsenceDto>(_mapper.ConfigurationProvider)
+            .Where(x => x.AbsenceStatusId != (int)AbsenceStatuses.Cancelled);
 
         if (queryDto.Ids is not null && queryDto.Ids.Any())
         {
