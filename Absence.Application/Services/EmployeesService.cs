@@ -2,6 +2,7 @@ using Absence.Application.Interfaces.Services;
 using Absence.Domain.Interfaces.Repositories;
 using Absence.Application.Models.Views;
 using AutoMapper;
+using Absence.Domain.Dtos.Entities;
 
 namespace Absence.Application.Services;
 
@@ -33,6 +34,8 @@ public class EmployeesService : IEmployeesService
 
         var peers = await _unitOfWork.EmployeesRepository.GetSubordinates(employee.ManagerPId);
 
+        if (peers is null || !peers.Any()) return null;
+
         employee = peers.FirstOrDefault(x => x.PId == pId);
 
         peers.Remove(employee);
@@ -45,6 +48,8 @@ public class EmployeesService : IEmployeesService
         ArgumentNullException.ThrowIfNullOrEmpty(pId);
 
         var subordinates = await _unitOfWork.EmployeesRepository.GetSubordinates(pId);
+
+        if (subordinates is null || !subordinates.Any()) subordinates = new List<PositionAndEmployeesDto>();
 
         if (includeSubstitutions)
         {
