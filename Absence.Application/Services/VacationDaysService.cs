@@ -35,7 +35,7 @@ public class VacationDaysService : IVacationDaysService
         {
             var unavailableDays = activeAbsences
                 .Where(x => x.AbsenceTypeId.Equals(typeAvailableDays.AbsenceTypeId))
-                .Select(x => x.DateEnd.Subtract(x.DateStart).Days)
+                .Select(x => x.DateEnd.Subtract(x.DateStart).Days + 1)
                 .Sum();
 
             var subtraction = typeAvailableDays.DaysNumber - unavailableDays;

@@ -32,6 +32,8 @@ public class EmployeesService : IEmployeesService
 
         var employee = await _unitOfWork.EmployeesRepository.GetByPId(pId);
 
+        if (employee.ManagerPId is null) return null;
+
         var peers = await _unitOfWork.EmployeesRepository.GetSubordinates(employee.ManagerPId);
 
         if (peers is null || !peers.Any()) return null;
