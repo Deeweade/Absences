@@ -50,6 +50,9 @@ public class PositionAndEmployees
     [Column("MAIL")]
     public string Mail { get; set; }
 
+    [Column("MANAGER_PID")]
+    public string ManagerPId { get; set; }
+
     [Column("CITY_NAME")]
     public string CityName { get; set; }
 

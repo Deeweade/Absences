@@ -7,4 +7,5 @@ public interface IEmployeesRepository
 {
     Task<PositionAndEmployeesDto> GetByPId(string pId);
     Task<PositionAndEmployeesDto> GetByLogin(string login);
+    Task<List<PositionAndEmployeesDto>> GetSubordinates(string managerPId);
 }

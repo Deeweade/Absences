@@ -37,4 +37,15 @@ public class EmployeesRepository : IEmployeesRepository
             .ProjectTo<PositionAndEmployeesDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(x => x.Mail.Contains(login));
     }
+
+    public async Task<List<PositionAndEmployeesDto>> GetSubordinates(string managerPId)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(managerPId);
+
+        return await _context.PositionAndEmployees
+            .AsNoTracking()
+            .ProjectTo<PositionAndEmployeesDto>(_mapper.ConfigurationProvider)
+            .Where(x => x.ManagerPId.Equals(managerPId))
+            .ToListAsync();
+    }
 }

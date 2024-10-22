@@ -25,18 +25,45 @@ public class EmployeesService : IEmployeesService
         return _mapper.Map<PositionAndEmployeesView>(employee);
     }
 
-    // public async Task<List<PositionAndEmployeesView>> GetPeers(string pId)
-    // {
-    //     ArgumentNullException.ThrowIfNullOrEmpty(pId);
+    public async Task<List<PositionAndEmployeesView>> GetPeers(string pId)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(pId);
 
-    //     var employee = await _unitOfWork.EmployeesRepository.GetByPId(pId);
+        var employee = await _unitOfWork.EmployeesRepository.GetByPId(pId);
 
-    //     // var peers = await _unitOfWork.EmployeesRepository.GetByOId(employee.OId);
+        var peers = await _unitOfWork.EmployeesRepository.GetSubordinates(employee.ManagerPId);
 
-    //     employee = peers.FirstOrDefault(x => x.PId == pId);
+        employee = peers.FirstOrDefault(x => x.PId == pId);
 
-    //     peers.Remove(employee);
+        peers.Remove(employee);
 
-    //     return _mapper.Map<List<PositionAndEmployeesView>>(peers);
-    // }
+        return _mapper.Map<List<PositionAndEmployeesView>>(peers);
+    }
+
+    public async Task<List<PositionAndEmployeesView>> GetSubordinates(string pId, bool includeSubstitutions)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(pId);
+
+        var subordinates = await _unitOfWork.EmployeesRepository.GetSubordinates(pId);
+
+        if (includeSubstitutions)
+        {
+            var substitutions = await _unitOfWork.SubstitutionsRepository.GetByDeputyPId(pId);
+
+            foreach (var substitution in substitutions)
+            {
+                var substitutionSubordinates = await _unitOfWork.EmployeesRepository.GetSubordinates(substitution.EmployeePId);
+
+                subordinates.AddRange(substitutionSubordinates);
+            }
+        }
+
+        //исключаем дубли
+        subordinates = subordinates.GroupBy(x => x.PId)
+            .ToDictionary(x => x.Key, x => x.FirstOrDefault())
+            .Select(x => x.Value)
+            .ToList();
+
+        return _mapper.Map<List<PositionAndEmployeesView>>(subordinates);
+    }
 }

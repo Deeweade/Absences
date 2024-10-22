@@ -3,6 +3,8 @@ using Absence.Infrastructure.Data.Contexts;
 using Absence.Domain.Models.Entities;
 using Absence.Domain.Dtos.Entities;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper.QueryableExtensions;
 
 namespace Absence.Infrastructure.Data.Repositories;
 
@@ -28,5 +30,16 @@ public class SubstitutionsRepository : ISubstitutionsRepository
         await _context.SaveChangesAsync();
 
         return _mapper.Map<SubstitutionDto>(entity);
+    }
+
+    public async Task<List<SubstitutionDto>> GetByDeputyPId(string deputyPId)
+    {
+        ArgumentNullException.ThrowIfNull(deputyPId);
+
+        return await _context.Substitutions
+            .AsNoTracking()
+            .ProjectTo<SubstitutionDto>(_mapper.ConfigurationProvider)
+            .Where(x => x.DeputyPId.Equals(deputyPId))
+            .ToListAsync();
     }
 }
