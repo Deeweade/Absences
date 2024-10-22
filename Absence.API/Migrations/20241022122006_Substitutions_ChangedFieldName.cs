@@ -14,21 +14,11 @@ namespace Absence.API.Migrations
                 name: "SubstitutePId",
                 table: "Substitutions",
                 newName: "DeputyPId");
-
-            migrationBuilder.AddColumn<string>(
-                name: "MANAGER_PID",
-                table: "Position_And_Employees_On_Day",
-                type: "nvarchar(max)",
-                nullable: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "MANAGER_PID",
-                table: "Position_And_Employees_On_Day");
-
             migrationBuilder.RenameColumn(
                 name: "DeputyPId",
                 table: "Substitutions",
