@@ -1,8 +1,8 @@
 using Absence.Application.Interfaces.Services;
 using Absence.Domain.Interfaces.Repositories;
 using Absence.Application.Models.Views;
-using AutoMapper;
 using Absence.Domain.Dtos.Entities;
+using AutoMapper;
 
 namespace Absence.Application.Services;
 
@@ -24,6 +24,19 @@ public class EmployeesService : IEmployeesService
         var employee = await _unitOfWork.EmployeesRepository.GetByLogin(login);
 
         return _mapper.Map<PositionAndEmployeesView>(employee);
+    }
+
+    public async Task<PositionAndEmployeesView> GetManager(string pId)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(pId);
+
+        var employee = await _unitOfWork.EmployeesRepository.GetByPId(pId);
+
+        if (employee.ManagerPId is null) return null;
+
+        var manager = await _unitOfWork.EmployeesRepository.GetByPId(employee.ManagerPId);
+
+        return _mapper.Map<PositionAndEmployeesView>(manager);
     }
 
     public async Task<List<PositionAndEmployeesView>> GetPeers(string pId)

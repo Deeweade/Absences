@@ -38,5 +38,13 @@ namespace Absence.API.Controllers
 
             return await _service.GetSubordinates(pId, includeSubstitutions);
         }
+
+        [HttpGet("manager/{pId}")]
+        public async Task<PositionAndEmployeesView> GetManager(string pId)
+        {
+            ArgumentNullException.ThrowIfNullOrEmpty(pId);
+
+            return await _service.GetManager(pId);
+        }
     }
 }
