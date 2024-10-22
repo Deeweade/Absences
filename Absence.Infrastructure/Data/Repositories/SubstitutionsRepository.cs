@@ -32,14 +32,16 @@ public class SubstitutionsRepository : ISubstitutionsRepository
         return _mapper.Map<SubstitutionDto>(entity);
     }
 
-    public async Task<List<SubstitutionDto>> GetByDeputyPId(string deputyPId)
+    public async Task<List<SubstitutionDto>> GetCurrentByDeputyPId(string deputyPId)
     {
         ArgumentNullException.ThrowIfNull(deputyPId);
 
         return await _context.Substitutions
             .AsNoTracking()
             .ProjectTo<SubstitutionDto>(_mapper.ConfigurationProvider)
-            .Where(x => x.DeputyPId.Equals(deputyPId))
+            .Where(x => x.DeputyPId.Equals(deputyPId)
+                && x.DateStart <= DateTime.Now
+                && x.DateEnd >= DateTime.Now)
             .ToListAsync();
     }
 }

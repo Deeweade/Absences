@@ -68,7 +68,7 @@ public class EmployeesService : IEmployeesService
 
         if (includeSubstitutions)
         {
-            var substitutions = await _unitOfWork.SubstitutionsRepository.GetByDeputyPId(pId);
+            var substitutions = await _unitOfWork.SubstitutionsRepository.GetCurrentByDeputyPId(pId);
 
             foreach (var substitution in substitutions)
             {
