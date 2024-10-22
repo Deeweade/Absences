@@ -45,7 +45,8 @@ public class EmployeesRepository : IEmployeesRepository
         return await _context.PositionAndEmployees
             .AsNoTracking()
             .ProjectTo<PositionAndEmployeesDto>(_mapper.ConfigurationProvider)
-            .Where(x => x.ManagerPId.Equals(managerPId))
+            .Where(x => x.ManagerPId.Equals(managerPId)
+                && !string.IsNullOrEmpty(x.PId))
             .ToListAsync();
     }
 }
