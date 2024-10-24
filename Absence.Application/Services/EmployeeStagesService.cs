@@ -4,6 +4,7 @@ using Absence.Application.Models.Actions;
 using Absence.Domain.Dtos.Entities;
 using Absence.Domain.Models.Enums;
 using Absence.Domain.Dtos.Queries;
+using Absence.Application.Helpers;
 
 namespace Absence.Application.Services;
 
@@ -98,55 +99,43 @@ public class EmployeeStagesService : IEmployeeStagesService
         {
             if (view.AbsenceStatusId == (int)AbsenceStatuses.Approval)
             {
-                var remainingDays = (await _unitOfWork.VacationDaysRepository.GetAvailableDays(employeeStage.PId, employeeStage.Stage.Year, true))
+                var remainingDays = (await _unitOfWork.VacationDaysRepository.GetAll(employeeStage.PId, employeeStage.Stage.Year, true))
                     .Sum(x => x.DaysNumber);
 
-                if (remainingDays == 0)
-                {
-                    employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
-                        (int)ProcessStages.CorrectionApproval
-                        : (int)ProcessStages.YearPlanningApproval;
-                }
-                else
-                {
-                    var vacationDaysNumber = await _unitOfWork.AbsencesRepository.GetVacationDaysSum(employeeStage.PId, employeeStage.Stage.Year);
+                var vacationDaysNumber = await _unitOfWork.AbsencesRepository.GetAbsencesDaysSum(employeeStage.PId, employeeStage.Stage.Year);
+                
+                if (vacationDaysNumber != remainingDays)
+                    ExceptionHelper.ThrowContextualException<InvalidOperationException>(ExceptionalEvents.NotAllDaysScheduled);
+                    
+                employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
+                    (int)ProcessStages.CorrectionApproval
+                    : (int)ProcessStages.YearPlanningApproval;
 
-                    if (vacationDaysNumber == remainingDays)
-                    {
-                        employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
-                        (int)ProcessStages.CorrectionApproval
-                        : (int)ProcessStages.YearPlanningApproval;
-                    }
-                }
+                await _sender.Send_AbsencesRequireApproval(employeeStage.PId);
             }
             else if (view.AbsenceStatusId == (int)AbsenceStatuses.Approved)
             {
-                var remainingDays = (await _unitOfWork.VacationDaysRepository.GetAvailableDays(employeeStage.PId, employeeStage.Stage.Year, true))
+                var remainingDays = (await _unitOfWork.VacationDaysRepository.GetAll(employeeStage.PId, employeeStage.Stage.Year, true))
                     .Sum(x => x.DaysNumber);
 
-                if (remainingDays == 0)
-                {
-                    employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
-                        (int)ProcessStages.CorrectionApproved
-                        : (int)ProcessStages.YearPlanningApproved;
-                }
-                else
-                {
-                    var vacationDaysNumber = await _unitOfWork.AbsencesRepository.GetVacationDaysSum(employeeStage.PId, employeeStage.Stage.Year);
+                var vacationDaysNumber = await _unitOfWork.AbsencesRepository.GetAbsencesDaysSum(employeeStage.PId, employeeStage.Stage.Year);
+                
+                if (vacationDaysNumber != remainingDays)
+                    ExceptionHelper.ThrowContextualException<InvalidOperationException>(ExceptionalEvents.NotAllDaysScheduled);
+                    
+                employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
+                    (int)ProcessStages.CorrectionApproved
+                    : (int)ProcessStages.YearPlanningApproved;
 
-                    if (vacationDaysNumber == remainingDays)
-                    {
-                        employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
-                        (int)ProcessStages.CorrectionApproved
-                        : (int)ProcessStages.YearPlanningApproved;
-                    }
-                }
+                await _sender.Send_AbsencesApproved(employeeStage.PId);
             }
             else if (view.AbsenceStatusId == (int)AbsenceStatuses.Rejected)
             {
                 employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
                     (int)ProcessStages.Correction
                     : (int)ProcessStages.YearPlanning;
+
+                await _sender.Send_AbsencesRejected(employeeStage.PId);
             }
             else
             {

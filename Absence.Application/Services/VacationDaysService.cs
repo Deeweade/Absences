@@ -18,11 +18,20 @@ public class VacationDaysService : IVacationDaysService
         _mapper = mapper;
     }
 
-    public async Task<List<VacationDaysView>> GetAvailableDays(string pId, int year)
+    public async Task<List<VacationDaysView>> GetAll(string pId, int year)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(pId);
 
-        var availableDaysByAbsenceTypes = await _unitOfWork.VacationDaysRepository.GetAvailableDays(pId, year, true);
+        var days = await _unitOfWork.VacationDaysRepository.GetAll(pId, year, true);
+
+        return _mapper.Map<List<VacationDaysView>>(days);
+    }
+
+    public async Task<List<VacationDaysView>> GetRemainingDays(string pId, int year)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(pId);
+
+        var availableDaysByAbsenceTypes = await _unitOfWork.VacationDaysRepository.GetAll(pId, year, true);
 
         var activeAbsences = await _unitOfWork.AbsencesRepository.GetByQuery(new AbsenceQueryDto
             {

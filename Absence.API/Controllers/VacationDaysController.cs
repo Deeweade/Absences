@@ -15,12 +15,20 @@ namespace Absence.API.Controllers
             _service = service;
         }
 
-        [HttpGet("availableDays/{pId}/{year}")]
-        public async Task<List<VacationDaysView>> GetAvailableDaysNumber(string pId, int year)
+        [HttpGet("remaining/{pId}/{year}")]
+        public async Task<List<VacationDaysView>> GetRemainingDays(string pId, int year)
         {
             ArgumentNullException.ThrowIfNullOrEmpty(pId);
 
-            return await _service.GetAvailableDays(pId, year);
+            return await _service.GetRemainingDays(pId, year);
+        }
+
+        [HttpGet("all/{pId}/{year}")]
+        public async Task<List<VacationDaysView>> GetAll(string pId, int year)
+        {
+            ArgumentNullException.ThrowIfNullOrEmpty(pId);
+
+            return await _service.GetAll(pId, year);
         }
     }
 }

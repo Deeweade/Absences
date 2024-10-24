@@ -44,7 +44,7 @@ public class AbsenceService : IAbsenceService
 
         var dto = _mapper.Map<AbsenceDto>(view);
 
-        var remainingDaysNumber = (await _vacationDaysService.GetAvailableDays(view.PId, view.DateStart.Year))
+        var remainingDaysNumber = (await _vacationDaysService.GetRemainingDays(view.PId, view.DateStart.Year))
             .Sum(x => x.DaysNumber);
 
         if (remainingDaysNumber < dto.DateEnd.Subtract(dto.DateStart).Days)
