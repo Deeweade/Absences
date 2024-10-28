@@ -1,7 +1,6 @@
 using Absence.Application.Interfaces.Services;
 using Absence.Application.Models.Actions;
 using Absence.Application.Models.Queries;
-using Absence.Application.Models.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +30,7 @@ public class AbsenceController : ControllerBase
     }
 
     [HttpPost("create")]
-    public async Task<IActionResult> Create(AbsenceView view)
+    public async Task<IActionResult> Create(CreateAbsenceView view)
     {
         ArgumentNullException.ThrowIfNull(view);
 
@@ -51,7 +50,7 @@ public class AbsenceController : ControllerBase
     }
     
     [HttpPost("update/{absenceId}")]
-    public async Task<IActionResult> Update(int absenceId, AbsenceView view)
+    public async Task<IActionResult> Update(int absenceId, UpdateAbsenceView view)
     {
         ArgumentNullException.ThrowIfNull(view);
         

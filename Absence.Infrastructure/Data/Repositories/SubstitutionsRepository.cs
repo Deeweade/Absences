@@ -18,18 +18,17 @@ public class SubstitutionsRepository : ISubstitutionsRepository
         _context = context;
         _mapper = mapper;
     }
-
-    public async Task<SubstitutionDto> Create(SubstitutionDto dto)
+    
+    public async Task<SubstitutionDto> Get(string employeePId, string deputyPId)
     {
-        ArgumentNullException.ThrowIfNull(dto);
+        ArgumentNullException.ThrowIfNull(employeePId);
+        ArgumentNullException.ThrowIfNull(deputyPId);
 
-        var entity = _mapper.Map<Substitution>(dto);
-
-        _context.Substitutions.Add(entity);
-
-        await _context.SaveChangesAsync();
-
-        return _mapper.Map<SubstitutionDto>(entity);
+        return await _context.Substitutions
+            .AsNoTracking()
+            .ProjectTo<SubstitutionDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(x => x.EmployeePId.Equals(employeePId)
+                && x.DeputyPId.Equals(deputyPId));
     }
 
     public async Task<List<SubstitutionDto>> GetCurrentByDeputyPId(string deputyPId)
@@ -43,5 +42,18 @@ public class SubstitutionsRepository : ISubstitutionsRepository
                 && x.DateStart <= DateTime.Now
                 && x.DateEnd >= DateTime.Now)
             .ToListAsync();
+    }
+
+    public async Task<SubstitutionDto> Create(SubstitutionDto dto)
+    {
+        ArgumentNullException.ThrowIfNull(dto);
+
+        var entity = _mapper.Map<Substitution>(dto);
+
+        _context.Substitutions.Add(entity);
+
+        await _context.SaveChangesAsync();
+
+        return _mapper.Map<SubstitutionDto>(entity);
     }
 }

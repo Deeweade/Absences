@@ -1,7 +1,10 @@
 using Absence.Application.Interfaces.Services;
 using Absence.Domain.Interfaces.Repositories;
+using Absence.Application.Models.Actions;
 using Absence.Application.Models.Views;
 using Absence.Domain.Dtos.Entities;
+using Absence.Domain.Models.Enums;
+using Absence.Application.Helpers;
 using AutoMapper;
 
 namespace Absence.Application.Services;
@@ -20,7 +23,7 @@ public class SubstitutionsService : ISubstitutionsService
         _sender = sender;
     }
 
-    public async Task<SubstitutionView> Create(SubstitutionView view)
+    public async Task<SubstitutionView> Create(CreateSubstitutionView view)
     {
         ArgumentNullException.ThrowIfNull(view);
         
@@ -30,6 +33,11 @@ public class SubstitutionsService : ISubstitutionsService
             view.DateEnd = view.DateEnd ?? DateTime.MaxValue;
 
             var dto = _mapper.Map<SubstitutionDto>(view);
+
+            var existed = await _unitOfWork.SubstitutionsRepository.Get(dto.EmployeePId, dto.DeputyPId);
+
+            if (existed is not null)
+                ExceptionHelper.ThrowContextualException<InvalidOperationException>(ExceptionalEvents.SubstitutionExists);
 
             dto = await _unitOfWork.SubstitutionsRepository.Create(dto);
 

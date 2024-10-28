@@ -47,9 +47,9 @@ public class VacationDaysService : IVacationDaysService
                 .Select(x => x.DateEnd.Subtract(x.DateStart).Days + 1)
                 .Sum();
 
-            var subtraction = typeAvailableDays.DaysNumber - unavailableDays;
+            var subtraction = typeAvailableDays.AvailableDaysNumber - unavailableDays;
 
-            typeAvailableDays.DaysNumber = subtraction < 0 ? 0 : subtraction;
+            typeAvailableDays.AvailableDaysNumber = subtraction < 0 ? 0 : subtraction;
         }
 
         return _mapper.Map<List<VacationDaysView>>(availableDaysByAbsenceTypes);

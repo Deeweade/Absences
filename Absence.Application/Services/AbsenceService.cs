@@ -27,7 +27,7 @@ public class AbsenceService : IAbsenceService
         _vacationDaysService = vacationDaysService;
     }
 
-    public async Task<IEnumerable<AbsenceView>> GetByQuery(AbsenceQueryView query)
+    public async Task<List<AbsenceView>> GetByQuery(AbsenceQueryView query)
     {
         ArgumentNullException.ThrowIfNull(query);
 
@@ -35,20 +35,14 @@ public class AbsenceService : IAbsenceService
 
         var absences = await _unitOfWork.AbsencesRepository.GetByQuery(queryDto);
 
-        return _mapper.Map<IEnumerable<AbsenceView>>(absences);
+        return _mapper.Map<List<AbsenceView>>(absences);
     }
 
-    public async Task<AbsenceView> Create(AbsenceView view)
+    public async Task<AbsenceView> Create(CreateAbsenceView view)
     {
         ArgumentNullException.ThrowIfNull(view);
 
         var dto = _mapper.Map<AbsenceDto>(view);
-
-        var remainingDaysNumber = (await _vacationDaysService.GetRemainingDays(view.PId, view.DateStart.Year))
-            .Sum(x => x.DaysNumber);
-
-        if (remainingDaysNumber < dto.DateEnd.Subtract(dto.DateStart).Days)
-            ExceptionHelper.ThrowContextualException<InvalidOperationException>(ExceptionalEvents.AbsenceTooLong);
 
         await _unitOfWork.ExecuteInTransactionAsync(async () =>
         {
@@ -90,14 +84,11 @@ public class AbsenceService : IAbsenceService
         });
     }
 
-    public async Task<IEnumerable<AbsenceView>> Reschedule(RescheduleAbsenceView view)
+    public async Task<List<AbsenceView>> Reschedule(RescheduleAbsenceView view)
     {
         ArgumentNullException.ThrowIfNull(view);
 
         var cancelledAbsence = await _unitOfWork.AbsencesRepository.GetById(view.CancelledAbsenceId);
-
-        if (cancelledAbsence.AbsenceStatusId != (int)AbsenceStatuses.Approved)
-            ExceptionHelper.ThrowContextualException<InvalidOperationException>(ExceptionalEvents.ReschedullingUnapprovedAbsence);
 
         cancelledAbsence.AbsenceStatusId = (int)AbsenceStatuses.Cancelled;
 
@@ -105,9 +96,6 @@ public class AbsenceService : IAbsenceService
 
         foreach (var absence in newAbsences)
         {
-            if (absence.DateStart.Date.Year != cancelledAbsence.DateStart.Year)
-                ExceptionHelper.ThrowContextualException<InvalidOperationException>(ExceptionalEvents.ReschedullingInDifferentYear);
-
             absence.ParentAbsenceId = cancelledAbsence.Id;
         }
 
@@ -125,7 +113,7 @@ public class AbsenceService : IAbsenceService
         return _mapper.Map<List<AbsenceView>>(absences);
     }
     
-    public async Task<AbsenceView> Update(AbsenceView view)
+    public async Task<AbsenceView> Update(UpdateAbsenceView view)
     {
         ArgumentNullException.ThrowIfNull(view);
 

@@ -6,8 +6,8 @@ namespace Absence.Application.Interfaces.Services;
 
 public interface IAbsenceService
 {
-    Task<IEnumerable<AbsenceView>> GetByQuery(AbsenceQueryView query);
-    Task<AbsenceView> Create(AbsenceView view);
+    Task<List<AbsenceView>> GetByQuery(AbsenceQueryView query);
+    Task<AbsenceView> Create(CreateAbsenceView view);
 
     /// <summary>
     /// Метод для изменения статусов отсутствий одного или нескольких сотрудников. При этом проставляются соответствующие
@@ -21,7 +21,7 @@ public interface IAbsenceService
     /// отменяется старое отсутствие и создаются черновики новых.
     /// </summary>
     /// <returns>Коллекция новых отсутствий</returns>
-    Task<IEnumerable<AbsenceView>> Reschedule(RescheduleAbsenceView view);
-    Task<AbsenceView> Update(AbsenceView view);
+    Task<List<AbsenceView>> Reschedule(RescheduleAbsenceView view);
+    Task<AbsenceView> Update(UpdateAbsenceView view);
     Task Delete(int id);
 }

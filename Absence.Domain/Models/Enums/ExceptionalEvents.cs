@@ -6,5 +6,9 @@ public enum ExceptionalEvents
     ReschedullingUnapprovedAbsence,
     ReschedullingInDifferentYear,
     RemovingNotDraftAbsence,
-    NotAllDaysScheduled
+    NotAllDaysScheduled,
+    SubstitutionExists,
+    DateStartMoreThanDateEnd,
+    AbsenceExists,
+    UpdatingNotDraftAbsence
 }

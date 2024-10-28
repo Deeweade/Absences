@@ -99,14 +99,6 @@ public class EmployeeStagesService : IEmployeeStagesService
         {
             if (view.AbsenceStatusId == (int)AbsenceStatuses.Approval)
             {
-                var remainingDays = (await _unitOfWork.VacationDaysRepository.GetAll(employeeStage.PId, employeeStage.Stage.Year, true))
-                    .Sum(x => x.DaysNumber);
-
-                var vacationDaysNumber = await _unitOfWork.AbsencesRepository.GetAbsencesDaysSum(employeeStage.PId, employeeStage.Stage.Year);
-                
-                if (vacationDaysNumber != remainingDays)
-                    ExceptionHelper.ThrowContextualException<InvalidOperationException>(ExceptionalEvents.NotAllDaysScheduled);
-                    
                 employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
                     (int)ProcessStages.CorrectionApproval
                     : (int)ProcessStages.YearPlanningApproval;
@@ -115,14 +107,6 @@ public class EmployeeStagesService : IEmployeeStagesService
             }
             else if (view.AbsenceStatusId == (int)AbsenceStatuses.Approved)
             {
-                var remainingDays = (await _unitOfWork.VacationDaysRepository.GetAll(employeeStage.PId, employeeStage.Stage.Year, true))
-                    .Sum(x => x.DaysNumber);
-
-                var vacationDaysNumber = await _unitOfWork.AbsencesRepository.GetAbsencesDaysSum(employeeStage.PId, employeeStage.Stage.Year);
-                
-                if (vacationDaysNumber != remainingDays)
-                    ExceptionHelper.ThrowContextualException<InvalidOperationException>(ExceptionalEvents.NotAllDaysScheduled);
-                    
                 employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
                     (int)ProcessStages.CorrectionApproved
                     : (int)ProcessStages.YearPlanningApproved;

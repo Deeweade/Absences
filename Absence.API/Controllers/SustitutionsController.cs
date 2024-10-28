@@ -1,5 +1,5 @@
 using Absence.Application.Interfaces.Services;
-using Absence.Application.Models.Views;
+using Absence.Application.Models.Actions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Absence.API.Controllers
@@ -16,7 +16,7 @@ namespace Absence.API.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create(SubstitutionView view)
+        public async Task<IActionResult> Create(CreateSubstitutionView view)
         {
             ArgumentNullException.ThrowIfNull(view);
 

@@ -5,6 +5,8 @@ using Absence.Infrastructure.Models.Mappings;
 using Absence.Domain.Interfaces.Repositories;
 using Absence.Infrastructure.Data.Contexts;
 using Absence.Application.Models.Mappings;
+using Absence.Application.Models.Actions;
+using Absence.Application.Validators;
 using Absence.Application.Services;
 using Absence.Infrastructure.Data;
 using Absence.API.Middlewares;
@@ -12,6 +14,9 @@ using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
+using FluentValidation;
+using Absence.Application.Models.Views;
 
 #region EnvironmentConfiguring
 
@@ -92,6 +97,14 @@ builder.Services.AddScoped<IAbsenceService, AbsenceService>();
 builder.Services.AddScoped<IVacationDaysRepository, VacationDaysRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+//validators
+builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.AddTransient<IValidator<RescheduleAbsenceView>, RescheduleAbsenceValidator>();
+builder.Services.AddTransient<IValidator<AbsenceView>, AbsenceValidator<AbsenceView>>();
+builder.Services.AddTransient<IValidator<CreateAbsenceView>, CreateAbsenceValidator>();
+builder.Services.AddTransient<IValidator<UpdateAbsenceView>, UpdateAbsenceValidator>();
+
 builder.Services.AddAutoMapper(typeof(InfrastructureMappingProfile), typeof(ApplicationMappingProfile));
 
 #endregion
@@ -131,10 +144,6 @@ if (app.Environment.IsProduction())
     app.UseHttpsRedirection();
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
-}
-else
-{
-    app.UseDeveloperExceptionPage();
 }
 
 app.UseSwagger();
