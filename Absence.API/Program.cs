@@ -1,3 +1,6 @@
+using Absence.Application.Interfaces.Services.NotificationSender.Builders;
+using Absence.Application.Interfaces.Services.NotificationSender;
+using Absence.Application.Services.NotificationService.Builders;
 using Absence.Application.Services.NotificationService;
 using Absence.Infrastructure.Data.Repositories;
 using Absence.Application.Interfaces.Services;
@@ -6,6 +9,7 @@ using Absence.Domain.Interfaces.Repositories;
 using Absence.Infrastructure.Data.Contexts;
 using Absence.Application.Models.Mappings;
 using Absence.Application.Models.Actions;
+using Absence.Application.Models.Views;
 using Absence.Application.Validators;
 using Absence.Application.Services;
 using Absence.Infrastructure.Data;
@@ -16,7 +20,6 @@ using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using FluentValidation;
-using Absence.Application.Models.Views;
 
 #region EnvironmentConfiguring
 
@@ -85,12 +88,17 @@ builder.Services.AddDbContext<AbsenceDbContext>(options =>
 #region DependenciesInjection
 
 //services
+builder.Services.AddScoped<ISubstitutionParametersBuilder, SubstitutionParametersBuilder>();
+builder.Services.AddScoped<INotificationBuilderFactory, NotificationBuilderFactory>();
+builder.Services.AddScoped<IAbsenceParametersBuilder, AbsenceParametersBuilder>();
 builder.Services.AddScoped<INotificationSenderFacade, NotificationSenderFacade>();
 builder.Services.AddScoped<IPlanningProcessService, PlanningProcessService>();
 builder.Services.AddScoped<IEmployeeStagesService, EmployeeStagesService>();
 builder.Services.AddScoped<ISubstitutionsService, SubstitutionsService>();
 builder.Services.AddScoped<IVacationDaysService, VacationDaysService>();
+builder.Services.AddScoped<IWorkPeriodsService, WorkPeriodsService>();
 builder.Services.AddScoped<IEmployeesService, EmployeesService>();
+builder.Services.AddScoped<INotificationSender, EmailSender>();
 builder.Services.AddScoped<IAbsenceService, AbsenceService>();
 
 //data

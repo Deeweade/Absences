@@ -6,8 +6,9 @@ namespace Absence.Infrastructure.Data.Contexts;
 public class AbsenceDbContext(DbContextOptions<AbsenceDbContext> options) : DbContext(options)
 {
     public DbSet<Comment> Comments {get; set; }
-    public DbSet<WorkPeriods> WorkPeriods { get; set; }
+    public DbSet<WorkPeriod> WorkPeriods { get; set; }
     public DbSet<SystemProcess> Processes { get; set; }
+    public DbSet<WorkdayType> WorkdayTypes { get; set; }
     public DbSet<AbsenceType> AbsenceTypes { get; set; }
     public DbSet<VacationDays> VacationDays { get; set; }
     public DbSet<Substitution> Substitutions { get; set; }

@@ -6,6 +6,7 @@ public interface IUnitOfWork
     IEmployeeStagesRepository EmployeeStagesRepository { get; }
     ISubstitutionsRepository SubstitutionsRepository { get; }
     IVacationDaysRepository VacationDaysRepository { get; }
+    IWorkPeriodsRepository WorkPeriodsRepository { get; }
     IEmployeesRepository EmployeesRepository { get; }
     IAbsenceRepository AbsencesRepository { get; }
 

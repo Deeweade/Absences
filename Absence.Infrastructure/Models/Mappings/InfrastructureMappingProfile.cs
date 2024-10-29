@@ -17,7 +17,12 @@ public class InfrastructureMappingProfile : Profile
         CreateMap<VacationDays, VacationDaysDto>().ReverseMap();
         CreateMap<Substitution, SubstitutionDto>().ReverseMap();
         CreateMap<AbsenceType, AbsenceTypeDto>().ReverseMap();
+        CreateMap<WorkdayType, WorkdayTypeDto>().ReverseMap();
         CreateMap<Comment, CommentDto>().ReverseMap();
+
+        CreateMap<WorkPeriod, WorkPeriodDto>()
+            .ForMember(dest => dest.WorkdayType, opt => opt.MapFrom(src => src.WorkdayType))
+            .ReverseMap();
 
         CreateMap<Domain.Models.Entities.Absence, AbsenceDto>()
             .ForMember(dest => dest.AbsenceStatus, opt => opt.MapFrom(src => src.AbsenceStatus))

@@ -2,5 +2,9 @@ namespace Absence.Domain.Models.Enums;
 
 public enum NotificationTypes
 {
-    AbsenceAdded
+    AbsenceAdded,
+    AbsencesRequireApproval,
+    AbsencesApproved,
+    AbsencesRejected,
+    SubstitutionAdded
 }

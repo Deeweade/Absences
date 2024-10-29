@@ -17,6 +17,7 @@ public class UnitOfWork : IUnitOfWork
 
         AbsencesRepository = new AbsenceRepository(_context, mapper);
         EmployeesRepository = new EmployeesRepository(_context, mapper);
+        WorkPeriodsRepository = new WorkPeriodsRepository(_context, mapper);
         VacationDaysRepository = new VacationDaysRepository(_context, mapper);
         SubstitutionsRepository = new SubstitutionsRepository(_context, mapper);
         EmployeeStagesRepository = new EmployeeStagesRepository(_context, mapper);
@@ -27,6 +28,7 @@ public class UnitOfWork : IUnitOfWork
     public IEmployeeStagesRepository EmployeeStagesRepository { get; }
     public ISubstitutionsRepository SubstitutionsRepository { get; }
     public IVacationDaysRepository VacationDaysRepository { get; }
+    public IWorkPeriodsRepository WorkPeriodsRepository { get; }
     public IEmployeesRepository EmployeesRepository { get; }
     public IAbsenceRepository AbsencesRepository { get; }
 
