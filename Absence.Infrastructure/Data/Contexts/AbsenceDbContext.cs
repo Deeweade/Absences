@@ -16,6 +16,10 @@ public class AbsenceDbContext(DbContextOptions<AbsenceDbContext> options) : DbCo
     public DbSet<EmployeeStage> EmployeeStages { get; set; }
     public DbSet<AbsenceStatus> AbsenceStatuses { get; set; }
     public DbSet<PlanningProcess> PlanningProcesses { get; set; }
+    public DbSet<NotificationType> NotificationTypes { get; set; }
+    public DbSet<NotificationBody> NotificationBodies { get; set; }
+    public DbSet<NotificationTitle> NotificationTitles { get; set; }
+    public DbSet<NotificationMethod> NotificationMethods { get; set; }
     public DbSet<Domain.Models.Entities.Absence> Absences { get; set; }
     public DbSet<PositionAndEmployees> PositionAndEmployees { get; set; }
 

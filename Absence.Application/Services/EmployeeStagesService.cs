@@ -111,7 +111,7 @@ public class EmployeeStagesService : IEmployeeStagesService
                     (int)ProcessStages.CorrectionApproved
                     : (int)ProcessStages.YearPlanningApproved;
 
-                await _sender.Send_AbsencesApproved(employeeStage.PId);
+                await _sender.Send_AllAbsencesApproved(employeeStage.PId);
             }
             else if (view.AbsenceStatusId == (int)AbsenceStatuses.Rejected)
             {
@@ -119,7 +119,7 @@ public class EmployeeStagesService : IEmployeeStagesService
                     (int)ProcessStages.Correction
                     : (int)ProcessStages.YearPlanning;
 
-                await _sender.Send_AbsencesRejected(employeeStage.PId);
+                await _sender.Send_AllAbsencesRejected(employeeStage.PId);
             }
             else
             {

@@ -18,6 +18,9 @@ public class PositionAndEmployeesView
     public DateTime? PBirthDay { get; set; }
     public string Mail { get; set; }
     public string ManagerPId { get; set; }
+    public string ManagerSurname { get; set; }
+    public string ManagerFirstName { get; set; }
+    public string ManagerSecondName { get; set; }
     public string CityName { get; set; }
     public DateTime? HiredDate { get; set; }
     public string OfficeName { get; set; }

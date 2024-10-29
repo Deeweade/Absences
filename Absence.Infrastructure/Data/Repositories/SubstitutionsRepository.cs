@@ -2,9 +2,9 @@ using Absence.Domain.Interfaces.Repositories;
 using Absence.Infrastructure.Data.Contexts;
 using Absence.Domain.Models.Entities;
 using Absence.Domain.Dtos.Entities;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper.QueryableExtensions;
+using AutoMapper;
 
 namespace Absence.Infrastructure.Data.Repositories;
 
@@ -17,6 +17,16 @@ public class SubstitutionsRepository : ISubstitutionsRepository
     {
         _context = context;
         _mapper = mapper;
+    }
+
+    public async Task<SubstitutionDto> GetById(int substitutionId)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(substitutionId, 0);
+
+        return await _context.Substitutions
+            .AsNoTracking()
+            .ProjectTo<SubstitutionDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(x => x.Id == substitutionId);
     }
     
     public async Task<SubstitutionDto> Get(string employeePId, string deputyPId)

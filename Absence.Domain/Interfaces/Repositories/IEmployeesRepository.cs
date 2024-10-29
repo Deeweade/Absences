@@ -1,5 +1,4 @@
 using Absence.Domain.Dtos.Entities;
-using System;
 
 namespace Absence.Domain.Interfaces.Repositories;
 

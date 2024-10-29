@@ -27,4 +27,15 @@ public static class ExceptionHelper
 
         throw new ContextualException((TException)innerException, methodName, className, lineNumber);
     }
+
+    // Универсальный метод для выбрасывания кастомного исключения с контекстом
+    public static void ThrowContextualException<TException>(string message,
+        [CallerMemberName] string methodName = "", 
+        [CallerFilePath] string className = "", 
+        [CallerLineNumber] int lineNumber = 0) where TException : Exception
+    {
+        var innerException = Activator.CreateInstance(typeof(TException), message);
+
+        throw new ContextualException((TException)innerException, methodName, className, lineNumber);
+    }
 }

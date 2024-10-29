@@ -53,6 +53,15 @@ public class PositionAndEmployees
     [Column("MANAGER_PID")]
     public string ManagerPId { get; set; }
 
+    [Column("MANAGER_SURNAME")]
+    public string ManagerSurname { get; set; }
+
+    [Column("MANAGER_FIRSTNAME")]
+    public string ManagerFirstName { get; set; }
+
+    [Column("MANAGER_SECONDNAME")]
+    public string ManagerSecondName { get; set; }
+
     [Column("CITY_NAME")]
     public string CityName { get; set; }
 

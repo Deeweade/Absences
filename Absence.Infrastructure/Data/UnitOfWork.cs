@@ -21,9 +21,13 @@ public class UnitOfWork : IUnitOfWork
         VacationDaysRepository = new VacationDaysRepository(_context, mapper);
         SubstitutionsRepository = new SubstitutionsRepository(_context, mapper);
         EmployeeStagesRepository = new EmployeeStagesRepository(_context, mapper);
+        NotificationTitlesRepository = new NotificationTitlesRepository(_context);
+        NotificationBodiesRepository = new NotificationBodiesRepository(_context);
         PlanningProcessRepository = new PlanningProcessRepository(_context, mapper);
     }
 
+    public INotificationTitlesRepository NotificationTitlesRepository { get; }
+    public INotificationBodiesRepository NotificationBodiesRepository { get; }
     public IPlanningProcessRepository PlanningProcessRepository { get; }
     public IEmployeeStagesRepository EmployeeStagesRepository { get; }
     public ISubstitutionsRepository SubstitutionsRepository { get; }

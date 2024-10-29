@@ -87,12 +87,13 @@ builder.Services.AddDbContext<AbsenceDbContext>(options =>
 
 #region DependenciesInjection
 
+builder.Services.Configure<string>(builder.Configuration.GetSection("EnvironmentDomain"));
+
 //services
-builder.Services.AddScoped<ISubstitutionParametersBuilder, SubstitutionParametersBuilder>();
 builder.Services.AddScoped<INotificationBuilderFactory, NotificationBuilderFactory>();
-builder.Services.AddScoped<IAbsenceParametersBuilder, AbsenceParametersBuilder>();
 builder.Services.AddScoped<INotificationSenderFacade, NotificationSenderFacade>();
 builder.Services.AddScoped<IPlanningProcessService, PlanningProcessService>();
+builder.Services.AddScoped<IEmailFormattingService, EmailFormattingService>();
 builder.Services.AddScoped<IEmployeeStagesService, EmployeeStagesService>();
 builder.Services.AddScoped<ISubstitutionsService, SubstitutionsService>();
 builder.Services.AddScoped<IVacationDaysService, VacationDaysService>();

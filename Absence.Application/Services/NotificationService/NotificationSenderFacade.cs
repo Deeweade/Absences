@@ -1,3 +1,4 @@
+using Absence.Application.Services.NotificationService.Parameters;
 using Absence.Application.Interfaces.Services.NotificationSender;
 using Absence.Application.Interfaces.Services;
 using Absence.Domain.Dtos.Entities;
@@ -16,37 +17,55 @@ public class NotificationSenderFacade : INotificationSenderFacade
         _sender = sender;
     }
 
-    public async Task Send_AbsencesRequireApproval(string pId)
+    public async Task Send_AbsencesRequireApproval(string absenceOwnerPId)
     {
-        ArgumentNullException.ThrowIfNull(pId);
+        ArgumentNullException.ThrowIfNull(absenceOwnerPId);
 
         var builder = _factory.GetBuilder(NotificationSubjects.Absence);
 
-        var parameters = await builder.Build(NotificationTypes.AbsencesRequireApproval, pId);
+        var options = new BuilderOptions
+        {
+            NotificationType = NotificationTypes.AbsencesRequireApproval,
+            AbsenceOwnerPId = absenceOwnerPId
+        };
 
-        await _sender.Send(parameters);
+        var parameters = await builder.Build(options);
+
+        await Send(parameters);
     }
 
-    public async Task Send_AbsencesApproved(string pId)
+    public async Task Send_AllAbsencesApproved(string absenceOwnerPId)
     {
-        ArgumentNullException.ThrowIfNull(pId);
+        ArgumentNullException.ThrowIfNull(absenceOwnerPId);
 
         var builder = _factory.GetBuilder(NotificationSubjects.Absence);
 
-        var parameters = await builder.Build(NotificationTypes.AbsencesApproved, pId);
+        var options = new BuilderOptions
+        {
+            NotificationType = NotificationTypes.AllAbsencesApproved,
+            AbsenceOwnerPId = absenceOwnerPId
+        };
 
-        await _sender.Send(parameters);
+        var parameters = await builder.Build(options);
+
+        await Send(parameters);
     }
 
-    public async Task Send_AbsencesRejected(string pId)
+    public async Task Send_AllAbsencesRejected(string absenceOwnerPId)
     {
-        ArgumentNullException.ThrowIfNull(pId);
+        ArgumentNullException.ThrowIfNull(absenceOwnerPId);
 
         var builder = _factory.GetBuilder(NotificationSubjects.Absence);
 
-        var parameters = await builder.Build(NotificationTypes.AbsencesRejected, pId);
+        var options = new BuilderOptions
+        {
+            NotificationType = NotificationTypes.AllAbsencesRejected,
+            AbsenceOwnerPId = absenceOwnerPId
+        };
 
-        await _sender.Send(parameters);
+        var parameters = await builder.Build(options);
+
+        await Send(parameters);
     }
 
     public async Task Send_SubstitutionAdded(SubstitutionDto dto)
@@ -55,7 +74,24 @@ public class NotificationSenderFacade : INotificationSenderFacade
 
         var builder = _factory.GetBuilder(NotificationSubjects.Substitution);
 
-        var parameters = await builder.Build(NotificationTypes.SubstitutionAdded, dto.DeputyPId);
+        var options = new BuilderOptions
+        {
+            NotificationType = NotificationTypes.SubstitutionAdded,
+            SubstitutionId = dto.Id
+        };
+
+        var parameters = await builder.Build(options);
+
+        await Send(parameters);
+    }
+
+    private async Task Send(NotificationParameters parameters)
+    {
+        ArgumentNullException.ThrowIfNull(parameters);
+
+        parameters.From = "";
+        parameters.DisplayedName = "";
+        parameters.MailServerAddress = "";
 
         await _sender.Send(parameters);
     }

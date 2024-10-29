@@ -2,6 +2,8 @@ namespace Absence.Domain.Interfaces.Repositories;
 
 public interface IUnitOfWork
 {
+    INotificationTitlesRepository NotificationTitlesRepository { get; }
+    INotificationBodiesRepository NotificationBodiesRepository { get; }
     IPlanningProcessRepository PlanningProcessRepository { get; }
     IEmployeeStagesRepository EmployeeStagesRepository { get; }
     ISubstitutionsRepository SubstitutionsRepository { get; }
