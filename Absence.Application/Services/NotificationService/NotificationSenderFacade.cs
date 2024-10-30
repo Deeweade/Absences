@@ -21,68 +21,68 @@ public class NotificationSenderFacade : INotificationSenderFacade
     {
         ArgumentNullException.ThrowIfNull(absenceOwnerPId);
 
-        var builder = _factory.GetBuilder(NotificationSubjects.Absence);
+        // var builder = _factory.GetBuilder(NotificationSubjects.Absence);
 
-        var options = new BuilderOptions
-        {
-            NotificationType = NotificationTypes.AbsencesRequireApproval,
-            AbsenceOwnerPId = absenceOwnerPId
-        };
+        // var options = new BuilderOptions
+        // {
+        //     NotificationType = NotificationTypes.AbsencesRequireApproval,
+        //     AbsenceOwnerPId = absenceOwnerPId
+        // };
 
-        var parameters = await builder.Build(options);
+        // var parameters = await builder.Build(options);
 
-        await Send(parameters);
+        // await Send(parameters);
     }
 
     public async Task Send_AllAbsencesApproved(string absenceOwnerPId)
     {
         ArgumentNullException.ThrowIfNull(absenceOwnerPId);
 
-        var builder = _factory.GetBuilder(NotificationSubjects.Absence);
+        // var builder = _factory.GetBuilder(NotificationSubjects.Absence);
 
-        var options = new BuilderOptions
-        {
-            NotificationType = NotificationTypes.AllAbsencesApproved,
-            AbsenceOwnerPId = absenceOwnerPId
-        };
+        // var options = new BuilderOptions
+        // {
+        //     NotificationType = NotificationTypes.AllAbsencesApproved,
+        //     AbsenceOwnerPId = absenceOwnerPId
+        // };
 
-        var parameters = await builder.Build(options);
+        // var parameters = await builder.Build(options);
 
-        await Send(parameters);
+        // await Send(parameters);
     }
 
     public async Task Send_AllAbsencesRejected(string absenceOwnerPId)
     {
         ArgumentNullException.ThrowIfNull(absenceOwnerPId);
 
-        var builder = _factory.GetBuilder(NotificationSubjects.Absence);
+        // var builder = _factory.GetBuilder(NotificationSubjects.Absence);
 
-        var options = new BuilderOptions
-        {
-            NotificationType = NotificationTypes.AllAbsencesRejected,
-            AbsenceOwnerPId = absenceOwnerPId
-        };
+        // var options = new BuilderOptions
+        // {
+        //     NotificationType = NotificationTypes.AllAbsencesRejected,
+        //     AbsenceOwnerPId = absenceOwnerPId
+        // };
 
-        var parameters = await builder.Build(options);
+        // var parameters = await builder.Build(options);
 
-        await Send(parameters);
+        // await Send(parameters);
     }
 
     public async Task Send_SubstitutionAdded(SubstitutionDto dto)
     {
         ArgumentNullException.ThrowIfNull(dto);
 
-        var builder = _factory.GetBuilder(NotificationSubjects.Substitution);
+        // var builder = _factory.GetBuilder(NotificationSubjects.Substitution);
 
-        var options = new BuilderOptions
-        {
-            NotificationType = NotificationTypes.SubstitutionAdded,
-            SubstitutionId = dto.Id
-        };
+        // var options = new BuilderOptions
+        // {
+        //     NotificationType = NotificationTypes.SubstitutionAdded,
+        //     SubstitutionId = dto.Id
+        // };
 
-        var parameters = await builder.Build(options);
+        // var parameters = await builder.Build(options);
 
-        await Send(parameters);
+        // await Send(parameters);
     }
 
     private async Task Send(NotificationParameters parameters)
