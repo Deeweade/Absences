@@ -33,16 +33,16 @@ public class SubstitutionParametersBuilder : INotificationParametersBuilder
 
         var substitution = await _unitOfWork.SubstitutionsRepository.GetById(options.SubstitutionId);
         
-        var addressee = await _unitOfWork.EmployeesRepository.GetByPId(substitution.DeputyPId);
+        var deputy = await _unitOfWork.EmployeesRepository.GetByPId(substitution.DeputyPId);
         
         switch (options.NotificationType)
         {
             case NotificationTypes.SubstitutionAdded:
-                var sender = await _unitOfWork.EmployeesRepository.GetByPId(substitution.EmployeePId); 
+                var employee = await _unitOfWork.EmployeesRepository.GetByPId(substitution.EmployeePId); 
 
-                dict.Add(NotificationConstants.AddresseeName, addressee.ManagerFirstName);
-                dict.Add(NotificationConstants.SenderFirstname, sender.PFirstName);
-                dict.Add(NotificationConstants.SenderLastName, sender.PSurname);
+                dict.Add(NotificationConstants.AddresseeName, deputy.PFirstName);
+                dict.Add(NotificationConstants.SenderFirstname, employee.PFirstName);
+                dict.Add(NotificationConstants.SenderLastName, employee.PSurname);
                 dict.Add(NotificationConstants.DateStart, substitution.DateStart.ToString("d"));
                 dict.Add(NotificationConstants.DateEnd, substitution.DateEnd.ToString("d"));
 
@@ -58,7 +58,7 @@ public class SubstitutionParametersBuilder : INotificationParametersBuilder
 
         parameters.Title = await _unitOfWork.NotificationTitlesRepository.GetByTypeId((int)options.NotificationType);
         parameters.Body = _mailFormatter.ReplaceParams(body, dict);
-        parameters.To = $"{addressee.Mail.ToLower()}";
+        parameters.To = $"{deputy.Mail.ToLower()}";
 
         return parameters;
     }
