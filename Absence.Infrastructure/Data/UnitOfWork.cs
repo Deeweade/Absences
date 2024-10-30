@@ -24,8 +24,10 @@ public class UnitOfWork : IUnitOfWork
         NotificationTitlesRepository = new NotificationTitlesRepository(_context);
         NotificationBodiesRepository = new NotificationBodiesRepository(_context);
         PlanningProcessRepository = new PlanningProcessRepository(_context, mapper);
+        NotificationSettingsRepository = new NotificationSettingsRepository(_context);
     }
 
+    public INotificationSettingsRepository NotificationSettingsRepository { get; }
     public INotificationTitlesRepository NotificationTitlesRepository { get; }
     public INotificationBodiesRepository NotificationBodiesRepository { get; }
     public IPlanningProcessRepository PlanningProcessRepository { get; }

@@ -57,7 +57,7 @@ public class SubstitutionParametersBuilder : INotificationParametersBuilder
         var body = await _unitOfWork.NotificationBodiesRepository.GetByTypeId((int)options.NotificationType);
 
         parameters.Title = await _unitOfWork.NotificationTitlesRepository.GetByTypeId((int)options.NotificationType);
-        parameters.Body = _mailFormatter.ReplaceParams(body, dict);;
+        parameters.Body = _mailFormatter.ReplaceParams(body, dict);
         parameters.To = $"{addressee.Mail.ToLower()}";
 
         return parameters;

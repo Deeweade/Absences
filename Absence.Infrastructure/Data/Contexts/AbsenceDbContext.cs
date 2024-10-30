@@ -21,6 +21,7 @@ public class AbsenceDbContext(DbContextOptions<AbsenceDbContext> options) : DbCo
     public DbSet<NotificationTitle> NotificationTitles { get; set; }
     public DbSet<NotificationMethod> NotificationMethods { get; set; }
     public DbSet<Domain.Models.Entities.Absence> Absences { get; set; }
+    public DbSet<NotificationSetting> NotificationSettings { get; set; }
     public DbSet<PositionAndEmployees> PositionAndEmployees { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
