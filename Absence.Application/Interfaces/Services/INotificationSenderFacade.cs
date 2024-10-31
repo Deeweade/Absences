@@ -6,6 +6,8 @@ public interface INotificationSenderFacade
 {
     Task Send_AllAbsencesApproved(string pId);
     Task Send_AllAbsencesRejected(string pId);
+    Task Send_AbsenceRejected(AbsenceDto absence);
+    Task Send_AbsenceApproved(AbsenceDto absence);
     Task Send_AbsencesRequireApproval(string absenceOwnerPId);
     Task Send_SubstitutionAdded(SubstitutionDto dto);
 }

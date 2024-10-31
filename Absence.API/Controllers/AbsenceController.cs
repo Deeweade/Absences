@@ -64,6 +64,16 @@ public class AbsenceController : ControllerBase
         return Ok(absence);
     }
 
+    [HttpPost("changeStatus")]
+    public async Task<IActionResult> Update(ChangeAbsenceStatusView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+
+        await _service.ChangeStatus(view);
+
+        return Ok();
+    }
+
     [HttpPost("changeStatuses/bulk")]
     public async Task<IActionResult> Update(UpdateAbsencesBulkView view)
     {

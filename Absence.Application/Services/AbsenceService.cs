@@ -14,17 +14,17 @@ namespace Absence.Application.Services;
 public class AbsenceService : IAbsenceService
 {
     private readonly IEmployeeStagesService _employeeStagesService;
-    private readonly IVacationDaysService _vacationDaysService;
+    private readonly INotificationSenderFacade _sender;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
     public AbsenceService(IUnitOfWork unitOfWork, IMapper mapper, IEmployeeStagesService employeeStagesService, 
-        IVacationDaysService vacationDaysService)
+        INotificationSenderFacade sender)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _employeeStagesService = employeeStagesService;
-        _vacationDaysService = vacationDaysService;
+        _sender = sender;
     }
 
     public async Task<List<AbsenceView>> GetByQuery(AbsenceQueryView query)
@@ -53,6 +53,37 @@ public class AbsenceService : IAbsenceService
         });
 
         return _mapper.Map<AbsenceView>(dto);
+    }
+
+    public async Task ChangeStatus(ChangeAbsenceStatusView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+
+        var absence = await _unitOfWork.AbsencesRepository.GetById(view.AbsenceId);
+
+        //доделать смену статуса сотрудника
+        // var absences = await _unitOfWork.AbsencesRepository.GetByQuery(new AbsenceQueryDto
+        // {
+        //     Years = new List<int> { absence.DateStart.Year },
+        //     PIds = new List<string> { absence.PId },
+        //     AbsenceStatuses = new List<int> { (int)AbsenceStatuses.ActiveDraft, (int)AbsenceStatuses.Approval, (int)AbsenceStatuses.Approved }
+        // });
+
+        absence.AbsenceStatusId = view.NewAbsenceStatusId;
+
+        await _unitOfWork.AbsencesRepository.Update(absence);
+
+        await _unitOfWork.SaveChangesAsync();
+
+        switch (view.NewAbsenceStatusId)
+        {
+            case (int)AbsenceStatuses.Rejected:
+                await _sender.Send_AbsenceRejected(absence);
+                break;
+            case (int)AbsenceStatuses.Approved:
+                await _sender.Send_AbsenceApproved(absence);
+                break;
+        }
     }
 
     public async Task ChangeStatusesBulk(UpdateAbsencesBulkView view)

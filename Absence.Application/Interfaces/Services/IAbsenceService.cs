@@ -15,6 +15,7 @@ public interface IAbsenceService
     /// </summary>
     /// <param name="view"></param>
     Task ChangeStatusesBulk(UpdateAbsencesBulkView view);
+    Task ChangeStatus(ChangeAbsenceStatusView view);
 
     /// <summary>
     /// Метод для переноса отсутствия на один или несколько новых периодов. При переносе
