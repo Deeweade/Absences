@@ -59,29 +59,58 @@ public class AbsenceService : IAbsenceService
     {
         ArgumentNullException.ThrowIfNull(view);
 
-        var absence = await _unitOfWork.AbsencesRepository.GetById(view.AbsenceId);
+        var changedAbsence = await _unitOfWork.AbsencesRepository.GetById(view.AbsenceId);
 
-        //доделать смену статуса сотрудника
-        // var absences = await _unitOfWork.AbsencesRepository.GetByQuery(new AbsenceQueryDto
-        // {
-        //     Years = new List<int> { absence.DateStart.Year },
-        //     PIds = new List<string> { absence.PId },
-        //     AbsenceStatuses = new List<int> { (int)AbsenceStatuses.ActiveDraft, (int)AbsenceStatuses.Approval, (int)AbsenceStatuses.Approved }
-        // });
+        changedAbsence.AbsenceStatusId = view.NewAbsenceStatusId;
 
-        absence.AbsenceStatusId = view.NewAbsenceStatusId;
+        //меняем статусы сотруднику
+        var absences = await _unitOfWork.AbsencesRepository.GetByQuery(new AbsenceQueryDto
+        {
+            Years = new List<int> { changedAbsence.DateStart.Year },
+            PIds = new List<string> { changedAbsence.PId },
+            AbsenceStatuses = new List<int> { (int)AbsenceStatuses.ActiveDraft, (int)AbsenceStatuses.Approval, (int)AbsenceStatuses.Approved }
+        });
 
-        await _unitOfWork.AbsencesRepository.Update(absence);
+        var currentAbsence = absences.FirstOrDefault(x => x.Id == view.AbsenceId);
 
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.ExecuteInTransactionAsync(async () => 
+        {
+            await _unitOfWork.AbsencesRepository.Update(changedAbsence);
+
+            //ставим финальный статус сотруднику, только если остальные отпуска согласованы
+            if (view.NewAbsenceStatusId == (int)AbsenceStatuses.Approved)
+            {
+                absences.Remove(currentAbsence);
+
+                if (absences.All(x => x.AbsenceStatusId == (int)AbsenceStatuses.Approved)
+                    && currentAbsence.AbsenceStatusId == (int)AbsenceStatuses.Approval)
+                {
+                    await _employeeStagesService.UpdateBulk(new UpdateStagesBulkView
+                    {
+                        PIds = new List<string> { changedAbsence.PId },
+                        Year = changedAbsence.DateStart.Year,
+                        AbsenceStatusId = (int)AbsenceStatuses.Approved
+                    });
+                }
+            }
+            else
+            {
+                await _employeeStagesService.UpdateBulk(new UpdateStagesBulkView
+                {
+                    PIds = new List<string> { changedAbsence.PId },
+                    Year = changedAbsence.DateStart.Year,
+                    AbsenceStatusId = view.NewAbsenceStatusId
+                });
+            }
+        });
 
         switch (view.NewAbsenceStatusId)
         {
             case (int)AbsenceStatuses.Rejected:
-                await _sender.Send_AbsenceRejected(absence);
+                await _sender.Send_AbsenceRejected(changedAbsence);
                 break;
             case (int)AbsenceStatuses.Approved:
-                await _sender.Send_AbsenceApproved(absence);
+                await _sender.Send_AbsenceApproved(changedAbsence);
                 break;
         }
     }

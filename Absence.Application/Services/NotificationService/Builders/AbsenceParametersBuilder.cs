@@ -36,10 +36,13 @@ public class AbsenceParametersBuilder : INotificationParametersBuilder
         switch (options.NotificationType)
         {
             case NotificationTypes.AbsencesRequireApproval:
+                var owner = await _unitOfWork.EmployeesRepository.GetByPId(options.AbsenceOwnerPId);
 
-                dict.Add(NotificationConstants.AddresseeName, addressee.ManagerFirstName);
-                dict.Add(NotificationConstants.SenderFirstname, addressee.PFirstName);
-                dict.Add(NotificationConstants.SenderLastName, addressee.PSurname);
+                addressee = await _unitOfWork.EmployeesRepository.GetByPId(owner.ManagerPId);
+
+                dict.Add(NotificationConstants.AddresseeName, addressee.PFirstName);
+                dict.Add(NotificationConstants.SenderFirstname, owner.PFirstName);
+                dict.Add(NotificationConstants.SenderLastName, owner.PSurname);
 
                 break;
             case NotificationTypes.AllAbsencesRejected:

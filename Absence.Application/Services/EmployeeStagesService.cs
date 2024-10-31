@@ -91,9 +91,14 @@ public class EmployeeStagesService : IEmployeeStagesService
 
         var employeesStages = await _unitOfWork.EmployeeStagesRepository.GetLastByQuery(new EmployeeStagesQueryDto
             {
-                PIds = view.PIds,
+                PIds = view.PIds.Distinct().ToList(),
                 Year = view.Year
             });
+
+        employeesStages = employeesStages.GroupBy(x => x.PId)
+            .ToDictionary(x => x.Key, x => x.OrderBy(stage => stage.Id).LastOrDefault())
+            .Select(x => x.Value)
+            .ToList();
 
         foreach(var employeeStage in employeesStages)
         {
