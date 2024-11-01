@@ -4,6 +4,8 @@ using Absence.Domain.Dtos.Entities;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper.QueryableExtensions;
 using AutoMapper;
+using Absence.Domain.Dtos.Queries;
+using System.Linq.Expressions;
 
 namespace Absence.Infrastructure.Data.Repositories;
 
@@ -49,5 +51,28 @@ public class EmployeesRepository : IEmployeesRepository
                 && !string.IsNullOrEmpty(x.PId)
                 && !x.PGroupName.Equals("Декрет"))
             .ToListAsync();
+    }
+
+    public async Task<List<TResult>> GetByQuery<TResult>(EmployeesQueryDto queryDto, Expression<Func<PositionAndEmployeesDto, TResult>> select = null)
+    {
+        ArgumentNullException.ThrowIfNull(queryDto);
+
+        var query = _context.PositionAndEmployees
+            .AsNoTracking()
+            .ProjectTo<PositionAndEmployeesDto>(_mapper.ConfigurationProvider);
+
+        if (queryDto.PIds is not null && queryDto.PIds.Any())
+        {
+            query = query.Where(x => queryDto.PIds.Contains(x.PId));
+        }
+
+        if (select is not null)
+        {
+            return await query.Select(select).ToListAsync();
+        }
+        else
+        {
+            return await query.Cast<TResult>().ToListAsync();
+        }
     }
 }

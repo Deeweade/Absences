@@ -54,6 +54,19 @@ public class SubstitutionsRepository : ISubstitutionsRepository
             .ToListAsync();
     }
 
+    public async Task<List<SubstitutionDto>> GetCurrentByEmployeeId(string employeeId)
+    {
+        ArgumentNullException.ThrowIfNull(employeeId);
+
+        return await _context.Substitutions
+            .AsNoTracking()
+            .ProjectTo<SubstitutionDto>(_mapper.ConfigurationProvider)
+            .Where(x => x.EmployeePId.Equals(employeeId)
+                && x.DateStart <= DateTime.Now
+                && x.DateEnd >= DateTime.Now)
+            .ToListAsync();
+    }
+
     public async Task<SubstitutionDto> Create(SubstitutionDto dto)
     {
         ArgumentNullException.ThrowIfNull(dto);

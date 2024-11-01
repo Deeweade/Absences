@@ -5,6 +5,7 @@ using Absence.Domain.Models.Constants;
 using Absence.Domain.Models.Enums;
 using Absence.Application.Helpers;
 using Microsoft.Extensions.Configuration;
+using Absence.Domain.Dtos.Queries;
 
 namespace Absence.Application.Services.NotificationService.Builders;
 
@@ -26,6 +27,8 @@ public class AbsenceParametersBuilder : INotificationParametersBuilder
     public async Task<NotificationParameters> Build(BuilderOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
+        
+        var parameters = new NotificationParameters();
 
         var dict = new Dictionary<string, string>();
 
@@ -39,10 +42,19 @@ public class AbsenceParametersBuilder : INotificationParametersBuilder
                 var owner = await _unitOfWork.EmployeesRepository.GetByPId(options.AbsenceOwnerPId);
 
                 addressee = await _unitOfWork.EmployeesRepository.GetByPId(owner.ManagerPId);
+                
+                var substitutions = await _unitOfWork.SubstitutionsRepository.GetCurrentByEmployeeId(addressee.PId);
+
+                var deputiesEmails = await _unitOfWork.EmployeesRepository.GetByQuery(new EmployeesQueryDto
+                {
+                    PIds =  substitutions.Select(x => x.DeputyPId).Distinct().ToList()
+                }, x => x.Mail.ToLower());
 
                 dict.Add(NotificationConstants.AddresseeName, addressee.PFirstName);
                 dict.Add(NotificationConstants.SenderFirstname, owner.PFirstName);
                 dict.Add(NotificationConstants.SenderLastName, owner.PSurname);
+
+                parameters.CC = deputiesEmails;
 
                 break;
             case NotificationTypes.AllAbsencesRejected:
@@ -77,13 +89,11 @@ public class AbsenceParametersBuilder : INotificationParametersBuilder
                 ExceptionHelper.ThrowContextualException<InvalidOperationException>("This notification type is not allowen in this builder");
                 break;
         }
-
-        var parameters = new NotificationParameters();
         
         var body = await _unitOfWork.NotificationBodiesRepository.GetByTypeId((int)options.NotificationType);
 
         parameters.Title = await _unitOfWork.NotificationTitlesRepository.GetByTypeId((int)options.NotificationType);
-        parameters.Body = _mailFormatter.ReplaceParams(body, dict);;
+        parameters.Body = _mailFormatter.ReplaceParams(body, dict);
         parameters.To = $"{addressee.Mail.ToLower()}";
 
         return parameters;
