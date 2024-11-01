@@ -79,4 +79,16 @@ public class SubstitutionsRepository : ISubstitutionsRepository
 
         return _mapper.Map<SubstitutionDto>(entity);
     }
+
+    public async Task<SubstitutionDto> Update(SubstitutionDto dto)
+    {
+        ArgumentNullException.ThrowIfNull(dto);
+
+        var entity = await _context.Substitutions.FirstOrDefaultAsync(x => x.Id == dto.Id);
+
+        entity.DateStart = dto.DateStart;
+        entity.DateEnd = dto.DateEnd;
+
+        return _mapper.Map<SubstitutionDto>(entity);
+    }
 }

@@ -9,4 +9,5 @@ public interface ISubstitutionsRepository
     Task<List<SubstitutionDto>> GetCurrentByDeputyPId(string pId);
     Task<List<SubstitutionDto>> GetCurrentByEmployeeId(string managerPId);
     Task<SubstitutionDto> Create(SubstitutionDto dto);
+    Task<SubstitutionDto> Update(SubstitutionDto dto);
 }
