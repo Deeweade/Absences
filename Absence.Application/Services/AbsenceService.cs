@@ -8,7 +8,6 @@ using Absence.Domain.Models.Enums;
 using Absence.Application.Helpers;
 using Absence.Domain.Dtos.Queries;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Buffers;
 
 namespace Absence.Application.Services;
 
@@ -135,12 +134,30 @@ public class AbsenceService : IAbsenceService
 
         try
         {
-            //проставляем статусы отсутствиям
-            var absences = await _unitOfWork.AbsencesRepository.GetByQuery(new AbsenceQueryDto
+            var query = new AbsenceQueryDto
             {
-                Ids = view.AbsencesIds
-            });
+                Years = new List<int> { view.Year },
+                PIds = view.PIds
+            };
 
+            //получаем соответствующие отсутствия
+            if (view.AbsenceStatusId == (int)AbsenceStatuses.Approval)
+            {
+                query.AbsenceStatuses = new List<int> { (int)AbsenceStatuses.ActiveDraft };
+            }
+            else if (view.AbsenceStatusId == (int)AbsenceStatuses.Rejected
+                || view.AbsenceStatusId == (int)AbsenceStatuses.Approved)
+            {
+                query.AbsenceStatuses = new List<int> { (int)AbsenceStatuses.ActiveDraft };
+            }
+            else
+            {
+                ExceptionHelper.ThrowContextualException<InvalidOperationException>($"Unable to set AbsenceStatusId = {view.AbsenceStatusId}");
+            }
+
+            var absences = await _unitOfWork.AbsencesRepository.GetByQuery(query);
+
+            //проставляем статусы соответствующм отсутствиям
             foreach (var absence in absences)
             {
                 absence.AbsenceStatusId = view.AbsenceStatusId;
@@ -153,15 +170,14 @@ public class AbsenceService : IAbsenceService
                 //проставляем этапы сотрудникам в зависимости от статусов отсутствий и типов процессов
                 await _employeeStagesService.UpdateBulk(new UpdateStagesBulkView
                 {
-                    PIds = absences.Select(x => x.PId).Distinct().ToList(),
-                    Year = absences.FirstOrDefault().DateStart.Date.Year,
+                    PIds = view.PIds,
+                    Year = view.Year,
                     AbsenceStatusId = view.AbsenceStatusId
                 });
             });
 
-            var pIds = absences.Select(x => x.PId).Distinct().ToList();
-
-            foreach (var pId in pIds)
+            //отправляем уведомления
+            foreach (var pId in view.PIds)
             {
                 switch (view.AbsenceStatusId)
                 {

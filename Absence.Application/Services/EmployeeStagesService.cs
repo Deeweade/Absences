@@ -85,54 +85,6 @@ public class EmployeeStagesService : IEmployeeStagesService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    // public async Task Update(string pId, int year, int absenceStatusId)
-    // {
-    //     ArgumentNullException.ThrowIfNull(pId);
-
-    //     var employeeStage = await _unitOfWork.EmployeeStagesRepository.GetLast(pId, year);
-        
-    //     var absences = await _unitOfWork.AbsencesRepository.GetByQuery(new AbsenceQueryDto
-    //     {
-    //         PIds = new List<string> { pId },
-    //         Years = new List<int> { year },
-    //         AbsenceStatuses = new List<int> { (int)AbsenceStatuses.ActiveDraft, (int)AbsenceStatuses.Approval, (int)AbsenceStatuses.Approved }
-    //     });
-
-    //     if (absenceStatusId == (int)AbsenceStatuses.Approval)
-    //     {
-    //         employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
-    //             (int)ProcessStages.CorrectionApproval
-    //             : (int)ProcessStages.YearPlanningApproval;
-
-    //         await _sender.Send_AbsencesRequireApproval(employeeStage.PId);
-    //     }
-    //     else if (absenceStatusId == (int)AbsenceStatuses.Approved
-    //         && absences.All(x => x.AbsenceStatusId == (int)AbsenceStatuses.Approval))
-    //     {
-    //         employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
-    //             (int)ProcessStages.CorrectionApproved
-    //             : (int)ProcessStages.YearPlanningApproved;
-
-    //         await _sender.Send_AllAbsencesApproved(employeeStage.PId);
-    //     }
-    //     else if (absenceStatusId == (int)AbsenceStatuses.Rejected)
-    //     {
-    //         employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
-    //             (int)ProcessStages.Correction
-    //             : (int)ProcessStages.YearPlanning;
-
-    //         await _sender.Send_AllAbsencesRejected(employeeStage.PId);
-    //     }
-    //     else
-    //     {
-    //         throw new ArgumentException($"Impossible to set absence status with Id = {view.AbsenceStatusId}");
-    //     }
-        
-    //     await _unitOfWork.EmployeeStagesRepository.UpdateBulk(employeesStages);
-
-    //     await _unitOfWork.SaveChangesAsync();
-    // }
-
     public async Task UpdateBulk(UpdateStagesBulkView view)
     {
         ArgumentNullException.ThrowIfNull(view);
