@@ -21,6 +21,7 @@ public class PositionAndEmployeesView
     public string ManagerSurname { get; set; }
     public string ManagerFirstName { get; set; }
     public string ManagerSecondName { get; set; }
+    public string PGroupName { get; set; }
     public string CityName { get; set; }
     public DateTime? HiredDate { get; set; }
     public string OfficeName { get; set; }

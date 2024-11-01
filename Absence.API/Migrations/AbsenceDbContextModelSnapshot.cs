@@ -327,6 +327,10 @@ namespace Absence.API.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("MANAGER_SURNAME");
 
+                    b.Property<string>("PGroupName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("PGROUPNAME");
+
                     b.Property<string>("OId")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("OID");

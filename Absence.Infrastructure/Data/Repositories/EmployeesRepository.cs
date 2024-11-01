@@ -46,7 +46,8 @@ public class EmployeesRepository : IEmployeesRepository
             .AsNoTracking()
             .ProjectTo<PositionAndEmployeesDto>(_mapper.ConfigurationProvider)
             .Where(x => x.ManagerPId.Equals(managerPId)
-                && !string.IsNullOrEmpty(x.PId))
+                && !string.IsNullOrEmpty(x.PId)
+                && !x.PGroupName.Equals("Декрет"))
             .ToListAsync();
     }
 }
