@@ -150,21 +150,13 @@ public class EmployeeStagesService : IEmployeeStagesService
 
         foreach(var employeeStage in employeesStages)
         {
-            var absences = await _unitOfWork.AbsencesRepository.GetByQuery(new AbsenceQueryDto
-            {
-                PIds = new List<string> { employeeStage.PId },
-                Years = new List<int> { employeeStage.Stage.Year },
-                AbsenceStatuses = new List<int> { (int)AbsenceStatuses.ActiveDraft, (int)AbsenceStatuses.Approval, (int)AbsenceStatuses.Approved }
-            });
-
             if (view.AbsenceStatusId == (int)AbsenceStatuses.Approval)
             {
                 employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
                     (int)ProcessStages.CorrectionApproval
                     : (int)ProcessStages.YearPlanningApproval;
             }
-            else if (view.AbsenceStatusId == (int)AbsenceStatuses.Approved
-                && absences.All(x => x.AbsenceStatusId == (int)AbsenceStatuses.Approval))
+            else if (view.AbsenceStatusId == (int)AbsenceStatuses.Approved)
             {
                 employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
                     (int)ProcessStages.CorrectionApproved
