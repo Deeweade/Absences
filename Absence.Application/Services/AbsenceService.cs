@@ -148,7 +148,7 @@ public class AbsenceService : IAbsenceService
             else if (view.AbsenceStatusId == (int)AbsenceStatuses.Rejected
                 || view.AbsenceStatusId == (int)AbsenceStatuses.Approved)
             {
-                query.AbsenceStatuses = new List<int> { (int)AbsenceStatuses.ActiveDraft };
+                query.AbsenceStatuses = new List<int> { (int)AbsenceStatuses.Approval };
             }
             else
             {
