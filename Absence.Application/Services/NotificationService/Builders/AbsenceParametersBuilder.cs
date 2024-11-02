@@ -43,18 +43,23 @@ public class AbsenceParametersBuilder : INotificationParametersBuilder
 
                 addressee = await _unitOfWork.EmployeesRepository.GetByPId(owner.ManagerPId);
                 
-                // var substitutions = await _unitOfWork.SubstitutionsRepository.GetCurrentByEmployeeId(addressee.PId);
+                var substitutions = await _unitOfWork.SubstitutionsRepository.GetCurrentByEmployeeId(addressee.PId);
 
-                // var deputiesEmails = await _unitOfWork.EmployeesRepository.GetByQuery(new EmployeesQueryDto
-                // {
-                //     PIds =  substitutions.Select(x => x.DeputyPId).Distinct().ToList()
-                // }, x => x.Mail.ToLower());
+                var deputiesPIds = substitutions.Select(x => x.DeputyPId).Distinct().ToList();
+
+                if (deputiesPIds.Any())
+                {
+                    var deputiesEmails = await _unitOfWork.EmployeesRepository.GetByQuery(new EmployeesQueryDto
+                    {
+                        PIds = deputiesPIds
+                    }, x => x.Mail.ToLower());
+
+                    parameters.CC = deputiesEmails;
+                }
 
                 dict.Add(NotificationConstants.AddresseeName, addressee.PFirstName);
                 dict.Add(NotificationConstants.SenderFirstname, owner.PFirstName);
                 dict.Add(NotificationConstants.SenderLastName, owner.PSurname);
-
-                //parameters.CC = deputiesEmails;
 
                 break;
             case NotificationTypes.AllAbsencesRejected:
