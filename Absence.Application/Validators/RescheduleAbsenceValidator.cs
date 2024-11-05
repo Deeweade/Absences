@@ -2,9 +2,11 @@ using Absence.Application.Interfaces.Services;
 using Absence.Domain.Interfaces.Repositories;
 using Absence.Application.Models.Actions;
 using Absence.Domain.Models.Constants;
+using Absence.Domain.Dtos.Entities;
 using Absence.Domain.Models.Enums;
 using Absence.Domain.Dtos.Queries;
 using FluentValidation;
+using AutoMapper;
 
 namespace Absence.Application.Validators;
 
@@ -12,11 +14,13 @@ public class RescheduleAbsenceValidator : AbstractValidator<RescheduleAbsenceVie
 {
     private readonly IVacationDaysService _vacationDaysService;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
 
-    public RescheduleAbsenceValidator(IVacationDaysService vacationDaysService, IUnitOfWork unitOfWork)
+    public RescheduleAbsenceValidator(IVacationDaysService vacationDaysService, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _vacationDaysService = vacationDaysService;
         _unitOfWork = unitOfWork;
+        _mapper = mapper;
 
         RuleFor(x => x)
             .MustAsync(IsAbsenceApproved)
@@ -27,9 +31,9 @@ public class RescheduleAbsenceValidator : AbstractValidator<RescheduleAbsenceVie
         RuleFor(x => x)
             .MustAsync(AreUnique)
             .WithMessage(ExceptionMessages.GetMessage(ExceptionalEvents.AbsenceExists));
-        // RuleFor(x => x)
-        //     .MustAsync(IsValidDuration)
-        //     .WithMessage(ExceptionMessages.GetMessage(ExceptionalEvents.AbsenceTooLong));
+        RuleFor(x => x)
+            .MustAsync(IsValidDuration)
+            .WithMessage(ExceptionMessages.GetMessage(ExceptionalEvents.AbsenceTooLong));
     }
 
     private async Task<bool> IsEqualYears(RescheduleAbsenceView view, CancellationToken token)
@@ -39,15 +43,19 @@ public class RescheduleAbsenceValidator : AbstractValidator<RescheduleAbsenceVie
         return view.NewAbsences.All(x => x.DateStart.Date.Year == cancelledAbsence.DateStart.Year);
     }
 
-    // private async Task<bool> IsValidDuration(RescheduleAbsenceView view, CancellationToken token)
-    // {
-    //     var cancelledAbsence = await _unitOfWork.AbsencesRepository.GetById(view.CancelledAbsenceId);
+    private async Task<bool> IsValidDuration(RescheduleAbsenceView view, CancellationToken token)
+    {
+        var remainingDays = (await _vacationDaysService.GetRemainingDays(view.NewAbsences.FirstOrDefault().PId, view.NewAbsences.FirstOrDefault().DateStart.Year))
+            .FirstOrDefault(x => x.AbsenceTypeId.Equals(view.NewAbsences.FirstOrDefault().AbsenceTypeId));
 
-    //     var remainingDaysNumber = (await _vacationDaysService.GetRemainingDays(cancelledAbsence.PId, cancelledAbsence.DateStart.Year))
-    //         .Sum(x => x.DaysNumber);
+        var dtos = _mapper.Map<List<AbsenceDto>>(view);
 
-    //     return remainingDaysNumber < view.NewAbsences.Sum(x => x.DateEnd.Subtract(x.DateStart).Days + 1);
-    // }
+        var holidaysNumber = await _unitOfWork.WorkPeriodsRepository.GetHolidaysNumberInPeriods(dtos);
+
+        var absenceDuration = dtos.Sum(x => x.Duration()) - holidaysNumber;
+
+        return absenceDuration <= remainingDays.AvailableDaysNumber;
+    }
 
     private async Task<bool> IsAbsenceApproved(RescheduleAbsenceView view, CancellationToken token)
     {

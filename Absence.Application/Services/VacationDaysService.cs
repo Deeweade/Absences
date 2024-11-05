@@ -40,14 +40,20 @@ public class VacationDaysService : IVacationDaysService
                 AbsenceStatuses = new [] { (int)AbsenceStatuses.ActiveDraft, (int)AbsenceStatuses.Approval, (int)AbsenceStatuses.Approved }
             });
 
+
         foreach (var typeAvailableDays in availableDaysByAbsenceTypes)
         {
-            var unavailableDays = activeAbsences
+            var typeAbsences = activeAbsences
                 .Where(x => x.AbsenceTypeId.Equals(typeAvailableDays.AbsenceTypeId))
-                .Select(x => x.DateEnd.Subtract(x.DateStart).Days + 1)
+                .ToList();
+
+            var holidaysNumber = await _unitOfWork.WorkPeriodsRepository.GetHolidaysNumberInPeriods(typeAbsences);
+            
+            var unavailableDays = typeAbsences
+                .Select(x => x.Duration())
                 .Sum();
 
-            var subtraction = typeAvailableDays.AvailableDaysNumber - unavailableDays;
+            var subtraction = typeAvailableDays.AvailableDaysNumber - unavailableDays + holidaysNumber;
 
             typeAvailableDays.AvailableDaysNumber = subtraction < 0 ? 0 : subtraction;
         }

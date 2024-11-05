@@ -11,4 +11,9 @@ public class AbsenceDto : BaseDto
 
     public AbsenceTypeDto AbsenceType { get; set; }
     public AbsenceStatusDto AbsenceStatus { get; set; }
+
+    public int Duration()
+    {
+        return DateEnd.Subtract(DateStart).Days + 1;
+    }
 }
