@@ -45,8 +45,7 @@ public class RescheduleAbsenceValidator : AbstractValidator<RescheduleAbsenceVie
 
     private async Task<bool> IsValidDuration(RescheduleAbsenceView view, CancellationToken token)
     {
-        var remainingDays = (await _vacationDaysService.GetRemainingDays(view.NewAbsences.FirstOrDefault().PId, view.NewAbsences.FirstOrDefault().DateStart.Year))
-            .FirstOrDefault(x => x.AbsenceTypeId.Equals(view.NewAbsences.FirstOrDefault().AbsenceTypeId));
+        var cancelledAbsence = await _unitOfWork.AbsencesRepository.GetById(view.CancelledAbsenceId);
 
         var dtos = _mapper.Map<List<AbsenceDto>>(view.NewAbsences);
 
@@ -54,7 +53,7 @@ public class RescheduleAbsenceValidator : AbstractValidator<RescheduleAbsenceVie
 
         var absenceDuration = dtos.Sum(x => x.Duration()) - holidaysNumber;
 
-        return absenceDuration <= remainingDays.AvailableDaysNumber;
+        return absenceDuration <= cancelledAbsence.Duration();
     }
 
     private async Task<bool> IsAbsenceApproved(RescheduleAbsenceView view, CancellationToken token)
