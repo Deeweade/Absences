@@ -20,9 +20,6 @@ public class UpdateAbsenceValidator : AbsenceValidator<UpdateAbsenceView>
         RuleFor(x => x)
             .MustAsync(AllowedToUpdate)
             .WithMessage(ExceptionMessages.GetMessage(ExceptionalEvents.UpdatingNotDraftAbsence));
-        RuleFor(x => x)
-            .MustAsync(IsValidDuration)
-            .WithMessage(ExceptionMessages.GetMessage(ExceptionalEvents.AbsenceTooLong));
     }
 
     private async Task<bool> AllowedToUpdate(UpdateAbsenceView view, CancellationToken token)

@@ -48,7 +48,7 @@ public class RescheduleAbsenceValidator : AbstractValidator<RescheduleAbsenceVie
         var remainingDays = (await _vacationDaysService.GetRemainingDays(view.NewAbsences.FirstOrDefault().PId, view.NewAbsences.FirstOrDefault().DateStart.Year))
             .FirstOrDefault(x => x.AbsenceTypeId.Equals(view.NewAbsences.FirstOrDefault().AbsenceTypeId));
 
-        var dtos = _mapper.Map<List<AbsenceDto>>(view);
+        var dtos = _mapper.Map<List<AbsenceDto>>(view.NewAbsences);
 
         var holidaysNumber = await _unitOfWork.WorkPeriodsRepository.GetHolidaysNumberInPeriods(dtos);
 
