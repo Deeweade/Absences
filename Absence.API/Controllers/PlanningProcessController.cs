@@ -1,13 +1,10 @@
 using Absence.Application.Interfaces.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Absence.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Policy = "RequireAuthenticatedUser")]
-
 public class PlanningProcessController : ControllerBase
 {
     private readonly IPlanningProcessService _service;

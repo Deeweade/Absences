@@ -1,15 +1,12 @@
 using Absence.Application.Interfaces.Services;
 using Absence.Application.Models.Actions;
 using Absence.Application.Models.Queries;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Absence.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Policy = "RequireAuthenticatedUser")]
-
 public class AbsenceController : ControllerBase
 {
     private readonly IAbsenceService _service;
