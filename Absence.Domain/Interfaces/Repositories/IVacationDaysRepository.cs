@@ -4,5 +4,5 @@ namespace Absence.Domain.Interfaces.Repositories;
 
 public interface IVacationDaysRepository
 {
-    Task<List<VacationDaysDto>> GetAvailableDays(string pId, int year, bool isYearPlanning);
+    Task<List<VacationDaysDto>> GetAll(string pId, int year, bool isYearPlanning);
 }

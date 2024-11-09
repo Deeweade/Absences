@@ -41,8 +41,7 @@ public class EmployeeStagesRepository : IEmployeeStagesRepository
             .LastOrDefaultAsync();
     }
 
-
-    public async Task<List<EmployeeStageDto>> GetLastByQuery(EmployeeStagesQueryDto queryDto)
+    public async Task<List<EmployeeStageDto>> GetByQuery(EmployeeStagesQueryDto queryDto)
     {
         ArgumentNullException.ThrowIfNull(queryDto);
 

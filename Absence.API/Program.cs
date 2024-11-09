@@ -1,3 +1,4 @@
+using Absence.Application.Interfaces.Services.NotificationSender;
 using Absence.Application.Services.NotificationService;
 using Absence.Infrastructure.Data.Repositories;
 using Absence.Application.Interfaces.Services;
@@ -5,6 +6,9 @@ using Absence.Infrastructure.Models.Mappings;
 using Absence.Domain.Interfaces.Repositories;
 using Absence.Infrastructure.Data.Contexts;
 using Absence.Application.Models.Mappings;
+using Absence.Application.Models.Actions;
+using Absence.Application.Models.Views;
+using Absence.Application.Validators;
 using Absence.Application.Services;
 using Absence.Infrastructure.Data;
 using Absence.API.Middlewares;
@@ -12,6 +16,8 @@ using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
+using FluentValidation;
 
 #region EnvironmentConfiguring
 
@@ -42,7 +48,7 @@ builder.Configuration
 
 #region AuthenticationConfiguring
 
-builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme).AddNegotiate();
+//builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme).AddNegotiate();
 
 builder.Services.AddAuthorization(options =>
 {
@@ -79,18 +85,32 @@ builder.Services.AddDbContext<AbsenceDbContext>(options =>
 
 #region DependenciesInjection
 
+builder.Services.Configure<string>(builder.Configuration.GetSection("EnvironmentDomain"));
+
 //services
+builder.Services.AddScoped<INotificationBuilderFactory, NotificationBuilderFactory>();
 builder.Services.AddScoped<INotificationSenderFacade, NotificationSenderFacade>();
 builder.Services.AddScoped<IPlanningProcessService, PlanningProcessService>();
+builder.Services.AddScoped<IEmailFormattingService, EmailFormattingService>();
 builder.Services.AddScoped<IEmployeeStagesService, EmployeeStagesService>();
 builder.Services.AddScoped<ISubstitutionsService, SubstitutionsService>();
 builder.Services.AddScoped<IVacationDaysService, VacationDaysService>();
+builder.Services.AddScoped<IWorkPeriodsService, WorkPeriodsService>();
 builder.Services.AddScoped<IEmployeesService, EmployeesService>();
+builder.Services.AddScoped<INotificationSender, EmailSender>();
 builder.Services.AddScoped<IAbsenceService, AbsenceService>();
 
 //data
 builder.Services.AddScoped<IVacationDaysRepository, VacationDaysRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+//validators
+builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.AddTransient<IValidator<RescheduleAbsenceView>, RescheduleAbsenceValidator>();
+builder.Services.AddTransient<IValidator<AbsenceView>, AbsenceValidator<AbsenceView>>();
+builder.Services.AddTransient<IValidator<CreateAbsenceView>, CreateAbsenceValidator>();
+builder.Services.AddTransient<IValidator<UpdateAbsenceView>, UpdateAbsenceValidator>();
 
 builder.Services.AddAutoMapper(typeof(InfrastructureMappingProfile), typeof(ApplicationMappingProfile));
 
@@ -131,10 +151,6 @@ if (app.Environment.IsProduction())
     app.UseHttpsRedirection();
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
-}
-else
-{
-    app.UseDeveloperExceptionPage();
 }
 
 app.UseSwagger();

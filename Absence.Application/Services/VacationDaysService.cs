@@ -18,11 +18,20 @@ public class VacationDaysService : IVacationDaysService
         _mapper = mapper;
     }
 
-    public async Task<List<VacationDaysView>> GetAvailableDays(string pId, int year)
+    public async Task<List<VacationDaysView>> GetAll(string pId, int year)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(pId);
 
-        var availableDaysByAbsenceTypes = await _unitOfWork.VacationDaysRepository.GetAvailableDays(pId, year, true);
+        var days = await _unitOfWork.VacationDaysRepository.GetAll(pId, year, true);
+
+        return _mapper.Map<List<VacationDaysView>>(days);
+    }
+
+    public async Task<List<VacationDaysView>> GetRemainingDays(string pId, int year)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(pId);
+
+        var availableDaysByAbsenceTypes = await _unitOfWork.VacationDaysRepository.GetAll(pId, year, true);
 
         var activeAbsences = await _unitOfWork.AbsencesRepository.GetByQuery(new AbsenceQueryDto
             {
@@ -31,16 +40,22 @@ public class VacationDaysService : IVacationDaysService
                 AbsenceStatuses = new [] { (int)AbsenceStatuses.ActiveDraft, (int)AbsenceStatuses.Approval, (int)AbsenceStatuses.Approved }
             });
 
+
         foreach (var typeAvailableDays in availableDaysByAbsenceTypes)
         {
-            var unavailableDays = activeAbsences
+            var typeAbsences = activeAbsences
                 .Where(x => x.AbsenceTypeId.Equals(typeAvailableDays.AbsenceTypeId))
-                .Select(x => x.DateEnd.Subtract(x.DateStart).Days)
+                .ToList();
+
+            var holidaysNumber = await _unitOfWork.WorkPeriodsRepository.GetHolidaysNumberInPeriods(typeAbsences);
+            
+            var unavailableDays = typeAbsences
+                .Select(x => x.Duration())
                 .Sum();
 
-            var subtraction = typeAvailableDays.DaysNumber - unavailableDays;
+            var subtraction = typeAvailableDays.AvailableDaysNumber - unavailableDays + holidaysNumber;
 
-            typeAvailableDays.DaysNumber = subtraction < 0 ? 0 : subtraction;
+            typeAvailableDays.AvailableDaysNumber = subtraction < 0 ? 0 : subtraction;
         }
 
         return _mapper.Map<List<VacationDaysView>>(availableDaysByAbsenceTypes);

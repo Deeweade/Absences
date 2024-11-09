@@ -4,6 +4,7 @@ using Absence.Application.Models.Actions;
 using Absence.Domain.Dtos.Entities;
 using Absence.Domain.Models.Enums;
 using Absence.Domain.Dtos.Queries;
+using Absence.Application.Helpers;
 
 namespace Absence.Application.Services;
 
@@ -88,59 +89,30 @@ public class EmployeeStagesService : IEmployeeStagesService
     {
         ArgumentNullException.ThrowIfNull(view);
 
-        var employeesStages = await _unitOfWork.EmployeeStagesRepository.GetLastByQuery(new EmployeeStagesQueryDto
+        var employeesStages = await _unitOfWork.EmployeeStagesRepository.GetByQuery(new EmployeeStagesQueryDto
             {
-                PIds = view.PIds,
+                PIds = view.PIds.Distinct().ToList(),
                 Year = view.Year
             });
+
+        employeesStages = employeesStages.GroupBy(x => x.PId)
+            .ToDictionary(x => x.Key, x => x.OrderBy(stage => stage.Id).LastOrDefault())
+            .Select(x => x.Value)
+            .ToList();
 
         foreach(var employeeStage in employeesStages)
         {
             if (view.AbsenceStatusId == (int)AbsenceStatuses.Approval)
             {
-                var remainingDays = (await _unitOfWork.VacationDaysRepository.GetAvailableDays(employeeStage.PId, employeeStage.Stage.Year, true))
-                    .Sum(x => x.DaysNumber);
-
-                if (remainingDays == 0)
-                {
-                    employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
-                        (int)ProcessStages.CorrectionApproval
-                        : (int)ProcessStages.YearPlanningApproval;
-                }
-                else
-                {
-                    var vacationDaysNumber = await _unitOfWork.AbsencesRepository.GetVacationDaysSum(employeeStage.PId, employeeStage.Stage.Year);
-
-                    if (vacationDaysNumber == remainingDays)
-                    {
-                        employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
-                        (int)ProcessStages.CorrectionApproval
-                        : (int)ProcessStages.YearPlanningApproval;
-                    }
-                }
+                employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
+                    (int)ProcessStages.CorrectionApproval
+                    : (int)ProcessStages.YearPlanningApproval;
             }
             else if (view.AbsenceStatusId == (int)AbsenceStatuses.Approved)
             {
-                var remainingDays = (await _unitOfWork.VacationDaysRepository.GetAvailableDays(employeeStage.PId, employeeStage.Stage.Year, true))
-                    .Sum(x => x.DaysNumber);
-
-                if (remainingDays == 0)
-                {
-                    employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
-                        (int)ProcessStages.CorrectionApproved
-                        : (int)ProcessStages.YearPlanningApproved;
-                }
-                else
-                {
-                    var vacationDaysNumber = await _unitOfWork.AbsencesRepository.GetVacationDaysSum(employeeStage.PId, employeeStage.Stage.Year);
-
-                    if (vacationDaysNumber == remainingDays)
-                    {
-                        employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
-                        (int)ProcessStages.CorrectionApproved
-                        : (int)ProcessStages.YearPlanningApproved;
-                    }
-                }
+                employeeStage.StageId = employeeStage.Stage.ProcessId == (int)SystemProcesses.VacationsCorrection ?
+                    (int)ProcessStages.CorrectionApproved
+                    : (int)ProcessStages.YearPlanningApproved;
             }
             else if (view.AbsenceStatusId == (int)AbsenceStatuses.Rejected)
             {

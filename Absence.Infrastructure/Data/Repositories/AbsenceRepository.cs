@@ -30,7 +30,7 @@ public class AbsenceRepository : IAbsenceRepository
                 .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<int> GetVacationDaysSum(string pId, int year)
+    public async Task<int> GetAbsencesDaysSum(string pId, int year)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(pId);
         ArgumentOutOfRangeException.ThrowIfLessThan(year, 2024);
@@ -44,7 +44,7 @@ public class AbsenceRepository : IAbsenceRepository
             .ToListAsync();
 
         return absences
-            .Select(x => (x.DateEnd - x.DateStart).Days)
+            .Select(x => (x.DateEnd - x.DateStart).Days + 1)
             .Sum();
     }
 
@@ -54,7 +54,8 @@ public class AbsenceRepository : IAbsenceRepository
 
         var query = _context.Absences
             .AsNoTracking()
-            .ProjectTo<AbsenceDto>(_mapper.ConfigurationProvider);
+            .ProjectTo<AbsenceDto>(_mapper.ConfigurationProvider)
+            .Where(x => x.AbsenceStatusId != (int)AbsenceStatuses.Cancelled);
 
         if (queryDto.Ids is not null && queryDto.Ids.Any())
         {

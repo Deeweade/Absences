@@ -23,12 +23,28 @@ namespace Absence.API.Controllers
             return await _service.GetByLogin(login);
         }
 
-        // [HttpGet("peers/{pId}")]
-        // public async Task<List<PositionAndEmployeesView>> GetPeers(string pId)
-        // {
-        //     ArgumentNullException.ThrowIfNullOrEmpty(pId);
+        [HttpGet("peers/{pId}")]
+        public async Task<List<PositionAndEmployeesView>> GetPeers(string pId)
+        {
+            ArgumentNullException.ThrowIfNullOrEmpty(pId);
 
-        //     return await _service.GetPeers(pId);
-        // }
+            return await _service.GetPeers(pId);
+        }
+
+        [HttpGet("subordinates/{pId}/{includeSubstitutions}")]
+        public async Task<List<PositionAndEmployeesView>> GetSubordinates(string pId, bool includeSubstitutions)
+        {
+            ArgumentNullException.ThrowIfNullOrEmpty(pId);
+
+            return await _service.GetSubordinates(pId, includeSubstitutions);
+        }
+
+        [HttpGet("manager/{pId}")]
+        public async Task<PositionAndEmployeesView> GetManager(string pId)
+        {
+            ArgumentNullException.ThrowIfNullOrEmpty(pId);
+
+            return await _service.GetManager(pId);
+        }
     }
 }

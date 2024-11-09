@@ -54,6 +54,7 @@ public class ExceptionHandlingMiddleware
             var response = new
             {
                 stackTrace = exception.StackTrace,
+                error = exception.GetType().Name,
                 innerMessages = GetInnerMessages(exception)
             };
 

@@ -50,6 +50,21 @@ public class PositionAndEmployees
     [Column("MAIL")]
     public string Mail { get; set; }
 
+    [Column("MANAGER_PID")]
+    public string ManagerPId { get; set; }
+
+    [Column("MANAGER_SURNAME")]
+    public string ManagerSurname { get; set; }
+
+    [Column("MANAGER_FIRSTNAME")]
+    public string ManagerFirstName { get; set; }
+
+    [Column("MANAGER_SECONDNAME")]
+    public string ManagerSecondName { get; set; }
+
+    [Column("PGROUPNAME")]
+    public string PGroupName { get; set; }
+
     [Column("CITY_NAME")]
     public string CityName { get; set; }
 

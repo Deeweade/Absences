@@ -1,16 +1,12 @@
 using Absence.Application.Interfaces.Services;
 using Absence.Application.Models.Actions;
 using Absence.Application.Models.Queries;
-using Absence.Application.Models.Views;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Absence.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Policy = "RequireAuthenticatedUser")]
-
 public class AbsenceController : ControllerBase
 {
     private readonly IAbsenceService _service;
@@ -31,7 +27,7 @@ public class AbsenceController : ControllerBase
     }
 
     [HttpPost("create")]
-    public async Task<IActionResult> Create(AbsenceView view)
+    public async Task<IActionResult> Create(CreateAbsenceView view)
     {
         ArgumentNullException.ThrowIfNull(view);
 
@@ -51,7 +47,7 @@ public class AbsenceController : ControllerBase
     }
     
     [HttpPost("update/{absenceId}")]
-    public async Task<IActionResult> Update(int absenceId, AbsenceView view)
+    public async Task<IActionResult> Update(int absenceId, UpdateAbsenceView view)
     {
         ArgumentNullException.ThrowIfNull(view);
         
@@ -63,6 +59,16 @@ public class AbsenceController : ControllerBase
         var absence = await _service.Update(view);
 
         return Ok(absence);
+    }
+
+    [HttpPost("changeStatus")]
+    public async Task<IActionResult> Update(ChangeAbsenceStatusView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+
+        await _service.ChangeStatus(view);
+
+        return Ok();
     }
 
     [HttpPost("changeStatuses/bulk")]

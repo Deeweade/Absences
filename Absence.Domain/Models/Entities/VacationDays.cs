@@ -4,7 +4,8 @@ public class VacationDays : BaseEntity
 {
     public string PId { get; set; }
     public int Year { get; set; }
-    public int DaysNumber { get; set; }
+    public int AvailableDaysNumber { get; set; }
+    public int PlannedDaysNumber { get; set; }
     public bool IsYearPlanning { get; set; }
     public string AbsenceTypeId { get; set; }
 

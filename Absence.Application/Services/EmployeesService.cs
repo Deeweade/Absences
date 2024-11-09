@@ -1,6 +1,7 @@
 using Absence.Application.Interfaces.Services;
 using Absence.Domain.Interfaces.Repositories;
 using Absence.Application.Models.Views;
+using Absence.Domain.Dtos.Entities;
 using AutoMapper;
 
 namespace Absence.Application.Services;
@@ -25,18 +26,71 @@ public class EmployeesService : IEmployeesService
         return _mapper.Map<PositionAndEmployeesView>(employee);
     }
 
-    // public async Task<List<PositionAndEmployeesView>> GetPeers(string pId)
-    // {
-    //     ArgumentNullException.ThrowIfNullOrEmpty(pId);
+    public async Task<PositionAndEmployeesView> GetManager(string pId)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(pId);
 
-    //     var employee = await _unitOfWork.EmployeesRepository.GetByPId(pId);
+        var employee = await _unitOfWork.EmployeesRepository.GetByPId(pId);
 
-    //     // var peers = await _unitOfWork.EmployeesRepository.GetByOId(employee.OId);
+        if (employee.ManagerPId is null) return null;
 
-    //     employee = peers.FirstOrDefault(x => x.PId == pId);
+        var manager = await _unitOfWork.EmployeesRepository.GetByPId(employee.ManagerPId);
 
-    //     peers.Remove(employee);
+        return _mapper.Map<PositionAndEmployeesView>(manager);
+    }
 
-    //     return _mapper.Map<List<PositionAndEmployeesView>>(peers);
-    // }
+    public async Task<List<PositionAndEmployeesView>> GetPeers(string pId)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(pId);
+
+        var employee = await _unitOfWork.EmployeesRepository.GetByPId(pId);
+
+        if (employee.ManagerPId is null) return null;
+
+        var peers = await _unitOfWork.EmployeesRepository.GetSubordinates(employee.ManagerPId);
+
+        if (peers is null || !peers.Any()) return null;
+
+        employee = peers.FirstOrDefault(x => x.PId == pId);
+
+        peers.Remove(employee);
+
+        return _mapper.Map<List<PositionAndEmployeesView>>(peers);
+    }
+
+    public async Task<List<PositionAndEmployeesView>> GetSubordinates(string pId, bool includeSubstitutions)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(pId);
+
+        var subordinates = await _unitOfWork.EmployeesRepository.GetSubordinates(pId);
+
+        if (subordinates is null || !subordinates.Any()) subordinates = new List<PositionAndEmployeesDto>();
+
+        if (includeSubstitutions)
+        {
+            var substitutions = await _unitOfWork.SubstitutionsRepository.GetCurrentByDeputyPId(pId);
+
+            foreach (var substitution in substitutions)
+            {
+                var substitutionSubordinates = await _unitOfWork.EmployeesRepository.GetSubordinates(substitution.EmployeePId);
+
+                subordinates.AddRange(substitutionSubordinates);
+            }
+        }
+
+        //исключаем дубли
+        subordinates = subordinates.GroupBy(x => x.PId)
+            .ToDictionary(x => x.Key, x => x.FirstOrDefault())
+            .Select(x => x.Value)
+            .ToList();
+
+        var deputy = subordinates.FirstOrDefault(x => x.PId.Equals(pId));
+
+        if (deputy is not null)
+        {
+            subordinates.Remove(deputy);
+        }
+
+        return _mapper.Map<List<PositionAndEmployeesView>>(subordinates);
+    }
 }

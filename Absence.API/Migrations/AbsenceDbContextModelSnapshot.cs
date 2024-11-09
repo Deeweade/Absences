@@ -131,6 +131,104 @@ namespace Absence.API.Migrations
                     b.ToTable("EmployeeStages");
                 });
 
+            modelBuilder.Entity("Absence.Domain.Models.Entities.NotificationBody", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("NotificationMethodId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NotificationTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotificationMethodId");
+
+                    b.HasIndex("NotificationTypeId");
+
+                    b.ToTable("NotificationBodies");
+                });
+
+            modelBuilder.Entity("Absence.Domain.Models.Entities.NotificationMethod", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NotificationMethods");
+                });
+
+            modelBuilder.Entity("Absence.Domain.Models.Entities.NotificationSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NotificationSettings");
+                });
+
+            modelBuilder.Entity("Absence.Domain.Models.Entities.NotificationTitle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("NotificationTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotificationTypeId");
+
+                    b.ToTable("NotificationTitles");
+                });
+
+            modelBuilder.Entity("Absence.Domain.Models.Entities.NotificationType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NotificationTypes");
+                });
+
             modelBuilder.Entity("Absence.Domain.Models.Entities.PlanningProcess", b =>
                 {
                     b.Property<int>("Id")
@@ -212,6 +310,26 @@ namespace Absence.API.Migrations
                     b.Property<string>("Mail")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("MAIL");
+
+                    b.Property<string>("ManagerFirstName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("MANAGER_FIRSTNAME");
+
+                    b.Property<string>("ManagerPId")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("MANAGER_PID");
+
+                    b.Property<string>("ManagerSecondName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("MANAGER_SECONDNAME");
+
+                    b.Property<string>("ManagerSurname")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("MANAGER_SURNAME");
+
+                    b.Property<string>("PGroupName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("PGROUPNAME");
 
                     b.Property<string>("OId")
                         .HasColumnType("nvarchar(max)")
@@ -316,10 +434,10 @@ namespace Absence.API.Migrations
                     b.Property<DateTime>("DateStart")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("EmployeePId")
+                    b.Property<string>("DeputyPId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SubstitutePId")
+                    b.Property<string>("EmployeePId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -354,7 +472,7 @@ namespace Absence.API.Migrations
                     b.Property<string>("AbsenceTypeId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("DaysNumber")
+                    b.Property<int>("AvailableDaysNumber")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsYearPlanning")
@@ -362,6 +480,9 @@ namespace Absence.API.Migrations
 
                     b.Property<string>("PId")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PlannedDaysNumber")
+                        .HasColumnType("int");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
@@ -373,7 +494,7 @@ namespace Absence.API.Migrations
                     b.ToTable("VacationDays");
                 });
 
-            modelBuilder.Entity("Absence.Domain.Models.Entities.WorkPeriods", b =>
+            modelBuilder.Entity("Absence.Domain.Models.Entities.WorkPeriod", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -384,12 +505,30 @@ namespace Absence.API.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsWorkingDay")
-                        .HasColumnType("bit");
+                    b.Property<int>("WorkdayTypeId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("WorkdayTypeId");
+
                     b.ToTable("WorkPeriods");
+                });
+
+            modelBuilder.Entity("Absence.Domain.Models.Entities.WorkdayType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WorkdayTypes");
                 });
 
             modelBuilder.Entity("Absence.Domain.Models.Entities.Absence", b =>
@@ -431,6 +570,36 @@ namespace Absence.API.Migrations
                     b.Navigation("Stage");
                 });
 
+            modelBuilder.Entity("Absence.Domain.Models.Entities.NotificationBody", b =>
+                {
+                    b.HasOne("Absence.Domain.Models.Entities.NotificationMethod", "NotificationMethod")
+                        .WithMany("Bodies")
+                        .HasForeignKey("NotificationMethodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Absence.Domain.Models.Entities.NotificationType", "NotificationType")
+                        .WithMany("Bodies")
+                        .HasForeignKey("NotificationTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NotificationMethod");
+
+                    b.Navigation("NotificationType");
+                });
+
+            modelBuilder.Entity("Absence.Domain.Models.Entities.NotificationTitle", b =>
+                {
+                    b.HasOne("Absence.Domain.Models.Entities.NotificationType", "NotificationType")
+                        .WithMany("Titles")
+                        .HasForeignKey("NotificationTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NotificationType");
+                });
+
             modelBuilder.Entity("Absence.Domain.Models.Entities.ProcessStage", b =>
                 {
                     b.HasOne("Absence.Domain.Models.Entities.SystemProcess", "Process")
@@ -451,6 +620,17 @@ namespace Absence.API.Migrations
                     b.Navigation("AbsenceType");
                 });
 
+            modelBuilder.Entity("Absence.Domain.Models.Entities.WorkPeriod", b =>
+                {
+                    b.HasOne("Absence.Domain.Models.Entities.WorkdayType", "WorkdayType")
+                        .WithMany("WorkPeriods")
+                        .HasForeignKey("WorkdayTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WorkdayType");
+                });
+
             modelBuilder.Entity("Absence.Domain.Models.Entities.AbsenceStatus", b =>
                 {
                     b.Navigation("Absences");
@@ -468,6 +648,18 @@ namespace Absence.API.Migrations
                     b.Navigation("Comments");
                 });
 
+            modelBuilder.Entity("Absence.Domain.Models.Entities.NotificationMethod", b =>
+                {
+                    b.Navigation("Bodies");
+                });
+
+            modelBuilder.Entity("Absence.Domain.Models.Entities.NotificationType", b =>
+                {
+                    b.Navigation("Bodies");
+
+                    b.Navigation("Titles");
+                });
+
             modelBuilder.Entity("Absence.Domain.Models.Entities.ProcessStage", b =>
                 {
                     b.Navigation("EmployeeStages");
@@ -476,6 +668,11 @@ namespace Absence.API.Migrations
             modelBuilder.Entity("Absence.Domain.Models.Entities.SystemProcess", b =>
                 {
                     b.Navigation("Stages");
+                });
+
+            modelBuilder.Entity("Absence.Domain.Models.Entities.WorkdayType", b =>
+                {
+                    b.Navigation("WorkPeriods");
                 });
 #pragma warning restore 612, 618
         }
